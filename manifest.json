@@ -1,21 +1,26 @@
 {
   "name": "SANTISYSTEMS — Bot Inversor",
   "short_name": "SANTISYSTEMS",
-  "description": "Bot inversor con inteligencia artificial y análisis técnico real",
+  "description": "Bot inversor con IA y análisis técnico real",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f0f4fa",
   "theme_color": "#2563eb",
   "orientation": "any",
+  "lang": "es",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%232563eb'/><text y='.85em' font-size='360' x='60'>📈</text></svg>",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "screenshots": [],
-  "categories": ["finance", "utilities"],
-  "lang": "es"
+  ]
 }
