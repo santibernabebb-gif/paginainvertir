@@ -60,17 +60,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .t-bal .val{font-family:var(--mono);font-size:12px;font-weight:500}
 .t-bal.bank-bal .val{color:var(--gold)}
 .t-bal.inv-bal .val{color:var(--accent)}
-.auto-btn{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);white-space:nowrap}
-.auto-btn.on{background:var(--green-light);border-color:var(--green);color:var(--green)}
-.auto-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-.auto-btn.on .auto-dot{animation:pulse 1.5s infinite}
+
+/* Bot status badge */
+.bot-status{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted)}
+.bot-status.active{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.bot-status.waiting{background:var(--orange-light);border-color:var(--orange);color:var(--orange)}
+.bot-status.blocked{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.bot-status .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.bot-status.active .dot{animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
 .notif-btn{position:relative;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;transition:all .2s}
-.notif-btn:hover{border-color:var(--accent);color:var(--accent)}
 .notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--red);border-radius:50%;color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center}
 .notif-badge.vis{display:flex}
 .icon-btn{padding:5px 9px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s}
 .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.save-ind{font-size:10px;color:var(--green);display:none;align-items:center;gap:3px}
+.save-ind.vis{display:flex}
 
 /* MOBILE TABS */
 .mob-tabs{display:none;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:50}
@@ -90,30 +96,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .ct{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .cb{padding:13px 14px}
 
-/* NOTIFICACIONES */
+/* NOTIF PANEL */
 #notif-panel{position:fixed;top:52px;right:0;width:340px;height:calc(100vh - 52px);background:var(--white);border-left:1px solid var(--border);z-index:200;display:none;flex-direction:column;box-shadow:var(--shadow-lg)}
 #notif-panel.vis{display:flex}
-.np-header{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.np-header{padding:13px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .np-title{font-size:13px;font-weight:700}
 .np-close{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;font-size:12px}
-.np-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.notif-item{padding:10px 12px;border-radius:9px;font-size:12px;line-height:1.5;border:1px solid var(--border)}
-.notif-item.buy{background:var(--green-light);border-color:#bbf7d0}
+.np-body{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px}
+.notif-item{padding:9px 11px;border-radius:8px;font-size:11px;line-height:1.5;border:1px solid var(--border)}
+.notif-item.buy,.notif-item.reinvest{background:var(--green-light);border-color:#bbf7d0}
 .notif-item.stop{background:var(--red-light);border-color:#fecaca}
 .notif-item.take{background:var(--green-light);border-color:#bbf7d0}
-.notif-item.wait{background:var(--bg);color:var(--muted)}
-.notif-time{font-size:10px;color:var(--muted);margin-top:4px}
+.notif-item.danger{background:#fef2f2;border-color:var(--red);font-weight:600}
+.notif-item.warning{background:var(--orange-light);border-color:#fed7aa}
+.notif-item.info,.notif-item.wait{background:var(--bg);color:var(--muted)}
+.notif-time{font-size:9px;color:var(--muted);margin-top:3px}
 .np-empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
-.np-clear{margin:10px;padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;font-family:var(--font);font-size:12px;cursor:pointer;color:var(--muted)}
+.np-clear{margin:8px;padding:7px;border:1px solid var(--border);border-radius:7px;background:transparent;font-family:var(--font);font-size:11px;cursor:pointer;color:var(--muted)}
 .np-clear:hover{color:var(--red);border-color:var(--red)}
 
-/* ÓRDENES PROGRAMADAS */
-.sched-list{display:flex;flex-direction:column;gap:6px}
-.sched-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--accent-light);border:1px solid var(--accent-mid);border-radius:8px;font-size:12px}
-.sched-time{font-family:var(--mono);font-weight:700;color:var(--accent);flex-shrink:0}
-.sched-desc{flex:1;color:var(--text)}
-.sched-del{padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:transparent;cursor:pointer;color:var(--muted);font-size:10px}
-.sched-del:hover{border-color:var(--red);color:var(--red)}
+/* BOT STATUS DETAIL */
+.bot-detail{padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.bot-detail-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.bot-detail-row:last-child{margin-bottom:0}
+.bd-label{color:var(--muted);font-weight:500}
+.bd-value{font-weight:600;font-family:var(--mono)}
 
 /* BANCA */
 .bank-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
@@ -161,13 +168,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .mkt{padding:9px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;background:var(--white)}
 .mkt:hover{border-color:var(--accent)}
 .mkt.sel{border-color:var(--accent);background:var(--accent-light)}
-.mkt.closed{opacity:0.5}
+.mkt.closed{opacity:0.45}
+.mkt.invalid{opacity:0.3;cursor:not-allowed}
 .mkt-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 .mkt-flag{font-size:13px}
 .sig{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px}
 .sig-buy{background:var(--green-light);color:var(--green)}
 .sig-sell{background:var(--red-light);color:var(--red)}
 .sig-neu{background:var(--bg);color:var(--muted)}
+.sig-inv{background:#f3f4f6;color:#9ca3af}
 .mkt-name{font-size:9px;color:var(--muted);font-weight:500}
 .mkt-price{font-family:var(--mono);font-size:11px;font-weight:500;margin:2px 0}
 .mkt-chg{font-size:9px;font-weight:600}
@@ -227,7 +236,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-pnl{text-align:right;flex-shrink:0}
 .pos-pnl .pv{font-family:var(--mono);font-size:12px;font-weight:500}
 .pos-pnl .pp{font-size:9px;margin-top:1px}
-.close-btn{padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;transition:all .2s;margin-top:4px}
+.close-btn{padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;transition:all .2s;margin-top:4px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* TRADE */
@@ -245,34 +254,51 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .hist-row:last-child{border-bottom:none}
 .hist-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 
-/* CHAT — MÁS GRANDE Y LIMPIO */
+/* ÓRDENES PROGRAMADAS */
+.sched-list{display:flex;flex-direction:column;gap:5px}
+.sched-item{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--accent-light);border:1px solid var(--accent-mid);border-radius:7px;font-size:11px}
+.sched-time{font-family:var(--mono);font-weight:700;color:var(--accent);flex-shrink:0}
+.sched-desc{flex:1;color:var(--text)}
+.sched-del{padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:transparent;cursor:pointer;color:var(--muted);font-size:10px}
+.sched-del:hover{border-color:var(--red);color:var(--red)}
+
+/* CHAT */
 .chat-hdr{padding:11px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
 .chat-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .chat-title{font-size:13px;font-weight:700}
 .online{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--green);font-weight:500}
 .online-dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
 
-/* Auto panel */
+/* Bot config panel */
 .ap{background:var(--accent-light);border:1.5px solid var(--accent-mid);border-radius:9px;padding:10px;display:none}
 .ap.vis{display:block}
-.ap-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px}
-.ap-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
-.ap-f label{font-size:9px;color:var(--accent);font-weight:600;text-transform:uppercase;margin-bottom:2px;display:block}
-.ap-f input{width:100%;padding:5px 7px;border:1.5px solid var(--accent-mid);border-radius:5px;font-family:var(--mono);font-size:12px;background:var(--white);outline:none}
-.ap-btn{margin-top:7px;width:100%;padding:7px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer}
+.ap-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px}
+.ap-f label{font-size:9px;color:var(--accent);font-weight:600;text-transform:uppercase;margin-bottom:3px;display:block}
+.ap-f input{width:100%;padding:6px 8px;border:1.5px solid var(--accent-mid);border-radius:6px;font-family:var(--mono);font-size:12px;background:var(--white);outline:none}
+.ap-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;font-size:11px}
+.ap-toggle{display:flex;align-items:center;gap:5px;cursor:pointer}
+.ap-toggle input{width:auto}
+.ap-btn{width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.ap-btn:hover{background:#1d4ed8}
 
-/* Region indicator */
-.region-bar{display:flex;gap:4px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
-.region-chip{font-size:10px;padding:3px 9px;border-radius:12px;font-weight:600;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
+/* Region bar */
+.region-bar{display:flex;gap:4px;padding:7px 12px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.region-chip{font-size:10px;padding:3px 8px;border-radius:12px;font-weight:600;border:1px solid var(--border);background:var(--bg);color:var(--muted)}
 .region-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+/* Órdenes en chat */
+.sched-container{padding:7px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:none}
+.sched-container.vis{display:block}
+.sched-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+
+.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .chat-body::-webkit-scrollbar{width:3px}
 .chat-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.msg{max-width:88%;animation:msgIn .3s ease both}
+.msg{max-width:90%;animation:msgIn .3s ease both}
 @keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{align-self:flex-end}.msg.ai{align-self:flex-start}
-.bubble{padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.6}
+.bubble{padding:10px 13px;border-radius:12px;font-size:12px;line-height:1.6}
 .msg.user .bubble{background:var(--accent);color:#fff;border-bottom-right-radius:3px}
 .msg.ai .bubble{background:var(--bg);border:1px solid var(--border);border-bottom-left-radius:3px}
 .msg-meta{font-size:9px;color:var(--muted);margin-top:2px;padding:0 3px}
@@ -283,32 +309,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 @keyframes typing{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .tw{display:flex;gap:4px;align-items:center;padding:10px 13px}
 
-/* Orden confirmada en chat */
-.order-card{margin-top:8px;padding:10px;border-radius:9px;background:var(--accent-light);border:1.5px solid var(--accent-mid);font-size:12px}
-.order-card-title{font-weight:700;color:var(--accent);margin-bottom:4px;font-size:13px}
-.order-card-del{margin-top:6px;padding:4px 12px;border:1px solid var(--accent-mid);border-radius:5px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer}
+/* Tarjeta de orden en chat */
+.order-card{margin-top:7px;padding:10px;border-radius:8px;background:var(--accent-light);border:1.5px solid var(--accent-mid);font-size:11px}
+.order-card-title{font-weight:700;color:var(--accent);margin-bottom:3px;font-size:12px}
 
 /* Quick actions */
-.qa-wrap{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.qa-wrap{display:flex;flex-wrap:wrap;gap:4px;padding:7px 12px;border-top:1px solid var(--border);flex-shrink:0}
 .qa{padding:4px 10px;border:1.5px solid var(--border);border-radius:14px;background:var(--white);color:var(--text);font-size:10px;font-weight:500;cursor:pointer;transition:all .2s}
 .qa:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
 
-/* Chat input — MÁS GRANDE */
-.chat-ft{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0;align-items:flex-end}
-.chat-in{
-  flex:1;padding:11px 14px;
-  border:1.5px solid var(--border);border-radius:10px;
-  font-family:var(--font);font-size:13px;color:var(--text);
-  background:var(--bg);outline:none;
-  resize:none;min-height:48px;max-height:120px;
-  transition:border-color .2s;line-height:1.5;
-}
+/* Chat input */
+.chat-ft{padding:9px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;align-items:flex-end}
+.chat-in{flex:1;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font);font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color .2s;line-height:1.5}
 .chat-in:focus{border-color:var(--accent);background:var(--white)}
-.send-btn{
-  width:44px;height:44px;background:var(--accent);border:none;border-radius:10px;
-  color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;transition:all .2s;
-}
+.send-btn{width:44px;height:44px;background:var(--accent);border:none;border-radius:9px;color:#fff;font-size:15px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .send-btn:hover{background:#1d4ed8}
 
 /* TOASTS */
@@ -321,10 +335,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 #install-banner{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:11px;padding:10px 16px;box-shadow:var(--shadow-lg);z-index:8000;align-items:center;gap:9px;font-size:12px;font-weight:500;max-width:320px;width:90%}
 #install-banner button{padding:5px 11px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
 .btn-install{background:#fff;color:var(--accent)}.btn-close{background:rgba(255,255,255,.2);color:#fff}
-
-/* SAVE INDICATOR */
-.save-ind{font-size:10px;color:var(--green);display:none;align-items:center;gap:3px}
-.save-ind.vis{display:flex}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -352,6 +362,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 @media(max-width:480px){
   .mkt-grid{grid-template-columns:1fr 1fr}
   .pf-grid{grid-template-columns:1fr 1fr}
+  .ap-grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -363,11 +374,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
     <div class="ll">
       <div class="ll-icon">📈</div>
       <h1>SANTISYSTEMS</h1>
-      <p>Bot Inversor con IA • 24 horas</p>
+      <p>Bot Inversor con IA · Paper Trading</p>
     </div>
     <div class="lf">
-      <label>Usuario</label><input type="text" id="inp-u" autocomplete="username">
-      <label>Contraseña</label><input type="password" id="inp-p" autocomplete="current-password">
+      <label>Usuario</label>
+      <input type="text" id="inp-u" autocomplete="username">
+      <label>Contraseña</label>
+      <input type="password" id="inp-p" autocomplete="current-password">
     </div>
     <label class="l-rem"><input type="checkbox" id="rem" checked> Mantener sesión</label>
     <button class="l-btn" onclick="doLogin()">Entrar →</button>
@@ -380,12 +393,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 <div id="notif-panel">
   <div class="np-header">
     <span class="np-title">🔔 Actividad del Bot</span>
-    <button class="np-close" onclick="toggleNotif()">✕ Cerrar</button>
+    <button class="np-close" onclick="toggleNotif()">✕</button>
   </div>
   <div class="np-body" id="np-body">
-    <div class="np-empty">Sin actividad reciente.<br>El bot registra aquí todo lo que hace mientras operas o duermes.</div>
+    <div class="np-empty">Sin actividad reciente.</div>
   </div>
-  <button class="np-clear" onclick="clearNotifs()">🗑️ Limpiar historial</button>
+  <button class="np-clear" onclick="clearNotifs()">🗑️ Limpiar</button>
 </div>
 
 <!-- APP -->
@@ -400,10 +413,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <div class="t-bal bank-bal"><div class="lbl">🏦 Banca</div><div class="val" id="hdr-bank">$10,000</div></div>
       <div class="t-bal inv-bal"><div class="lbl">💼 Cartera</div><div class="val" id="hdr-inv">$0</div></div>
     </div>
-    <button class="auto-btn off" id="auto-toggle" onclick="toggleAutoPanel()">
-      <span class="auto-dot"></span><span id="auto-lbl">Bot: Pausado</span>
+    <button class="bot-status" id="bot-status-btn" onclick="toggleBotPanel()" title="Estado del bot">
+      <span class="dot"></span><span id="bot-status-lbl">Bot: Pausado</span>
     </button>
-    <button class="notif-btn" onclick="toggleNotif()" title="Actividad del bot">
+    <button class="notif-btn" onclick="toggleNotif()">
       🔔<span class="notif-badge" id="notif-badge">0</span>
     </button>
     <span class="save-ind" id="save-ind">✓</span>
@@ -428,21 +441,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
         <div class="cb">
           <div class="bank-grid">
-            <div class="bank-stat main-bank">
-              <div class="lbl">Saldo Bancario</div>
-              <div class="val" id="bank-total">$10,000</div>
-              <div class="sub">Tu reserva</div>
-            </div>
-            <div class="bank-stat main-inv">
-              <div class="lbl">Para Invertir</div>
-              <div class="val" id="inv-cash">$0</div>
-              <div class="sub">Disponible</div>
-            </div>
-            <div class="bank-stat">
-              <div class="lbl">En Posiciones</div>
-              <div class="val" id="in-pos-val">$0</div>
-              <div class="sub" id="pos-count-s">0 abiertas</div>
-            </div>
+            <div class="bank-stat main-bank"><div class="lbl">Saldo Bancario</div><div class="val" id="bank-total">$10,000</div><div class="sub">Tu reserva</div></div>
+            <div class="bank-stat main-inv"><div class="lbl">Para Invertir</div><div class="val" id="inv-cash">$0</div><div class="sub">Disponible</div></div>
+            <div class="bank-stat"><div class="lbl">En Posiciones</div><div class="val" id="in-pos-val">$0</div><div class="sub" id="pos-count-s">0 abiertas</div></div>
           </div>
           <div class="transfer-row">
             <div class="tr-field">
@@ -465,6 +466,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
             <div class="pf-s"><div class="lbl">P&L Abierto</div><div class="val" id="pf-pnl">$0.00</div><div class="sub" style="color:var(--muted)">no realizado</div></div>
             <div class="pf-s"><div class="lbl">Retirado</div><div class="val gold" id="pf-withdrawn">$0</div><div class="sub" style="color:var(--muted)">a banca</div></div>
           </div>
+        </div>
+      </div>
+
+      <!-- ESTADO DEL BOT (visible) -->
+      <div class="card" id="bot-detail-card">
+        <div class="ch"><span class="ct">Estado del Bot</span><span id="bot-detail-status" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:16px;background:var(--bg);color:var(--muted)">Pausado</span></div>
+        <div class="cb">
+          <div class="bot-detail-row"><span class="bd-label">Estado</span><span class="bd-value" id="bd-status">idle</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Motivo</span><span class="bd-value" style="font-weight:400;color:var(--muted);font-family:var(--font);font-size:11px" id="bd-reason">—</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Pérdida diaria</span><span class="bd-value" id="bd-daily-loss">$0.00 / $10.00</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Pérdidas seguidas</span><span class="bd-value" id="bd-consec">0</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Ciclos espera</span><span class="bd-value" id="bd-wait">0</span></div>
         </div>
       </div>
 
@@ -491,15 +504,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- MERCADOS -->
       <div class="card">
-        <div class="ch">
-          <span class="ct">Mercados</span>
-          <span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span>
-        </div>
+        <div class="ch"><span class="ct">Mercados Globales</span><span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span></div>
         <div class="cb">
-          <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:8px"></div>
-          <div class="mkt-grid" id="mkt-grid">
-            <div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div>
-          </div>
+          <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:7px"></div>
+          <div class="mkt-grid" id="mkt-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
         </div>
       </div>
 
@@ -511,7 +519,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
         <div class="cb">
           <div class="ind-grid" id="ind-grid"></div>
-          <div class="signals" id="signals"></div>
+          <div class="signals" id="signals-list"></div>
           <div class="score-bar">
             <div class="score-hdr"><span>🔴 Vender</span><span id="score-txt" style="font-weight:600">Score: 0</span><span>🟢 Comprar</span></div>
             <div class="score-track">
@@ -524,13 +532,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- POLYMARKET -->
       <div class="card">
-        <div class="ch"><span class="ct">Polymarket</span></div>
+        <div class="ch"><span class="ct">Polymarket</span><span style="font-size:10px;color:var(--muted)">Solo contexto</span></div>
         <div class="cb" id="pm-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Cargando...</div></div>
       </div>
 
       <!-- NOTICIAS -->
       <div class="card" id="news-card" style="display:none">
-        <div class="ch"><span class="ct">📰 Noticias</span><span style="font-size:10px;color:var(--muted)">Alpha Vantage</span></div>
+        <div class="ch"><span class="ct">📰 Noticias</span><span style="font-size:10px;color:var(--muted)">Filtro contextual</span></div>
         <div class="cb" id="news-body"></div>
       </div>
 
@@ -540,13 +548,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
       </div>
 
-      <!-- TRADE MANUAL -->
+      <!-- OPERACIÓN MANUAL -->
       <div class="card">
-        <div class="ch"><span class="ct">Operación Manual</span></div>
+        <div class="ch"><span class="ct">Operación Manual</span><span style="font-size:10px;color:var(--muted)">El worker ejecuta y valida</span></div>
         <div class="cb">
           <div class="tf">
             <div class="tf-f"><label>Mercado</label>
-              <select id="t-mkt" onchange="updTP()">
+              <select id="t-mkt">
                 <option value="SP500">🇺🇸 S&P 500</option><option value="NASDAQ">🇺🇸 Nasdaq</option><option value="DOW">🇺🇸 Dow Jones</option>
                 <option value="IBEX">🇪🇸 IBEX 35</option><option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option>
                 <option value="CAC40">🇫🇷 CAC 40</option><option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
@@ -555,20 +563,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
                 <option value="APPLE">🍎 Apple</option><option value="TESLA">⚡ Tesla</option><option value="AMAZON">📦 Amazon</option>
                 <option value="MICROSOFT">💻 Microsoft</option><option value="NVIDIA">🎮 Nvidia</option><option value="META">📘 Meta</option>
                 <option value="NETFLIX">🎬 Netflix</option><option value="SANTANDER">🏦 Santander</option><option value="INDITEX">👗 Inditex</option>
-                <option value="BBVA">🏛️ BBVA</option><option value="REPSOL">⛽ Repsol</option><option value="HSBC">🏦 HSBC</option>
+                <option value="BBVA">🏛️ BBVA</option><option value="REPSOL">⛽ Repsol</option>
                 <option value="TOYOTA">🚗 Toyota</option><option value="SAMSUNG">📱 Samsung</option><option value="ALIBABA">🛒 Alibaba</option>
               </select>
             </div>
             <div class="tf-f"><label>Importe ($)</label><input type="number" id="t-amt" value="200" min="1"></div>
-            <div class="tf-f"><label>Stop Loss (%)</label><input type="number" id="t-stop" value="0.5" step="0.1"></div>
-            <div class="tf-f"><label>Take Profit (%)</label><input type="number" id="t-take" value="1.0" step="0.1"></div>
-            <div class="tf-f"><label>Precio</label><input type="text" id="t-price" readonly style="color:var(--muted)"></div>
+            <div class="tf-f"><label>Stop Loss (%)</label><input type="number" id="t-stop" value="0.5" step="0.1" min="0.1"></div>
+            <div class="tf-f"><label>Take Profit (%)</label><input type="number" id="t-take" value="1.0" step="0.1" min="0.2"></div>
+            <div class="tf-f"><label>Precio actual</label><input type="text" id="t-price" readonly style="color:var(--muted)"></div>
             <div></div>
             <div class="tf-btns">
-              <button class="tbtn buy-btn" onclick="placeTrade('buy')">▲ Comprar</button>
-              <button class="tbtn sell-btn" onclick="placeTrade('sell')">▼ Corto</button>
+              <button class="tbtn buy-btn" onclick="openManualTrade()">▲ Comprar</button>
             </div>
           </div>
+          <div id="manual-err" style="margin-top:8px;padding:8px;background:var(--red-light);border-radius:7px;color:var(--red);font-size:12px;display:none"></div>
         </div>
       </div>
 
@@ -583,48 +591,54 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
     <div class="right" id="right-col">
       <div class="chat-hdr">
         <div class="chat-hdr-top">
-          <span class="chat-title">🤖 Bot Inversor IA</span>
-          <span class="online"><span class="online-dot"></span>24h activo</span>
+          <span class="chat-title">🤖 ORACLE — Asistente IA</span>
+          <span class="online"><span class="online-dot"></span>24h</span>
         </div>
-        <div class="ap" id="auto-panel">
-          <div class="ap-title">⚡ Configurar Bot Automático</div>
-          <div class="ap-fields">
-            <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-amt" value="200"></div>
-            <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-stop" value="0.5" step="0.1"></div>
-            <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-take" value="1.0" step="0.1"></div>
+        <!-- Bot config panel -->
+        <div class="ap" id="bot-panel">
+          <div class="ap-title">⚙️ Configuración del Bot Automático</div>
+          <div class="ap-grid">
+            <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-amt" value="200" min="10"></div>
+            <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-stop" value="0.5" step="0.1" min="0.1"></div>
+            <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-take" value="1.0" step="0.1" min="0.2"></div>
+            <div class="ap-f"><label>Pérd. diaria máx ($)</label><input type="number" id="ap-maxloss" value="10" min="1"></div>
+            <div class="ap-f" style="grid-column:span 2;display:flex;align-items:center;gap:10px;padding-top:16px">
+              <label class="ap-toggle"><input type="checkbox" id="ap-auto"> Bot automático</label>
+              <label class="ap-toggle"><input type="checkbox" id="ap-reinvest"> Reinversión</label>
+            </div>
           </div>
-          <button class="ap-btn" onclick="activateAuto()">⚡ Activar Bot 24h</button>
+          <button class="ap-btn" onclick="saveBotConfig()">💾 Guardar configuración</button>
         </div>
       </div>
 
-      <!-- Indicador de región activa -->
+      <!-- Región activa -->
       <div class="region-bar" id="region-bar">
         <span class="region-chip" id="rc-asia">🌏 Asia</span>
         <span class="region-chip" id="rc-europe">🇪🇺 Europa</span>
         <span class="region-chip" id="rc-usa">🇺🇸 USA</span>
-        <span class="region-chip active" id="rc-fx">💶 Forex/Oro 24h</span>
+        <span class="region-chip active" id="rc-fx">💶 Forex 24h</span>
       </div>
 
       <!-- Órdenes programadas -->
-      <div id="sched-container" style="display:none;padding:8px 12px;border-bottom:1px solid var(--border)">
-        <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">📅 Órdenes Programadas</div>
+      <div class="sched-container" id="sched-container">
+        <div class="sched-title">📅 Órdenes Programadas</div>
         <div class="sched-list" id="sched-list"></div>
       </div>
 
       <div class="chat-body" id="chat-body">
         <div class="msg ai">
-          <div class="ai-lbl">🤖 Bot Inversor</div>
-          <div class="bubble">¡Hola! Soy tu bot inversor 24 horas. 📈<br><br>Puedes decirme cosas como:<br>• <strong>"Invierte $200 en lo que veas ahora"</strong><br>• <strong>"A las 9:00 invierte en Europa"</strong><br>• <strong>"Esta noche opera en Asia con $150"</strong><br>• <strong>"A las 15:30 cuando abra USA invierte $300"</strong><br><br>También activa el bot automático y operaré solo 24h mientras tú descansas.</div>
-          <div class="msg-meta">Bot IA • ahora</div>
+          <div class="ai-lbl">🤖 ORACLE</div>
+          <div class="bubble">¡Hola! Soy ORACLE, tu asistente de inversión. 📈<br><br>El sistema ahora usa un <strong>algoritmo determinista</strong> para decidir operaciones automáticas — yo te explico y asesoro, pero la decisión automática la toma el algoritmo con criterios fijos y auditables.<br><br>Puedes preguntarme sobre el mercado, activar el bot, programar órdenes o pedir una operación manual. ¿Empezamos?</div>
+          <div class="msg-meta">ORACLE • ahora</div>
         </div>
       </div>
 
       <div class="qa-wrap">
-        <button class="qa" onclick="qa('Analiza el mercado ahora y dime si hay alguna oportunidad')">💡 ¿Hay oportunidad?</button>
-        <button class="qa" onclick="qa('A las 9:00 invierte $200 en el mejor mercado europeo')">🇪🇺 Orden 9h Europa</button>
-        <button class="qa" onclick="qa('A las 15:30 cuando abra USA invierte $200 en lo que veas mejor')">🇺🇸 Orden 15:30 USA</button>
-        <button class="qa" onclick="qa('Esta noche opera en Asia con $150 por operación si ves señal clara')">🌏 Esta noche Asia</button>
-        <button class="qa" onclick="toggleAutoPanel()">⚡ Bot automático</button>
+        <button class="qa" onclick="qa('Analiza el mercado ahora y explícame qué señales ves')">💡 Análisis mercado</button>
+        <button class="qa" onclick="qa('¿Por qué el bot está operando o esperando ahora mismo?')">🔍 Estado del bot</button>
+        <button class="qa" onclick="qa('A las 9:00 invierte $200 en Europa')">🇪🇺 Orden 9h Europa</button>
+        <button class="qa" onclick="qa('A las 15:30 invierte $200 en USA')">🇺🇸 Orden 15:30 USA</button>
+        <button class="qa" onclick="toggleBotPanel()">⚙️ Configurar bot</button>
       </div>
 
       <div class="chat-ft">
@@ -644,635 +658,920 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 <div id="toasts"></div>
 
 <script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
 const WORKER = 'https://invertir.santibernabebb.workers.dev';
-const SK = 'santisystems_v8_token';
+const SK = 'santisystems_v10_token';
 
 const MKTINFO = {
-  SP500:{name:'S&P 500',flag:'🇺🇸'},NASDAQ:{name:'Nasdaq',flag:'🇺🇸'},DOW:{name:'Dow Jones',flag:'🇺🇸'},
-  IBEX:{name:'IBEX 35',flag:'🇪🇸'},DAX:{name:'DAX 40',flag:'🇩🇪'},FTSE:{name:'FTSE 100',flag:'🇬🇧'},
-  CAC40:{name:'CAC 40',flag:'🇫🇷'},NIKKEI:{name:'Nikkei',flag:'🇯🇵'},HKEX:{name:'Hang Seng',flag:'🇭🇰'},
-  GOLD:{name:'Oro',flag:'🥇'},SILVER:{name:'Plata',flag:'🥈'},OIL:{name:'Petróleo',flag:'🛢️'},
-  EURUSD:{name:'EUR/USD',flag:'💶'},GBPUSD:{name:'GBP/USD',flag:'💷'},USDJPY:{name:'USD/JPY',flag:'¥'},
-  APPLE:{name:'Apple',flag:'🍎'},TESLA:{name:'Tesla',flag:'⚡'},AMAZON:{name:'Amazon',flag:'📦'},
-  MICROSOFT:{name:'Microsoft',flag:'💻'},NVIDIA:{name:'Nvidia',flag:'🎮'},META:{name:'Meta',flag:'📘'},
-  NETFLIX:{name:'Netflix',flag:'🎬'},SANTANDER:{name:'Santander',flag:'🏦'},INDITEX:{name:'Inditex',flag:'👗'},
-  BBVA:{name:'BBVA',flag:'🏛️'},REPSOL:{name:'Repsol',flag:'⛽'},HSBC:{name:'HSBC',flag:'🏦'},
-  TOYOTA:{name:'Toyota',flag:'🚗'},SAMSUNG:{name:'Samsung',flag:'📱'},ALIBABA:{name:'Alibaba',flag:'🛒'},
+  SP500:{n:'S&P 500',f:'🇺🇸'},NASDAQ:{n:'Nasdaq',f:'🇺🇸'},DOW:{n:'Dow Jones',f:'🇺🇸'},
+  IBEX:{n:'IBEX 35',f:'🇪🇸'},DAX:{n:'DAX 40',f:'🇩🇪'},FTSE:{n:'FTSE 100',f:'🇬🇧'},
+  CAC40:{n:'CAC 40',f:'🇫🇷'},NIKKEI:{n:'Nikkei',f:'🇯🇵'},HKEX:{n:'Hang Seng',f:'🇭🇰'},
+  GOLD:{n:'Oro',f:'🥇'},SILVER:{n:'Plata',f:'🥈'},OIL:{n:'Petróleo',f:'🛢️'},
+  EURUSD:{n:'EUR/USD',f:'💶'},GBPUSD:{n:'GBP/USD',f:'💷'},USDJPY:{n:'USD/JPY',f:'¥'},
+  APPLE:{n:'Apple',f:'🍎'},TESLA:{n:'Tesla',f:'⚡'},AMAZON:{n:'Amazon',f:'📦'},
+  MICROSOFT:{n:'Microsoft',f:'💻'},NVIDIA:{n:'Nvidia',f:'🎮'},META:{n:'Meta',f:'📘'},
+  NETFLIX:{n:'Netflix',f:'🎬'},SANTANDER:{n:'Santander',f:'🏦'},INDITEX:{n:'Inditex',f:'👗'},
+  BBVA:{n:'BBVA',f:'🏛️'},REPSOL:{n:'Repsol',f:'⛽'},
+  TOYOTA:{n:'Toyota',f:'🚗'},SAMSUNG:{n:'Samsung',f:'📱'},ALIBABA:{n:'Alibaba',f:'🛒'},
 };
 
+// ═══════════════════════════════════════════════
+// ESTADO LOCAL — solo UI, no lógica crítica
+// El worker es la fuente de verdad
+// ═══════════════════════════════════════════════
 let S = {
-  token:null,
-  bankBalance:10000, investCash:0, startTotal:10000, withdrawn:0,
-  positions:[], history:[], trades:0, mode:'paper',
-  autoOn:false, autoAmount:200, autoStop:0.5, autoTake:1.0,
-  scheduledOrders:[],
-  markets:{}, analysis:{}, fearGreed:null, macro:null,
-  selected:'SP500', lastAuto:0, saveTimeout:null,
-  currentHour:12, openMarkets:[], currentRegion:'',
+  token: null,
+  // Estado financiero (sincronizado con worker)
+  bankBalance: 10000,
+  investCash: 0,
+  startTotal: 10000,
+  withdrawn: 0,
+  positions: [],
+  history: [],
+  trades: 0,
+  mode: 'paper',
+  autoOn: false,
+  autoAmount: 200,
+  autoStop: 0.5,
+  autoTake: 1.0,
+  reinvestOn: false,
+  maxDailyLoss: 10,
+  dailyLoss: 0,
+  dailyLossHit: false,
+  consecutiveLosses: 0,
+  waitCycles: 0,
+  scheduledOrders: [],
+  botStatus: 'idle',
+  botStatusReason: '',
+  // Estado de mercado (solo display)
+  markets: {},
+  analysis: {},
+  fearGreed: null,
+  macro: null,
+  currentHour: 12,
+  openMarkets: [],
+  currentRegion: '',
+  selected: 'SP500',
+  // UI
+  saveTimeout: null,
 };
 
-// ══ AUTO LOGIN ══
-window.addEventListener('load',()=>{
-  const t=localStorage.getItem(SK);
-  if(t){S.token=t;el('l-sync').style.display='block';
-    loadFromKV().then(()=>{el('l-sync').style.display='none';showApp();});}
+// ═══════════════════════════════════════════════
+// AUTENTICACIÓN Y SESIÓN
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  const t = localStorage.getItem(SK);
+  if (t) {
+    S.token = t;
+    el('l-sync').style.display = 'block';
+    syncFromWorker().then(() => {
+      el('l-sync').style.display = 'none';
+      showApp();
+    });
+  }
   initPWA();
 });
 
-// ══ KV ══
-function scheduleSave(){
-  clearTimeout(S.saveTimeout);
-  S.saveTimeout=setTimeout(saveToKV,1500);
-}
-
-async function saveToKV(){
-  if(!S.token)return;
-  try{
-    await fetch(`${WORKER}/state`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.token}`},
-      body:JSON.stringify({
-        bankBalance:S.bankBalance, investCash:S.investCash, startTotal:S.startTotal,
-        withdrawn:S.withdrawn, positions:S.positions, history:S.history,
-        trades:S.trades, mode:S.mode, autoOn:S.autoOn,
-        autoAmount:S.autoAmount, autoStop:S.autoStop, autoTake:S.autoTake,
-        scheduledOrders:S.scheduledOrders,
-      })
+async function doLogin() {
+  const u = el('inp-u').value.trim();
+  const p = el('inp-p').value;
+  const errEl = el('l-err');
+  errEl.style.display = 'none';
+  if (!u || !p) { errEl.textContent = 'Introduce usuario y contraseña'; errEl.style.display = 'block'; return; }
+  try {
+    const r = await fetch(`${WORKER}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p }),
     });
-    const ind=el('save-ind');
-    ind.classList.add('vis');
-    setTimeout(()=>ind.classList.remove('vis'),2000);
-  }catch(e){}
-}
-
-async function loadFromKV(){
-  if(!S.token)return;
-  try{
-    const r=await fetch(`${WORKER}/state`,{headers:{'Authorization':`Bearer ${S.token}`}});
-    if(!r.ok)return;
-    const d=await r.json();
-    if(d.ok&&d.state) applyState(d.state);
-  }catch(e){}
-}
-
-function applyState(state){
-  if(state.bankBalance!==undefined)S.bankBalance=state.bankBalance;
-  if(state.investCash!==undefined) S.investCash=state.investCash;
-  if(state.startTotal!==undefined) S.startTotal=state.startTotal;
-  if(state.withdrawn!==undefined)  S.withdrawn=state.withdrawn;
-  if(state.positions!==undefined)  S.positions=state.positions;
-  if(state.history!==undefined)    S.history=state.history;
-  if(state.trades!==undefined)     S.trades=state.trades;
-  if(state.scheduledOrders!==undefined) S.scheduledOrders=state.scheduledOrders;
-  if(state.autoOn!==undefined){
-    S.autoOn=state.autoOn;
-    S.autoAmount=state.autoAmount||200;
-    S.autoStop=state.autoStop||0.5;
-    S.autoTake=state.autoTake||1.0;
-    updateAutoBadge();
-  }
-  if(state.mode!==undefined) setMode(state.mode,true);
-  renderPortfolio();
-  renderScheduled();
-}
-
-// ══ LOGIN ══
-async function doLogin(){
-  const u=el('inp-u').value.trim(),p=el('inp-p').value;
-  const err=el('l-err');err.style.display='none';
-  if(!u||!p){err.textContent='Introduce usuario y contraseña';err.style.display='block';return;}
-  try{
-    const r=await fetch(`${WORKER}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
-    const d=await r.json();
-    if(d.ok){
-      S.token=d.token;
-      if(el('rem').checked)localStorage.setItem(SK,d.token);
-      if(d.state)applyState(d.state);
+    const d = await r.json();
+    if (d.ok) {
+      S.token = d.token;
+      if (el('rem').checked) localStorage.setItem(SK, d.token);
+      if (d.state) applyState(d.state);
       showApp();
-    }else{err.textContent=d.error||'Error';err.style.display='block';}
-  }catch(e){err.textContent='Error de conexión';err.style.display='block';}
+    } else {
+      errEl.textContent = d.error || 'Error de autenticación';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Error de conexión';
+    errEl.style.display = 'block';
+  }
 }
 
-function showApp(){
-  el('login-screen').style.display='none';
+el('inp-p').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogout() {
+  localStorage.removeItem(SK);
+  S.token = null;
+  el('app').classList.remove('visible');
+  el('login-screen').style.display = 'flex';
+  el('l-sync').style.display = 'none';
+}
+
+function showApp() {
+  el('login-screen').style.display = 'none';
   el('app').classList.add('visible');
   loadDashboard();
-  loadNotifications();
-  updTP();
-  setInterval(()=>{updatePnL();checkStopTake();},5000);
-  setInterval(loadDashboard,120000);
-  setInterval(loadNotifications,30000); // revisar notificaciones cada 30s
-  if(window.innerWidth<=768)showTab('markets');
+  pollNotifications();
+  updTPrice();
+  setInterval(pollNotifications, 15000);
+  setInterval(loadDashboard, 120000);
+  if (window.innerWidth <= 768) showTab('markets');
 }
 
-function doLogout(){
-  localStorage.removeItem(SK);S.token=null;
-  el('app').classList.remove('visible');
-  el('login-screen').style.display='flex';
-  el('l-sync').style.display='none';
+// ═══════════════════════════════════════════════
+// SINCRONIZACIÓN CON WORKER
+// ═══════════════════════════════════════════════
+
+/**
+ * Aplica el estado del worker al estado local de UI.
+ * El frontend NUNCA modifica posiciones, SL/TP ni decisiones críticas.
+ */
+function applyState(state) {
+  if (!state) return;
+  const fields = [
+    'bankBalance','investCash','startTotal','withdrawn','positions','history',
+    'trades','mode','autoOn','autoAmount','autoStop','autoTake','reinvestOn',
+    'maxDailyLoss','dailyLoss','dailyLossHit','consecutiveLosses','waitCycles',
+    'scheduledOrders','botStatus','botStatusReason',
+  ];
+  for (const f of fields) {
+    if (state[f] !== undefined) S[f] = state[f];
+  }
+  renderPortfolio();
+  renderBotStatus();
+  renderScheduled();
+  syncBotPanel();
 }
 
-el('inp-p').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+async function syncFromWorker() {
+  if (!S.token) return;
+  try {
+    const r = await fetch(`${WORKER}/state`, { headers: { 'Authorization': `Bearer ${S.token}` } });
+    if (r.status === 401) { doLogout(); return; }
+    const d = await r.json();
+    if (d.ok && d.state) applyState(d.state);
+  } catch {}
+}
 
-// ══ NOTIFICACIONES ══
-async function loadNotifications(){
-  if(!S.token)return;
-  try{
-    const r=await fetch(`${WORKER}/notifications`,{headers:{'Authorization':`Bearer ${S.token}`}});
-    if(!r.ok)return;
-    const d=await r.json();
-    if(d.ok){
-      renderNotifications(d.notifications||[]);
-      // Actualizar órdenes programadas
-      if(d.scheduledOrders){S.scheduledOrders=d.scheduledOrders;renderScheduled();}
-      // Sincronizar posiciones si el bot operó
-      await loadFromKV();
-      renderPortfolio();
+/**
+ * Guarda estado financiero en el worker.
+ * Solo los campos que el frontend controla directamente (banca, transferencias).
+ */
+function scheduleSave() {
+  clearTimeout(S.saveTimeout);
+  S.saveTimeout = setTimeout(async () => {
+    if (!S.token) return;
+    try {
+      await fetch(`${WORKER}/state`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+        body: JSON.stringify({
+          bankBalance: S.bankBalance,
+          investCash: S.investCash,
+          startTotal: S.startTotal,
+          withdrawn: S.withdrawn,
+          mode: S.mode,
+        }),
+      });
+      const ind = el('save-ind');
+      ind.classList.add('vis');
+      setTimeout(() => ind.classList.remove('vis'), 2000);
+    } catch {}
+  }, 1500);
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFICACIONES Y POLLING
+// ═══════════════════════════════════════════════
+async function pollNotifications() {
+  if (!S.token) return;
+  try {
+    const r = await fetch(`${WORKER}/notifications`, {
+      headers: { 'Authorization': `Bearer ${S.token}` },
+    });
+    if (r.status === 401) { doLogout(); return; }
+    const d = await r.json();
+    if (!d.ok) return;
+
+    // Sincronizar estado completo del worker
+    if (d.state) applyState(d.state);
+
+    renderNotifications(d.notifications || []);
+
+    // Actualizar estado del bot en UI
+    if (d.botStatus !== undefined) {
+      S.botStatus = d.botStatus;
+      S.botStatusReason = d.botStatusReason || '';
+      S.dailyLoss = d.dailyLoss || 0;
+      S.dailyLossHit = d.dailyLossHit || false;
+      S.consecutiveLosses = d.consecutiveLosses || 0;
+      S.waitCycles = d.waitCycles || 0;
+      renderBotStatus();
     }
-  }catch(e){}
+    if (d.scheduledOrders) { S.scheduledOrders = d.scheduledOrders; renderScheduled(); }
+  } catch {}
 }
 
-function renderNotifications(notifs){
-  const badge=el('notif-badge');
-  const body=el('np-body');
-  if(!notifs.length){
+function renderNotifications(notifs) {
+  const badge = el('notif-badge');
+  const body = el('np-body');
+  if (!notifs.length) {
     badge.classList.remove('vis');
-    body.innerHTML='<div class="np-empty">Sin actividad reciente.<br>El bot registra aquí todo lo que hace mientras operas o duermes.</div>';
+    body.innerHTML = '<div class="np-empty">Sin actividad reciente.</div>';
     return;
   }
-  badge.textContent=Math.min(notifs.length,99);
+  badge.textContent = Math.min(notifs.length, 99);
   badge.classList.add('vis');
-  body.innerHTML=notifs.map(n=>{
-    const isBuy  = n.msg.includes('⚡')&&n.msg.includes('Compré');
-    const isStop = n.msg.includes('🛑')&&n.msg.includes('Stop');
-    const isTake = n.msg.includes('✅')&&n.msg.includes('Take');
-    const cls = isBuy?'buy':isStop?'stop':isTake?'take':'wait';
+  body.innerHTML = notifs.map(n => {
+    const cls = n.type || 'info';
     return `<div class="notif-item ${cls}">
       ${n.msg}
-      <div class="notif-time">${n.time||''}</div>
+      <div class="notif-time">${n.time || ''}</div>
     </div>`;
   }).join('');
 }
 
-async function clearNotifs(){
-  if(!S.token)return;
-  try{
-    await fetch(`${WORKER}/notifications`,{method:'DELETE',headers:{'Authorization':`Bearer ${S.token}`}});
-    el('np-body').innerHTML='<div class="np-empty">Historial limpiado.</div>';
+async function clearNotifs() {
+  if (!S.token) return;
+  try {
+    await fetch(`${WORKER}/notifications`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${S.token}` } });
+    el('np-body').innerHTML = '<div class="np-empty">Limpiado.</div>';
     el('notif-badge').classList.remove('vis');
-  }catch(e){}
+  } catch {}
 }
 
-function toggleNotif(){
+function toggleNotif() {
   el('notif-panel').classList.toggle('vis');
 }
 
-// ══ BANCA ══
-function transferTo(){
-  const amt=parseFloat(el('tr-amt').value)||0;
-  if(amt<=0){toast('Cantidad inválida','error');return;}
-  if(amt>S.bankBalance){toast('Saldo insuficiente en banca','error');return;}
-  S.bankBalance-=amt;S.investCash+=amt;
-  renderPortfolio();scheduleSave();
-  toast(`✅ $${fmt$(amt)} → Cartera`,'success');
+// ═══════════════════════════════════════════════
+// BANCA — transferencias
+// ═══════════════════════════════════════════════
+function transferTo() {
+  const amt = parseFloat(el('tr-amt').value) || 0;
+  if (amt <= 0) { toast('Cantidad inválida', 'error'); return; }
+  if (amt > S.bankBalance) { toast('Saldo bancario insuficiente', 'error'); return; }
+  S.bankBalance -= amt;
+  S.investCash += amt;
+  renderPortfolio();
+  scheduleSave();
+  toast(`✅ $${fmt$(amt)} → Cartera`, 'success');
   addAI(`✅ **$${fmt$(amt)}** transferidos a la cartera.\nDisponible para invertir: **$${fmt$(S.investCash)}**`);
 }
 
-function transferFrom(){
-  const amt=parseFloat(el('tr-amt').value)||0;
-  if(amt<=0){toast('Cantidad inválida','error');return;}
-  if(amt>S.investCash){toast('Capital insuficiente en cartera','error');return;}
-  S.investCash-=amt;S.bankBalance+=amt;S.withdrawn+=amt;
-  renderPortfolio();scheduleSave();
-  toast(`🏦 $${fmt$(amt)} → Banca`,'success');
+function transferFrom() {
+  const amt = parseFloat(el('tr-amt').value) || 0;
+  if (amt <= 0) { toast('Cantidad inválida', 'error'); return; }
+  if (amt > S.investCash) { toast('Capital insuficiente en cartera', 'error'); return; }
+  S.investCash -= amt;
+  S.bankBalance += amt;
+  S.withdrawn += amt;
+  renderPortfolio();
+  scheduleSave();
+  toast(`🏦 $${fmt$(amt)} → Banca`, 'success');
   addAI(`🏦 **$${fmt$(amt)}** retirados a la banca.\nSaldo bancario: **$${fmt$(S.bankBalance)}**`);
 }
 
-// ══ DASHBOARD ══
-async function loadDashboard(){
-  el('mkt-ts').textContent='Actualizando...';
-  try{
-    const r=await fetch(`${WORKER}/dashboard`,{headers:{'Authorization':`Bearer ${S.token}`}});
-    if(r.status===401){doLogout();return;}
-    const d=await r.json();
-    if(!d.ok)return;
-    S.markets=d.markets||{};S.analysis=d.analysis||{};
-    S.fearGreed=d.fearGreed||null;S.macro=d.macro||null;
-    S.currentHour=d.currentHour||12;
-    S.openMarkets=d.openMarkets||[];
-    S.currentRegion=d.currentRegion||'';
-    renderMarkets();renderFG();renderMacro();
-    renderPoly(d.polyEvents||[]);renderNews(d.news||[]);
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+async function loadDashboard() {
+  el('mkt-ts').textContent = 'Actualizando...';
+  try {
+    const r = await fetch(`${WORKER}/dashboard`, { headers: { 'Authorization': `Bearer ${S.token}` } });
+    if (r.status === 401) { doLogout(); return; }
+    const d = await r.json();
+    if (!d.ok) return;
+
+    S.markets = d.markets || {};
+    S.analysis = d.analysis || {};
+    S.fearGreed = d.fearGreed || null;
+    S.macro = d.macro || null;
+    S.currentHour = d.currentHour || 12;
+    S.openMarkets = d.openMarkets || [];
+    S.currentRegion = d.currentRegion || '';
+
+    renderMarkets(d.invalidMarkets || {});
+    renderFG();
+    renderMacro();
+    renderPoly(d.polyEvents || []);
+    renderNews(d.news || []);
     renderRegionBar();
-    updTP();
-    el('mkt-ts').textContent='✅ '+hhm();
-    if(S.selected&&S.analysis[S.selected])renderAnalysis(S.selected);
-  }catch(e){el('mkt-ts').textContent='⚠️ Error';}
-}
-
-function renderRegionBar(){
-  const h=S.currentHour;
-  el('rc-asia').className   ='region-chip'+(h>=1&&h<9?' active':'');
-  el('rc-europe').className ='region-chip'+(h>=9&&h<15?' active':'');
-  el('rc-usa').className    ='region-chip'+(h>=15&&h<22?' active':'');
-  el('rc-fx').className     ='region-chip active'; // siempre abierto
-  el('region-info').textContent=`Ahora en España: ${hhm()} · Mercado activo: ${S.currentRegion}`;
-}
-
-// ══ FEAR & GREED ══
-function renderFG(){
-  const fg=S.fearGreed;if(!fg)return;
-  el('fg-emoji').textContent=fg.emoji||'😐';
-  el('fg-label').textContent=fg.label||'—';
-  el('fg-score').textContent=fg.score||'—';
-  el('fg-needle').style.left=`${fg.score||50}%`;
-  el('fg-interp').textContent=fg.interpretation||'';
-  el('fg-ts').textContent='En vivo';
-}
-
-function renderMacro(){
-  const m=S.macro;if(!m)return;
-  el('mc-fed').textContent=m.fedRate||'—';
-  el('mc-bce').textContent=m.bceRate||'—';
-  el('mc-vix').textContent=m.vix||'—';
-  const vix=parseFloat(m.vix||0);
-  el('mc-vix').style.color=vix>30?'var(--red)':vix>20?'var(--orange)':'var(--green)';
-}
-
-// ══ MARKETS ══
-function renderMarkets(){
-  const g=el('mkt-grid');
-  if(!Object.keys(S.markets).length){
-    g.innerHTML='<div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">Sin datos</div>';return;
+    updTPrice();
+    el('mkt-ts').textContent = '✅ ' + hhm();
+    if (S.selected && S.analysis[S.selected]) renderAnalysis(S.selected);
+  } catch (e) {
+    el('mkt-ts').textContent = '⚠️ Error';
   }
-  g.innerHTML=Object.entries(S.markets).map(([k,m])=>{
-    const info=MKTINFO[k]||{name:k,flag:'📊'};
-    const a=S.analysis[k];const sc=a?.score||0;
-    const isOpen=S.openMarkets.includes(k);
-    const sigCls=sc>=2?'sig-buy':sc<=-2?'sig-sell':'sig-neu';
-    const sigTxt=sc>=4?'COMPRAR!':sc>=2?'COMPRAR':sc<=-4?'VENDER!':sc<=-2?'VENDER':'NEUTRAL';
-    return `<div class="mkt ${k===S.selected?'sel':''} ${!isOpen?'closed':''}" onclick="selMkt('${k}')" title="${isOpen?'Mercado abierto ahora':'Mercado cerrado ahora'}">
-      <div class="mkt-top"><span class="mkt-flag">${info.flag}</span><span class="sig ${sigCls}">${sigTxt}</span></div>
-      <div class="mkt-name">${info.name}${!isOpen?' 🔒':''}</div>
+}
+
+// ═══════════════════════════════════════════════
+// RENDERS DE MERCADO
+// ═══════════════════════════════════════════════
+function renderRegionBar() {
+  const h = S.currentHour;
+  el('rc-asia').className   = 'region-chip' + (h >= 1 && h < 9 ? ' active' : '');
+  el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
+  el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
+  el('rc-fx').className     = 'region-chip active';
+  el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion}`;
+}
+
+function renderFG() {
+  const fg = S.fearGreed; if (!fg) return;
+  el('fg-emoji').textContent = fg.emoji || '😐';
+  el('fg-label').textContent = fg.label || '—';
+  el('fg-score').textContent = fg.score || '—';
+  el('fg-needle').style.left = `${fg.score || 50}%`;
+  el('fg-interp').textContent = fg.interpretation || '';
+  el('fg-ts').textContent = 'En vivo';
+}
+
+function renderMacro() {
+  const m = S.macro; if (!m) return;
+  el('mc-fed').textContent = m.fedRate || '—';
+  el('mc-bce').textContent = m.bceRate || '—';
+  const vix = m.vix;
+  el('mc-vix').textContent = vix || '—';
+  el('mc-vix').style.color = vix > 30 ? 'var(--red)' : vix > 20 ? 'var(--orange)' : 'var(--green)';
+}
+
+function renderMarkets(invalidMarkets = {}) {
+  const g = el('mkt-grid');
+  const allKeys = [...new Set([...Object.keys(S.markets), ...Object.keys(invalidMarkets)])];
+  if (!allKeys.length) {
+    g.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">Sin datos</div>';
+    return;
+  }
+
+  g.innerHTML = allKeys.map(k => {
+    const m = S.markets[k];
+    const info = MKTINFO[k] || { n: k, f: '📊' };
+    const isOpen = S.openMarkets.includes(k);
+    const isInvalid = !m && invalidMarkets[k];
+
+    if (isInvalid) {
+      return `<div class="mkt invalid" title="Datos no válidos: ${invalidMarkets[k]}">
+        <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig sig-inv">N/D</span></div>
+        <div class="mkt-name">${info.n}</div>
+        <div class="mkt-price" style="color:var(--muted);font-size:9px">Sin datos</div>
+      </div>`;
+    }
+
+    if (!m) return '';
+
+    const a = S.analysis[k];
+    const sc = a?.score || 0;
+    const sigCls = sc >= 3 ? 'sig-buy' : sc <= -3 ? 'sig-sell' : 'sig-neu';
+    const sigTxt = sc >= 5 ? '▲▲▲' : sc >= 3 ? '▲▲' : sc >= 1 ? '▲' : sc <= -5 ? '▼▼▼' : sc <= -3 ? '▼▼' : sc <= -1 ? '▼' : '—';
+
+    return `<div class="mkt ${k === S.selected ? 'sel' : ''} ${!isOpen ? 'closed' : ''}" onclick="selMkt('${k}')" title="${!isOpen ? 'Mercado cerrado ahora' : ''}">
+      <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig ${sigCls}">${sigTxt}</span></div>
+      <div class="mkt-name">${info.n}${!isOpen ? ' 🔒' : ''}</div>
       <div class="mkt-price">${fmtP(m.price)}</div>
-      <div class="mkt-chg ${(m.change||0)>=0?'green':'red'}">${(m.change||0)>=0?'▲':'▼'} ${Math.abs(m.change||0).toFixed(2)}%</div>
-      ${a?.rsi!=null?`<div class="mkt-rsi">RSI:${a.rsi} S:${sc>=0?'+':''}${sc}</div>`:''}
+      <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}%</div>
+      ${a?.rsi != null ? `<div class="mkt-rsi">RSI:${a.rsi} S:${sc >= 0 ? '+' : ''}${sc} C:${a.confidence}%</div>` : ''}
     </div>`;
   }).join('');
 }
 
-function selMkt(k){
-  S.selected=k;renderMarkets();updTP();
-  if(S.analysis[k])renderAnalysis(k);
-  else el('analysis-card').style.display='none';
+function selMkt(k) {
+  S.selected = k;
+  renderMarkets();
+  updTPrice();
+  if (S.analysis[k]) renderAnalysis(k);
+  else el('analysis-card').style.display = 'none';
 }
 
-function renderAnalysis(k){
-  const a=S.analysis[k];if(!a)return;
-  el('analysis-card').style.display='block';
-  const info=MKTINFO[k]||{name:k};
-  el('ana-title').textContent=`Análisis — ${info.name}`;
-  const rec=el('ana-rec');
-  rec.textContent=a.recommendation||'—';
-  rec.style.background=a.score>=2?'var(--green-light)':a.score<=-2?'var(--red-light)':'var(--bg)';
-  rec.style.color=a.score>=2?'var(--green)':a.score<=-2?'var(--red)':'var(--muted)';
-  el('ind-grid').innerHTML=[
-    a.rsi!=null?`<div class="ind"><div class="ind-name">RSI</div><div class="ind-val ${a.rsi<30?'green':a.rsi>70?'red':''}">${a.rsi}</div><div class="ind-desc">${a.rsi<30?'Sobreventa':a.rsi>70?'Sobrecompra':'Neutral'}</div></div>`:'',
-    a.stochastic!=null?`<div class="ind"><div class="ind-name">Estocástico</div><div class="ind-val ${a.stochastic<20?'green':a.stochastic>80?'red':''}">${a.stochastic}</div><div class="ind-desc">${a.stochastic<20?'Sobreventa':a.stochastic>80?'Sobrecompra':'Neutral'}</div></div>`:'',
-    a.macd?`<div class="ind"><div class="ind-name">MACD</div><div class="ind-val ${a.macd.macd>=0?'green':'red'}">${a.macd.macd.toFixed(2)}</div><div class="ind-desc">${a.macd.macd>=0?'Alcista':'Bajista'}</div></div>`:'',
-    a.sma20&&a.sma50?`<div class="ind"><div class="ind-name">SMA 20/50</div><div class="ind-val ${a.sma20>a.sma50?'green':'red'}">${a.sma20>a.sma50?'▲':'▼'}</div><div class="ind-desc">${a.sma20>a.sma50?'Alcista':'Bajista'}</div></div>`:'',
-    a.bollinger?`<div class="ind"><div class="ind-name">Bollinger</div><div class="ind-val">${fmtP(a.bollinger.middle)}</div><div class="ind-desc">↑${fmtP(a.bollinger.upper)}</div></div>`:'',
+function renderAnalysis(k) {
+  const a = S.analysis[k]; if (!a) return;
+  el('analysis-card').style.display = 'block';
+  const info = MKTINFO[k] || { n: k };
+  el('ana-title').textContent = `Análisis — ${info.n}`;
+  const rec = el('ana-rec');
+  rec.textContent = a.recommendation || '—';
+  rec.style.background = a.score >= 3 ? 'var(--green-light)' : a.score <= -3 ? 'var(--red-light)' : 'var(--bg)';
+  rec.style.color = a.score >= 3 ? 'var(--green)' : a.score <= -3 ? 'var(--red)' : 'var(--muted)';
+
+  el('ind-grid').innerHTML = [
+    a.rsi != null ? `<div class="ind"><div class="ind-name">RSI (14)</div><div class="ind-val ${a.rsi < 35 ? 'green' : a.rsi > 70 ? 'red' : ''}">${a.rsi}</div><div class="ind-desc">${a.rsi < 35 ? 'Sobreventa' : a.rsi > 70 ? 'Sobrecompra' : 'Neutral'}</div></div>` : '',
+    a.stochastic != null ? `<div class="ind"><div class="ind-name">Estocástico</div><div class="ind-val ${a.stochastic < 25 ? 'green' : a.stochastic > 75 ? 'red' : ''}">${a.stochastic}</div><div class="ind-desc">${a.stochastic < 25 ? 'Sobreventa' : a.stochastic > 75 ? 'Sobrecompra' : 'Neutral'}</div></div>` : '',
+    a.williamsR != null ? `<div class="ind"><div class="ind-name">Williams %R</div><div class="ind-val ${a.williamsR < -70 ? 'green' : a.williamsR > -25 ? 'red' : ''}">${a.williamsR}</div><div class="ind-desc">${a.williamsR < -70 ? 'Sobreventa' : a.williamsR > -25 ? 'Sobrecompra' : 'Neutral'}</div></div>` : '',
+    a.macd ? `<div class="ind"><div class="ind-name">MACD</div><div class="ind-val ${a.macd.macd >= 0 ? 'green' : 'red'}">${a.macd.macd.toFixed(2)}</div><div class="ind-desc">${a.macd.macd >= 0 ? 'Alcista' : 'Bajista'}</div></div>` : '',
+    a.sma20 && a.sma50 ? `<div class="ind"><div class="ind-name">SMA 20/50</div><div class="ind-val ${a.sma20 > a.sma50 ? 'green' : 'red'}">${a.sma20 > a.sma50 ? '▲' : '▼'}</div><div class="ind-desc">${a.sma20 > a.sma50 ? 'Tendencia alcista' : 'Tendencia bajista'}</div></div>` : '',
+    a.confidence != null ? `<div class="ind"><div class="ind-name">Confianza</div><div class="ind-val ${a.confidence >= 65 ? 'green' : a.confidence < 50 ? 'red' : ''}">${a.confidence}%</div><div class="ind-desc">${a.confidence >= 65 ? 'Señal clara' : a.confidence < 50 ? 'Señal débil' : 'Moderada'}</div></div>` : '',
   ].filter(Boolean).join('');
-  el('signals').innerHTML=(a.signals||[]).map(s=>`
-    <div class="sig-item ${s.type}">
-      <span>${s.type==='buy'?'🟢':s.type==='sell'?'🔴':'⚪'}</span>
-      <span><strong>${s.indicator}</strong> — ${s.msg}</span>
-    </div>`).join('');
-  const sc=a.score||0,pct=Math.min(Math.abs(sc)/8*50,50);
-  const fill=el('score-fill');
-  fill.style.width=pct+'%';fill.style.left=sc>=0?'50%':(50-pct)+'%';
-  fill.style.background=sc>=0?'var(--green)':'var(--red)';
-  el('score-txt').textContent=`Score: ${sc>=0?'+':''}${sc}/8`;
+
+  el('signals-list').innerHTML = (a.signals || []).map(s =>
+    `<div class="sig-item ${s.type}">
+      <span>${s.type === 'buy' ? '🟢' : s.type === 'sell' ? '🔴' : '⚪'}</span>
+      <span><strong>${s.ind || s.indicator}</strong> — ${s.msg}</span>
+    </div>`
+  ).join('');
+
+  const sc = a.score || 0;
+  const pct = Math.min(Math.abs(sc) / 8 * 50, 50);
+  const fill = el('score-fill');
+  fill.style.width = pct + '%';
+  fill.style.left = sc >= 0 ? '50%' : (50 - pct) + '%';
+  fill.style.background = sc >= 0 ? 'var(--green)' : 'var(--red)';
+  el('score-txt').textContent = `Score: ${sc >= 0 ? '+' : ''}${sc}/8 | Conf: ${a.confidence || 0}%`;
 }
 
-function renderPoly(events){
-  el('pm-body').innerHTML=events.length?events.map(e=>{
-    const prices=e.outcomePrices?JSON.parse(e.outcomePrices):[];
-    const yp=prices[0]?(parseFloat(prices[0])*100).toFixed(0)+'%':'—';
-    return `<div class="pm-item"><div class="pm-q">${e.question}</div><div class="pm-stats"><div class="pm-prob">${yp} Sí</div><div class="pm-vol">$${(e.volume||0).toFixed(0)}</div></div></div>`;
-  }).join(''):'<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin eventos</div>';
+function renderPoly(events) {
+  el('pm-body').innerHTML = events.length ? events.map(e => {
+    const prices = e.outcomePrices ? JSON.parse(e.outcomePrices) : [];
+    const yp = prices[0] ? (parseFloat(prices[0]) * 100).toFixed(0) + '%' : '—';
+    return `<div class="pm-item"><div class="pm-q">${e.question}</div><div class="pm-stats"><div class="pm-prob">${yp} Sí</div><div class="pm-vol">$${(e.volume || 0).toFixed(0)}</div></div></div>`;
+  }).join('') : '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin eventos</div>';
 }
 
-function renderNews(news){
-  if(!news.length){el('news-card').style.display='none';return;}
-  el('news-card').style.display='block';
-  el('news-body').innerHTML=news.map(n=>{
-    const sc=n.sentiment?.toLowerCase().includes('bullish')?'sent-pos':n.sentiment?.toLowerCase().includes('bearish')?'sent-neg':'sent-neu';
-    const sl=n.sentiment?.toLowerCase().includes('bullish')?'Alcista':n.sentiment?.toLowerCase().includes('bearish')?'Bajista':'Neutral';
+function renderNews(news) {
+  if (!news.length) { el('news-card').style.display = 'none'; return; }
+  el('news-card').style.display = 'block';
+  el('news-body').innerHTML = news.map(n => {
+    const sc = n.sentiment?.toLowerCase().includes('bullish') ? 'sent-pos' : n.sentiment?.toLowerCase().includes('bearish') ? 'sent-neg' : 'sent-neu';
+    const sl = n.sentiment?.toLowerCase().includes('bullish') ? 'Alcista' : n.sentiment?.toLowerCase().includes('bearish') ? 'Bajista' : 'Neutral';
     return `<div class="news-item"><span class="news-sent ${sc}">${sl}</span><div><div class="news-title">${n.title}</div><div class="news-src">${n.source}</div></div></div>`;
   }).join('');
 }
 
-// ══ ÓRDENES PROGRAMADAS ══
-function renderScheduled(){
-  const orders=S.scheduledOrders||[];
-  const cont=el('sched-container');
-  const list=el('sched-list');
-  if(!orders.length){cont.style.display='none';return;}
-  cont.style.display='block';
-  list.innerHTML=orders.map((o,i)=>`
-    <div class="sched-item">
+// ═══════════════════════════════════════════════
+// ESTADO DEL BOT
+// ═══════════════════════════════════════════════
+function renderBotStatus() {
+  const btn = el('bot-status-btn');
+  const lbl = el('bot-status-lbl');
+  const statusMap = {
+    'operating': { cls: 'active',  label: 'Bot: Operando' },
+    'waiting':   { cls: 'waiting', label: 'Bot: Esperando' },
+    'blocked':   { cls: 'blocked', label: 'Bot: Bloqueado' },
+    'idle':      { cls: '',        label: S.autoOn ? 'Bot: Activo' : 'Bot: Pausado' },
+  };
+  const s = statusMap[S.botStatus] || statusMap['idle'];
+  btn.className = 'bot-status ' + s.cls;
+  lbl.textContent = s.label;
+
+  // Detail card
+  el('bd-status').textContent = S.botStatus || 'idle';
+  el('bd-reason').textContent = S.botStatusReason || (S.autoOn ? 'Analizando mercado...' : 'Bot pausado');
+  el('bd-daily-loss').textContent = `$${(S.dailyLoss || 0).toFixed(2)} / $${S.maxDailyLoss || 10}`;
+  el('bd-daily-loss').style.color = S.dailyLossHit ? 'var(--red)' : 'var(--text)';
+  el('bd-consec').textContent = S.consecutiveLosses || 0;
+  el('bd-consec').style.color = (S.consecutiveLosses || 0) >= 2 ? 'var(--red)' : 'var(--text)';
+  el('bd-wait').textContent = S.waitCycles || 0;
+
+  // Chip de estado
+  const chip = el('bot-detail-status');
+  chip.textContent = s.label.replace('Bot: ', '');
+  chip.style.background = S.botStatus === 'operating' ? 'var(--green-light)' :
+                           S.botStatus === 'blocked'  ? 'var(--red-light)'   :
+                           S.botStatus === 'waiting'  ? 'var(--orange-light)': 'var(--bg)';
+  chip.style.color = S.botStatus === 'operating' ? 'var(--green)' :
+                     S.botStatus === 'blocked'  ? 'var(--red)'   :
+                     S.botStatus === 'waiting'  ? 'var(--orange)': 'var(--muted)';
+}
+
+// ═══════════════════════════════════════════════
+// OPERACIÓN MANUAL — a través del worker /action
+// ═══════════════════════════════════════════════
+function updTPrice() {
+  const k = el('t-mkt').value;
+  const m = S.markets[k];
+  el('t-price').value = m ? fmtP(m.price) : '—';
+}
+
+async function openManualTrade() {
+  const errEl = el('manual-err');
+  errEl.style.display = 'none';
+
+  const market = el('t-mkt').value;
+  const amount = parseFloat(el('t-amt').value);
+  const stop   = parseFloat(el('t-stop').value);
+  const take   = parseFloat(el('t-take').value);
+
+  if (!amount || amount <= 0) { showManualErr('Introduce un importe válido'); return; }
+  if (!stop || stop <= 0)     { showManualErr('Stop Loss inválido'); return; }
+  if (!take || take <= 0)     { showManualErr('Take Profit inválido'); return; }
+  if (take < stop * 1.5)      { showManualErr('Take Profit debe ser al menos 1.5x el Stop Loss'); return; }
+  if (amount > S.investCash)  { showManualErr('Capital insuficiente en la cartera'); return; }
+
+  try {
+    const r = await fetch(`${WORKER}/action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify({ type: 'open', market, amount, stop, take }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      toast(`▲ Compra manual: $${amount} en ${MKTINFO[market]?.n || market}`, 'success');
+      addAI(`✅ Operación manual ejecutada: **$${amount}** en **${MKTINFO[market]?.n || market}** a **$${d.position?.entryPrice?.toFixed(2) || '—'}**\nSL: ${stop}% | TP: ${take}%`);
+    } else {
+      showManualErr(d.error || 'Error del servidor');
+    }
+  } catch (e) {
+    showManualErr('Error de conexión');
+  }
+}
+
+function showManualErr(msg) {
+  const errEl = el('manual-err');
+  errEl.textContent = msg;
+  errEl.style.display = 'block';
+}
+
+async function closePosition(positionId) {
+  try {
+    const r = await fetch(`${WORKER}/action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify({ type: 'close', positionId }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      const pnl = d.pnl || 0;
+      toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
+    } else {
+      toast(d.error || 'Error cerrando posición', 'error');
+    }
+  } catch (e) {
+    toast('Error de conexión', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// BOT CONFIG
+// ═══════════════════════════════════════════════
+function toggleBotPanel() {
+  el('bot-panel').classList.toggle('vis');
+}
+
+function syncBotPanel() {
+  el('ap-amt').value = S.autoAmount || 200;
+  el('ap-stop').value = S.autoStop || 0.5;
+  el('ap-take').value = S.autoTake || 1.0;
+  el('ap-maxloss').value = S.maxDailyLoss || 10;
+  el('ap-auto').checked = !!S.autoOn;
+  el('ap-reinvest').checked = !!S.reinvestOn;
+}
+
+async function saveBotConfig() {
+  const config = {
+    autoOn:      el('ap-auto').checked,
+    reinvestOn:  el('ap-reinvest').checked,
+    autoAmount:  parseFloat(el('ap-amt').value) || 200,
+    autoStop:    parseFloat(el('ap-stop').value) || 0.5,
+    autoTake:    parseFloat(el('ap-take').value) || 1.0,
+    maxDailyLoss: parseFloat(el('ap-maxloss').value) || 10,
+  };
+
+  if (config.autoTake < config.autoStop * 1.5) {
+    toast('Take Profit debe ser al menos 1.5x el Stop Loss', 'error');
+    return;
+  }
+
+  try {
+    const r = await fetch(`${WORKER}/bot-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify(config),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      el('bot-panel').classList.remove('vis');
+      toast(`Bot ${config.autoOn ? 'activado' : 'pausado'}`, config.autoOn ? 'success' : 'info');
+      addAI(`⚙️ Configuración guardada:\n- Bot: **${config.autoOn ? 'Activo' : 'Pausado'}**\n- Reinversión: **${config.reinvestOn ? 'Sí' : 'No'}**\n- $${config.autoAmount}/op | SL:${config.autoStop}% TP:${config.autoTake}%\n- Límite diario: $${config.maxDailyLoss}`);
+    } else {
+      toast('Error guardando configuración', 'error');
+    }
+  } catch {
+    toast('Error de conexión', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PORTFOLIO RENDER
+// ═══════════════════════════════════════════════
+function renderPortfolio() {
+  const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
+  const unrealPnl = (S.positions || []).reduce((a, p) => {
+    const m = S.markets[p.market];
+    if (!m || !m.price) return a;
+    const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
+    return a + p.value * (pct / 100);
+  }, 0);
+
+  const total = S.bankBalance + S.investCash + inv + unrealPnl;
+  const gain = total - S.startTotal;
+  const pct = S.startTotal > 0 ? gain / S.startTotal * 100 : 0;
+
+  el('hdr-bank').textContent = '$' + S.bankBalance.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('bank-total').textContent = fmtM(S.bankBalance);
+  el('inv-cash').textContent   = fmtM(S.investCash);
+  el('in-pos-val').textContent = fmtM(inv);
+  el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
+  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
+  el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
+  el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+  el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
+  el('pf-ops').textContent = (S.trades || 0) + ' ops';
+  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
+  el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
+  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(0);
+  el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
+
+  // Posiciones
+  const pb = el('pos-body');
+  if (!(S.positions || []).length) {
+    pb.innerHTML = '<div class="pos-empty">Sin posiciones abiertas.</div>';
+  } else {
+    pb.innerHTML = S.positions.map(p => {
+      const m = S.markets[p.market];
+      const cur = m?.price || p.entryPrice;
+      const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
+      const pnl  = p.value * (pct2 / 100);
+      const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
+      const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
+      const isLivePrice = !!m?.price;
+
+      return `<div class="pos-item">
+        <div class="pos-ico long">${info.f}</div>
+        <div class="pos-body">
+          <div class="pos-name">${info.n} <span style="font-size:9px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
+          <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · $${p.value} · ${p.openedAt}</div>
+          <div class="pos-lims">
+            <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
+            <span class="plim take-l">✅ +${p.takeProfit}%</span>
+          </div>
+          ${isLivePrice ? `
+          <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
+          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(1)}%</span><span>+${p.takeProfit}%</span></div>
+          ` : '<div style="font-size:9px;color:var(--muted);margin-top:4px">Precio no disponible ahora</div>'}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          ${isLivePrice ? `
+          <div class="pos-pnl">
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
+          </div>` : ''}
+          <button class="close-btn" onclick="closePosition('${p.id}')">Cerrar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Historial
+  const hb = el('hist-body');
+  if (!(S.history || []).length) {
+    hb.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div>';
+  } else {
+    hb.innerHTML = (S.history || []).slice(-8).reverse().map(h => `
+      <div class="hist-row">
+        <div style="display:flex;align-items:center;gap:5px">
+          <div class="hist-dot" style="background:${h.pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div>
+          <span>${MKTINFO[h.market]?.n || h.market}</span>
+          <span style="color:var(--muted);font-size:9px">${h.closedBy === 'stop' ? '🛑SL' : h.closedBy === 'take' ? '✅TP' : h.closedBy === 'manual' ? '👤' : '🤖'} $${h.value}</span>
+        </div>
+        <div>
+          <span class="${h.pnl >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</span>
+          <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
+        </div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ÓRDENES PROGRAMADAS
+// ═══════════════════════════════════════════════
+function renderScheduled() {
+  const orders = S.scheduledOrders || [];
+  const cont = el('sched-container');
+  const list = el('sched-list');
+  if (!orders.length) { cont.classList.remove('vis'); return; }
+  cont.classList.add('vis');
+  list.innerHTML = orders.map((o, i) =>
+    `<div class="sched-item">
       <span class="sched-time">${o.time}h</span>
       <span class="sched-desc">$${o.amount} en ${o.region} — ${o.instructions}</span>
-      <button class="sched-del" onclick="deleteOrder(${i})">✕</button>
-    </div>`).join('');
+      <button class="sched-del" onclick="deleteScheduled(${i})">✕</button>
+    </div>`
+  ).join('');
 }
 
-function deleteOrder(i){
-  S.scheduledOrders.splice(i,1);
-  renderScheduled();scheduleSave();
-  toast('Orden cancelada','info');
+async function deleteScheduled(i) {
+  S.scheduledOrders.splice(i, 1);
+  renderScheduled();
+  scheduleSave();
 }
 
-// ══ TRADE ══
-function updTP(){
-  const k=el('t-mkt').value;
-  el('t-price').value=S.markets[k]?fmtP(S.markets[k].price):'—';
+// ═══════════════════════════════════════════════
+// MODE
+// ═══════════════════════════════════════════════
+function setMode(m, silent = false) {
+  S.mode = m;
+  el('btn-paper').className = m === 'paper' ? 'active' : '';
+  el('btn-real').className  = m === 'real'  ? 'active real' : '';
+  el('mode-chip').textContent = m === 'paper' ? 'PAPER' : 'REAL';
+  el('mode-chip').style.color = m === 'paper' ? 'var(--accent)' : 'var(--orange)';
+  el('mode-chip').style.background = m === 'paper' ? 'var(--accent-light)' : 'var(--orange-light)';
+  if (!silent) { scheduleSave(); toast(m === 'paper' ? '📄 Paper Trading' : '⚠️ Modo REAL', m === 'paper' ? 'info' : 'error'); }
 }
 
-function placeTrade(side,opts={}){
-  const k  =opts.market||el('t-mkt').value;
-  const amt=opts.amount||parseFloat(el('t-amt').value);
-  const stp=opts.stop  ||parseFloat(el('t-stop').value);
-  const tak=opts.take  ||parseFloat(el('t-take').value);
-  const price=S.markets[k]?.price||0;
-  if(!amt||amt<=0){toast('Cantidad inválida','error');return null;}
-  if(amt>S.investCash){toast('Capital insuficiente. Transfiere desde la banca.','error');return null;}
-  const pos={
-    id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
-    market:k,side,entryPrice:price,value:amt,
-    stopLoss:stp,takeProfit:tak,openedAt:hhm()
-  };
-  S.positions.push(pos);S.investCash-=amt;S.trades++;
-  renderPortfolio();scheduleSave();
-  toast(`${side==='buy'?'▲ Compra':'▼ Corto'} $${amt} en ${MKTINFO[k]?.name||k}`,'success');
-  return pos;
-}
+// ═══════════════════════════════════════════════
+// CHAT — IA como asistente, no como decisor
+// ═══════════════════════════════════════════════
+function qa(t) { el('chat-in').value = t; send(); }
 
-function closePosition(id){
-  const i=S.positions.findIndex(p=>p.id===id);if(i===-1)return;
-  const pos=S.positions[i];
-  const cur=S.markets[pos.market]?.price||pos.entryPrice;
-  const pnl=pos.side==='buy'?(cur-pos.entryPrice)/pos.entryPrice*pos.value:(pos.entryPrice-cur)/pos.entryPrice*pos.value;
-  S.investCash+=pos.value+pnl;
-  S.history.push({...pos,closedAt:hhm(),pnl});
-  S.positions.splice(i,1);
-  renderPortfolio();scheduleSave();
-  toast(`Cerrada: ${pnl>=0?'+':''}$${pnl.toFixed(2)}`,pnl>=0?'success':'error');
-}
-
-function checkStopTake(){
-  [...S.positions].forEach(pos=>{
-    const cur=S.markets[pos.market]?.price;if(!cur)return;
-    const pct=pos.side==='buy'?(cur-pos.entryPrice)/pos.entryPrice*100:(pos.entryPrice-cur)/pos.entryPrice*100;
-    if(pct<=-pos.stopLoss){
-      closePosition(pos.id);
-      toast(`🛑 Stop Loss — ${MKTINFO[pos.market]?.name}`,'error');
-      addAI(`🛑 **Stop Loss** activado en ${MKTINFO[pos.market]?.name}.\nPérdida limitada al ${pos.stopLoss}%.`);
-    }else if(pct>=pos.takeProfit){
-      closePosition(pos.id);
-      toast(`✅ Take Profit — ${MKTINFO[pos.market]?.name}!`,'success');
-      addAI(`✅ **Take Profit** alcanzado en ${MKTINFO[pos.market]?.name}!\nBeneficio del ${pos.takeProfit}% recogido. ¿Retiras algo a la banca?`);
-    }
-  });
-}
-
-function updatePnL(){if(S.positions.length)renderPortfolio();}
-
-// ══ PORTFOLIO ══
-function renderPortfolio(){
-  const inv=S.positions.reduce((a,p)=>a+p.value,0);
-  const unrealPnl=S.positions.reduce((a,p)=>{
-    const cur=S.markets[p.market]?.price||p.entryPrice;
-    const pnl=p.side==='buy'?(cur-p.entryPrice)/p.entryPrice*p.value:(p.entryPrice-cur)/p.entryPrice*p.value;
-    return a+pnl;
-  },0);
-  const totalNow=S.bankBalance+S.investCash+inv+unrealPnl;
-  const gain=totalNow-S.startTotal,pct=gain/S.startTotal*100;
-
-  el('hdr-bank').textContent='$'+S.bankBalance.toLocaleString('es-ES',{maximumFractionDigits:0});
-  el('hdr-inv').textContent='$'+(S.investCash+inv).toLocaleString('es-ES',{maximumFractionDigits:0});
-  el('bank-total').textContent='$'+S.bankBalance.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0});
-  el('inv-cash').textContent='$'+S.investCash.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0});
-  el('in-pos-val').textContent='$'+inv.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0});
-  el('pos-count-s').textContent=S.positions.length+' abiertas';
-  el('pf-total').textContent='$'+totalNow.toLocaleString('es-ES',{maximumFractionDigits:0});
-  el('pf-gain').textContent=(gain>=0?'+':'')+' $'+Math.abs(gain).toFixed(2);
-  el('pf-gain').className='sub '+(gain>=0?'green':'red');
-  el('pf-pct').textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
-  el('pf-pct').className='val '+(pct>=0?'green':'red');
-  el('pf-ops').textContent=S.trades+' ops';
-  el('pf-pnl').textContent=(unrealPnl>=0?'+':'')+' $'+Math.abs(unrealPnl).toFixed(2);
-  el('pf-pnl').className='val '+(unrealPnl>=0?'green':'red');
-  el('pf-withdrawn').textContent='$'+S.withdrawn.toFixed(0);
-  el('pos-cnt').textContent=S.positions.length+' posiciones';
-
-  const pb=el('pos-body');
-  if(!S.positions.length){pb.innerHTML='<div class="pos-empty">Sin posiciones abiertas.</div>';return;}
-  pb.innerHTML=S.positions.map(p=>{
-    const cur=S.markets[p.market]?.price||p.entryPrice;
-    const pnl=p.side==='buy'?(cur-p.entryPrice)/p.entryPrice*p.value:(p.entryPrice-cur)/p.entryPrice*p.value;
-    const pct2=pnl/p.value*100;
-    const pw=Math.max(0,Math.min(100,((pct2+p.stopLoss)/(p.takeProfit+p.stopLoss))*100));
-    const info=MKTINFO[p.market]||{name:p.market,flag:'📊'};
-    return `<div class="pos-item">
-      <div class="pos-ico ${p.side==='buy'?'long':'short'}">${info.flag}</div>
-      <div class="pos-body">
-        <div class="pos-name">${info.name} <span style="font-size:9px;color:var(--muted)">${p.side==='buy'?'▲':'▼'}${p.openedBy==='auto'?' 🤖':''}</span></div>
-        <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} · $${p.value} · ${p.openedAt}</div>
-        <div class="pos-lims">
-          <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
-          <span class="plim take-l">✅ +${p.takeProfit}%</span>
-        </div>
-        <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl>=0?'var(--green)':'var(--red)'}"></div></div>
-        <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl>=0?'var(--green)':'var(--red)'};font-weight:600">${pct2>=0?'+':''}${pct2.toFixed(1)}%</span><span>+${p.takeProfit}%</span></div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
-        <div class="pos-pnl"><div class="pv ${pnl>=0?'green':'red'}">${pnl>=0?'+':'-'}$${Math.abs(pnl).toFixed(2)}</div><div class="pp ${pnl>=0?'green':'red'}">${pct2>=0?'+':''}${pct2.toFixed(2)}%</div></div>
-        <button class="close-btn" onclick="closePosition('${p.id}')">Cerrar</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  const hb=el('hist-body');
-  if(!S.history.length){hb.innerHTML='<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div>';return;}
-  hb.innerHTML=S.history.slice(-8).reverse().map(h=>`
-    <div class="hist-row">
-      <div style="display:flex;align-items:center;gap:5px">
-        <div class="hist-dot" style="background:${h.pnl>=0?'var(--green)':'var(--red)'}"></div>
-        <span>${MKTINFO[h.market]?.name||h.market}</span>
-        <span style="color:var(--muted);font-size:9px">$${h.value}${h.closedBy?` (${h.closedBy==='stop'?'SL':h.closedBy==='take'?'TP':'manual'})`:''}</span>
-      </div>
-      <div>
-        <span class="${h.pnl>=0?'green':'red'}" style="font-weight:600;font-family:var(--mono)">${h.pnl>=0?'+':'-'}$${Math.abs(h.pnl).toFixed(2)}</span>
-        <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
-      </div>
-    </div>`).join('');
-}
-
-// ══ AUTO ══
-function toggleAutoPanel(){el('auto-panel').classList.toggle('vis');}
-function activateAuto(){
-  S.autoAmount=parseFloat(el('ap-amt').value)||200;
-  S.autoStop=parseFloat(el('ap-stop').value)||0.5;
-  S.autoTake=parseFloat(el('ap-take').value)||1.0;
-  S.autoOn=true;
-  el('auto-panel').classList.remove('vis');
-  updateAutoBadge();scheduleSave();
-  addAI(`⚡ **Bot automático activado 24h.**\n\n- Capital por operación: **$${S.autoAmount}**\n- Stop Loss: **${S.autoStop}%** | Take Profit: **${S.autoTake}%**\n\nAnalizaré el mercado cada 5 minutos. Solo operaré cuando la señal sea muy fuerte (Score ≥ 4). Puedes dejarme una instrucción antes de dormir y la seguiré. 🌙`);
-}
-
-function updateAutoBadge(){
-  const ab=el('auto-toggle');
-  ab.className='auto-btn '+(S.autoOn?'on':'off');
-  el('auto-lbl').textContent=S.autoOn?'Bot: Activo':'Bot: Pausado';
-}
-
-// ══ CHAT ══
-function qa(t){el('chat-in').value=t;send();}
-function buildCtx(){
-  const inv=S.positions.reduce((a,p)=>a+p.value,0);
+function buildChatContext() {
+  const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
   return {
-    mode:S.mode,cash:S.investCash,bankBalance:S.bankBalance,
-    inPositions:inv,trades:S.trades,
-    selectedMarket:S.selected,marketPrice:S.markets[S.selected]?.price,
-    marketChange:S.markets[S.selected]?.change,
-    fearGreed:S.fearGreed,macro:S.macro,
-    scheduledOrders:S.scheduledOrders,
-    history:S.history.slice(-10),
-    positions:S.positions.map(p=>({
-      market:p.market,name:MKTINFO[p.market]?.name,
-      side:p.side,entry:p.entryPrice,value:p.value,
-      stopLoss:p.stopLoss,takeProfit:p.takeProfit
+    mode: S.mode,
+    cash: S.investCash,
+    bankBalance: S.bankBalance,
+    inPositions: inv,
+    trades: S.trades,
+    autoOn: S.autoOn,
+    reinvestOn: S.reinvestOn,
+    botStatus: S.botStatus,
+    botStatusReason: S.botStatusReason,
+    dailyLoss: S.dailyLoss,
+    maxDailyLoss: S.maxDailyLoss,
+    consecutiveLosses: S.consecutiveLosses,
+    waitCycles: S.waitCycles,
+    positions: (S.positions || []).map(p => ({
+      market: p.market,
+      name: MKTINFO[p.market]?.n,
+      side: p.side,
+      entry: p.entryPrice,
+      value: p.value,
+      stopLoss: p.stopLoss,
+      takeProfit: p.takeProfit,
     })),
+    history: (S.history || []).slice(-10),
   };
 }
 
-async function send(){
-  const inp=el('chat-in'),txt=inp.value.trim();if(!txt)return;
-  inp.value='';inp.style.height='48px';
-  addUser(txt);const t=addTyping();
-  try{
-    const r=await fetch(`${WORKER}/chat`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.token}`},
-      body:JSON.stringify({message:txt,context:buildCtx()})
-    });
-    if(r.status===401){localStorage.removeItem(SK);t.remove();addAI('Sesión expirada.');setTimeout(doLogout,2000);return;}
-    const d=await r.json();t.remove();
-    addAI(d.reply||'Sin respuesta.');
+async function send() {
+  const inp = el('chat-in');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  inp.value = '';
+  inp.style.height = '44px';
+  addUser(txt);
+  const t = addTyping();
 
-    // Ejecutar acción inmediata
-    if(d.action&&S.mode==='paper'){
-      const {action,market,amount,stop,take}=d.action;
-      if(action==='buy'&&market&&MKTINFO[market]){
-        setTimeout(()=>{
-          const pos=placeTrade('buy',{market,amount:amount||200,stop:stop||0.5,take:take||1.0});
-          if(pos)toast(`Bot ejecutó: ▲ $${amount} en ${MKTINFO[market]?.name}`,'success');
-        },800);
+  try {
+    const r = await fetch(`${WORKER}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify({ message: txt, context: buildChatContext() }),
+    });
+    if (r.status === 401) { localStorage.removeItem(SK); t.remove(); addAI('Sesión expirada.'); setTimeout(doLogout, 2000); return; }
+    const d = await r.json();
+    t.remove();
+    addAI(d.reply || 'Sin respuesta.');
+
+    // Operación manual sugerida por la IA — el worker la ejecuta
+    if (d.action && S.mode === 'paper') {
+      const { action, market, amount, stop, take } = d.action;
+      if (action === 'buy' && market && MKTINFO[market] && amount > 0) {
+        setTimeout(async () => {
+          const r2 = await fetch(`${WORKER}/action`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+            body: JSON.stringify({ type: 'open', market, amount, stop: stop || 0.5, take: take || 1.0 }),
+          });
+          const d2 = await r2.json();
+          if (d2.ok) {
+            if (d2.state) applyState(d2.state);
+            toast(`Bot ejecutó: ▲ $${amount} en ${MKTINFO[market]?.n}`, 'success');
+          } else {
+            toast(d2.error || 'No se pudo ejecutar', 'error');
+          }
+        }, 800);
       }
     }
 
-    // Guardar orden programada
-    if(d.scheduledOrder){
-      if(!S.scheduledOrders)S.scheduledOrders=[];
-      S.scheduledOrders.push({...d.scheduledOrder,executed:false});
-      renderScheduled();scheduleSave();
-      // Mostrar confirmación en el chat
-      const chatBody=el('chat-body');
-      const div=document.createElement('div');div.className='msg ai';
-      div.innerHTML=`<div class="ai-lbl">🤖 Bot Inversor</div>
+    // Orden programada — ya la guardó el worker
+    if (d.scheduledOrder) {
+      await syncFromWorker();
+      const chatBody = el('chat-body');
+      const div = document.createElement('div');
+      div.className = 'msg ai';
+      div.innerHTML = `<div class="ai-lbl">🤖 ORACLE</div>
         <div class="bubble">
           <div class="order-card">
-            <div class="order-card-title">📅 Orden programada guardada</div>
+            <div class="order-card-title">📅 Orden programada</div>
             <strong>${d.scheduledOrder.time}h</strong> — $${d.scheduledOrder.amount} en ${d.scheduledOrder.region}<br>
             <span style="color:var(--muted);font-size:11px">${d.scheduledOrder.instructions}</span>
           </div>
         </div>
         <div class="msg-meta">${hhm()}</div>`;
-      chatBody.appendChild(div);chatBody.scrollTop=chatBody.scrollHeight;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
-  }catch(e){t.remove();addAI('Error de conexión.');}
-}
 
-function addUser(t){
-  const c=el('chat-body'),d=document.createElement('div');d.className='msg user';
-  d.innerHTML=`<div class="bubble">${esc(t)}</div><div class="msg-meta">${hhm()}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
+    // Config del bot — ya la guardó el worker
+    if (d.botConfig) {
+      await syncFromWorker();
+    }
 
-function addAI(t){
-  const c=el('chat-body'),d=document.createElement('div');d.className='msg ai';
-  d.innerHTML=`<div class="ai-lbl">🤖 Bot Inversor</div><div class="bubble">${fmt(t)}</div><div class="msg-meta">${hhm()}</div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;
-}
-
-function addTyping(){
-  const c=el('chat-body'),d=document.createElement('div');d.className='msg ai';
-  d.innerHTML=`<div class="ai-lbl">🤖 Bot Inversor</div><div class="bubble"><div class="tw"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>`;
-  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
-}
-
-// Auto-resize textarea
-el('chat-in') && el('chat-in').addEventListener('input',function(){
-  this.style.height='48px';
-  this.style.height=Math.min(this.scrollHeight,120)+'px';
-});
-
-// ══ MODE ══
-function setMode(m,silent=false){
-  S.mode=m;
-  el('btn-paper').className=m==='paper'?'active':'';
-  el('btn-real').className=m==='real'?'active real':'';
-  el('mode-chip').textContent=m==='paper'?'PAPER':'REAL';
-  el('mode-chip').style.color=m==='paper'?'var(--accent)':'var(--orange)';
-  el('mode-chip').style.background=m==='paper'?'var(--accent-light)':'var(--orange-light)';
-  if(!silent){scheduleSave();toast(m==='paper'?'📄 Paper Trading':'⚠️ Modo REAL',m==='paper'?'info':'error');}
-}
-
-// ══ MOBILE TABS ══
-function showTab(tab){
-  const L=el('left-col'),R=el('right-col');
-  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
-  if(tab==='chat'){L.classList.remove('mv');R.classList.add('mv');document.querySelectorAll('.mob-tab')[1].classList.add('active');}
-  else{R.classList.remove('mv');L.classList.add('mv');document.querySelectorAll('.mob-tab')[tab==='markets'?0:2].classList.add('active');}
-}
-
-// ══ PWA ══
-let deferredPrompt=null;
-function initPWA(){
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
-  window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();deferredPrompt=e;
-    setTimeout(()=>{el('install-banner').style.display='flex';},3000);
-  });
-  if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone){
-    setTimeout(()=>{el('install-banner').style.display='flex';},4000);
+  } catch (e) {
+    t.remove();
+    addAI('Error de conexión con el servidor.');
   }
 }
-function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;closeInstall();});}else{toast('iOS: Safari → Compartir → Añadir a pantalla de inicio','info');closeInstall();}}
-function closeInstall(){el('install-banner').style.display='none';}
 
-// ══ HELPERS ══
-function el(id){return document.getElementById(id)}
-function fmtP(p){if(!p&&p!==0)return'—';if(p>=1000)return'$'+p.toLocaleString('es-ES',{maximumFractionDigits:0});if(p>=1)return'$'+p.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});return'$'+p.toFixed(4)}
-function fmt$(n){return n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function hhm(){return new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fmt(t){return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}
-function toast(msg,type='info'){
-  const d=document.createElement('div');d.className=`toast ${type}`;d.textContent=msg;
-  el('toasts').appendChild(d);setTimeout(()=>d.remove(),3500);
+function addUser(t) {
+  const c = el('chat-body'), d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="bubble">${esc(t)}</div><div class="msg-meta">${hhm()}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+function addAI(t) {
+  const c = el('chat-body'), d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `<div class="ai-lbl">🤖 ORACLE</div><div class="bubble">${fmt(t)}</div><div class="msg-meta">${hhm()}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+function addTyping() {
+  const c = el('chat-body'), d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `<div class="ai-lbl">🤖 ORACLE</div><div class="bubble"><div class="tw"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight; return d;
+}
+
+el('chat-in').addEventListener('input', function () {
+  this.style.height = '44px';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// ═══════════════════════════════════════════════
+// MOBILE TABS
+// ═══════════════════════════════════════════════
+function showTab(tab) {
+  const L = el('left-col'), R = el('right-col');
+  document.querySelectorAll('.mob-tab').forEach(b => b.classList.remove('active'));
+  if (tab === 'chat') {
+    L.classList.remove('mv'); R.classList.add('mv');
+    document.querySelectorAll('.mob-tab')[1].classList.add('active');
+  } else {
+    R.classList.remove('mv'); L.classList.add('mv');
+    document.querySelectorAll('.mob-tab')[tab === 'markets' ? 0 : 2].classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════
+let deferredPrompt = null;
+function initPWA() {
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferredPrompt = e;
+    setTimeout(() => { el('install-banner').style.display = 'flex'; }, 3000);
+  });
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone) {
+    setTimeout(() => { el('install-banner').style.display = 'flex'; }, 4000);
+  }
+}
+function installApp() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; closeInstall(); }); }
+  else { toast('iOS: Safari → Compartir → Añadir a pantalla de inicio', 'info'); closeInstall(); }
+}
+function closeInstall() { el('install-banner').style.display = 'none'; }
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function el(id) { return document.getElementById(id); }
+function fmtP(p) {
+  if (!p && p !== 0) return '—';
+  if (p >= 1000) return '$' + p.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  if (p >= 1)    return '$' + p.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return '$' + p.toFixed(4);
+}
+function fmtM(n) { return '$' + (n || 0).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function fmt$(n) { return (n || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function hhm() { return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }); }
+function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function fmt(t) { return t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); }
+function toast(msg, type = 'info') {
+  const d = document.createElement('div');
+  d.className = `toast ${type}`; d.textContent = msg;
+  el('toasts').appendChild(d); setTimeout(() => d.remove(), 3500);
 }
 </script>
 </body>
