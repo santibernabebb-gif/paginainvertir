@@ -778,8 +778,8 @@ function showApp() {
   loadDashboard();
   pollNotifications();
   updTPrice();
-  setInterval(pollNotifications, 15000);
-  setInterval(loadDashboard, 120000);
+  setInterval(pollNotifications, 60000);  // cada 60s (antes 15s) — reduce KV
+  setInterval(loadDashboard, 180000);     // cada 3 min (antes 2 min)
   if (window.innerWidth <= 768) showTab('markets');
 }
 
