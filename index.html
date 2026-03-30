@@ -469,6 +469,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
+      <!-- POSICIONES -->
+      <div class="card">
+        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div class="card">
+        <div class="ch"><span class="ct">Historial</span></div>
+        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+      </div>
+
       <!-- ESTADO DEL BOT (visible) -->
       <div class="card" id="bot-detail-card">
         <div class="ch"><span class="ct">Estado del Bot</span><span id="bot-detail-status" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:16px;background:var(--bg);color:var(--muted)">Pausado</span></div>
@@ -478,27 +490,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="bot-detail-row"><span class="bd-label">Pérdida diaria</span><span class="bd-value" id="bd-daily-loss">$0.00 / $10.00</span></div>
           <div class="bot-detail-row"><span class="bd-label">Pérdidas seguidas</span><span class="bd-value" id="bd-consec">0</span></div>
           <div class="bot-detail-row"><span class="bd-label">Ciclos espera</span><span class="bd-value" id="bd-wait">0</span></div>
-        </div>
-      </div>
-
-      <!-- SENTIMIENTO -->
-      <div class="card">
-        <div class="ch"><span class="ct">Sentimiento</span><span id="fg-ts" style="font-size:10px;color:var(--muted)">—</span></div>
-        <div class="cb">
-          <div class="fg-bar">
-            <div class="fg-emoji" id="fg-emoji">😐</div>
-            <div class="fg-info">
-              <div class="fg-label" id="fg-label">Cargando...</div>
-              <div class="fg-track"><div class="fg-needle" id="fg-needle" style="left:50%"></div></div>
-              <div class="fg-interp" id="fg-interp"></div>
-            </div>
-            <div class="fg-score" id="fg-score">—</div>
-          </div>
-          <div class="macro-grid">
-            <div class="macro-chip"><div class="lbl">FED</div><div class="val" id="mc-fed">—</div></div>
-            <div class="macro-chip"><div class="lbl">BCE</div><div class="val" id="mc-bce">—</div></div>
-            <div class="macro-chip"><div class="lbl">VIX</div><div class="val" id="mc-vix">—</div></div>
-          </div>
         </div>
       </div>
 
@@ -528,24 +519,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- POLYMARKET -->
-      <div class="card">
-        <div class="ch"><span class="ct">Polymarket</span><span style="font-size:10px;color:var(--muted)">Solo contexto</span></div>
-        <div class="cb" id="pm-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Cargando...</div></div>
-      </div>
-
-      <!-- NOTICIAS -->
-      <div class="card" id="news-card" style="display:none">
-        <div class="ch"><span class="ct">📰 Noticias</span><span style="font-size:10px;color:var(--muted)">Filtro contextual</span></div>
-        <div class="cb" id="news-body"></div>
-      </div>
-
-      <!-- POSICIONES -->
-      <div class="card">
-        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
       </div>
 
       <!-- OPERACIÓN MANUAL -->
@@ -580,10 +553,37 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- HISTORIAL -->
+      <!-- POLYMARKET -->
       <div class="card">
-        <div class="ch"><span class="ct">Historial</span></div>
-        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+        <div class="ch"><span class="ct">Polymarket</span><span style="font-size:10px;color:var(--muted)">Solo contexto</span></div>
+        <div class="cb" id="pm-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Cargando...</div></div>
+      </div>
+
+      <!-- NOTICIAS -->
+      <div class="card" id="news-card" style="display:none">
+        <div class="ch"><span class="ct">📰 Noticias</span><span style="font-size:10px;color:var(--muted)">Filtro contextual</span></div>
+        <div class="cb" id="news-body"></div>
+      </div>
+
+      <!-- SENTIMIENTO — al final -->
+      <div class="card">
+        <div class="ch"><span class="ct">Sentimiento</span><span id="fg-ts" style="font-size:10px;color:var(--muted)">—</span></div>
+        <div class="cb">
+          <div class="fg-bar">
+            <div class="fg-emoji" id="fg-emoji">😐</div>
+            <div class="fg-info">
+              <div class="fg-label" id="fg-label">Cargando...</div>
+              <div class="fg-track"><div class="fg-needle" id="fg-needle" style="left:50%"></div></div>
+              <div class="fg-interp" id="fg-interp"></div>
+            </div>
+            <div class="fg-score" id="fg-score">—</div>
+          </div>
+          <div class="macro-grid">
+            <div class="macro-chip"><div class="lbl">FED</div><div class="val" id="mc-fed">—</div></div>
+            <div class="macro-chip"><div class="lbl">BCE</div><div class="val" id="mc-bce">—</div></div>
+            <div class="macro-chip"><div class="lbl">VIX</div><div class="val" id="mc-vix">—</div></div>
+          </div>
+        </div>
       </div>
     </div>
 
