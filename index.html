@@ -1431,10 +1431,27 @@ async function send() {
   const t = addTyping();
 
   try {
+    // Construir snapshot de mercados desde los datos ya cargados en el dashboard
+    // Así el worker no necesita volver a pedir datos externos — evita el límite de subrequests
+    const marketSnapshot = Object.entries(S.analysis || {}).map(([k, a]) => ({
+      market: k,
+      price: S.markets[k]?.price,
+      change: S.markets[k]?.change,
+      rsi: a.rsi,
+      score: a.score,
+      confidence: a.confidence,
+      recommendation: a.recommendation,
+      source: S.markets[k]?.source || 'yahoo',
+    })).filter(m => m.price);
+
     const r = await fetch(`${WORKER}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-      body: JSON.stringify({ message: txt, context: buildChatContext() }),
+      body: JSON.stringify({
+        message: txt,
+        context: buildChatContext(),
+        marketSnapshot,
+      }),
     });
     if (r.status === 401) { localStorage.removeItem(SK); t.remove(); addAI('Sesión expirada.'); setTimeout(doLogout, 2000); return; }
     const d = await r.json();
@@ -1576,3 +1593,4 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
+
