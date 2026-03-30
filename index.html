@@ -1186,7 +1186,14 @@ function showManualErr(msg) {
   errEl.style.display = 'block';
 }
 
-async function closePosition(positionId) {
+async function closePosition(positionId, currentPnl, currentPct) {
+  // Alert de confirmación con P&L actual
+  const pnlStr = currentPnl >= 0
+    ? `+$${currentPnl.toFixed(2)} (+${currentPct.toFixed(2)}%)`
+    : `-$${Math.abs(currentPnl).toFixed(2)} (${currentPct.toFixed(2)}%)`;
+  const msg = `¿Cerrar esta posición ahora?\n\nResultado actual: ${pnlStr}\n\n${currentPnl >= 0 ? '✅ Cerrarás con GANANCIA' : '🛑 Cerrarás con PÉRDIDA'}`;
+  if (!confirm(msg)) return;
+
   try {
     const r = await fetch(`${WORKER}/action`, {
       method: 'POST',
@@ -1287,7 +1294,7 @@ function renderPortfolio() {
   el('pf-ops').textContent = (S.trades || 0) + ' ops';
   el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
   el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
-  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(0);
+  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
   el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
 
   // Posiciones
@@ -1308,14 +1315,14 @@ function renderPortfolio() {
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
           <div class="pos-name">${info.n} <span style="font-size:9px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
-          <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · $${p.value} · ${p.openedAt}</div>
+          <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
           </div>
           ${isLivePrice ? `
           <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
-          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(1)}%</span><span>+${p.takeProfit}%</span></div>
+          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
           ` : '<div style="font-size:9px;color:var(--muted);margin-top:4px">Precio no disponible ahora</div>'}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
@@ -1324,7 +1331,7 @@ function renderPortfolio() {
             <div class="pv ${pnl >= 0 ? 'green' : 'red'}">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>` : ''}
-          <button class="close-btn" onclick="closePosition('${p.id}')">Cerrar</button>
+          <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
         </div>
       </div>`;
     }).join('');
@@ -1593,4 +1600,3 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
-
