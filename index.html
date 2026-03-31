@@ -1101,11 +1101,17 @@ function renderMarkets(invalidMarkets = {}) {
     const sigCls = sc >= 3 ? 'sig-buy' : sc <= -3 ? 'sig-sell' : 'sig-neu';
     const sigTxt = sc >= 5 ? '▲▲▲' : sc >= 3 ? '▲▲' : sc >= 1 ? '▲' : sc <= -5 ? '▼▼▼' : sc <= -3 ? '▼▼' : sc <= -1 ? '▼' : '—';
 
+    // Pre-market solo para Apple y Nvidia
+    const preMarketHtml = (k === 'APPLE' || k === 'NVIDIA') && m.preMarketPrice
+      ? `<div style="font-size:9px;color:var(--muted);margin-top:1px">Pre: $${m.preMarketPrice} <span style="color:${(m.preMarketChange||0) >= 0 ? 'var(--green)' : 'var(--red)'}">${(m.preMarketChange||0) >= 0 ? '+' : ''}${(m.preMarketChange||0).toFixed(2)}%</span></div>`
+      : '';
+
     return `<div class="mkt ${k === S.selected ? 'sel' : ''} ${!isOpen ? 'closed' : ''}" onclick="selMkt('${k}')" title="${!isOpen ? 'Mercado cerrado ahora' : ''}">
       <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig ${sigCls}">${sigTxt}</span></div>
       <div class="mkt-name">${info.n}${!isOpen ? ' 🔒' : ''}</div>
       <div class="mkt-price">${fmtP(m.price)}</div>
       <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}%</div>
+      ${preMarketHtml}
       ${a?.rsi != null ? `<div class="mkt-rsi">RSI:${a.rsi} S:${sc >= 0 ? '+' : ''}${sc} C:${a.confidence}%</div>` : ''}
     </div>`;
   }).join('');
