@@ -456,30 +456,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- GANANCIAS DIARIAS — registro manual -->
-      <div class="card">
-        <div class="ch">
-          <span class="ct">💰 Ganancias</span>
-          <span id="gains-total-chip" style="font-size:10px;font-weight:700;color:var(--green);background:var(--accent-light);padding:2px 8px;border-radius:16px">$0.00</span>
-        </div>
-        <div class="cb">
-          <div id="gains-list" style="max-height:120px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:4px">
-            <div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin registros aún</div>
-          </div>
-          <div style="display:flex;gap:6px;align-items:flex-end">
-            <div class="tr-field" style="flex:1">
-              <label>Importe ($)</label>
-              <input type="number" id="gain-amt" step="0.01" placeholder="ej: 1.33" style="width:100%">
-            </div>
-            <div class="tr-field" style="flex:1">
-              <label>Nota (opcional)</label>
-              <input type="text" id="gain-note" placeholder="ej: Inditex TP" style="width:100%">
-            </div>
-            <button class="tr-btn tr-in" onclick="addGain()" style="white-space:nowrap">+ Añadir</button>
-          </div>
-        </div>
-      </div>
-
       <!-- RENDIMIENTO -->
       <div class="card">
         <div class="ch"><span class="ct">Rendimiento</span></div>
@@ -844,7 +820,6 @@ function showApp() {
   el('app').classList.add('visible');
   loadDashboard();
   pollNotifications();
-  renderGains();
   updTPrice();
   setInterval(pollNotifications, 30000);  // cada 30s — posiciones más actualizadas
   setInterval(loadDashboard, 180000);     // cada 3 min
@@ -980,53 +955,6 @@ async function clearNotifs() {
 
 function toggleNotif() {
   el('notif-panel').classList.toggle('vis');
-}
-
-// ═══════════════════════════════════════════════
-// GANANCIAS — registro manual diario
-function loadGains() {
-  try { return JSON.parse(localStorage.getItem('santi_gains') || '[]'); }
-  catch { return []; }
-}
-function saveGains(gains) {
-  localStorage.setItem('santi_gains', JSON.stringify(gains));
-}
-function renderGains() {
-  const gains = loadGains();
-  const list = el('gains-list');
-  const total = gains.reduce((a, g) => a + g.amount, 0);
-  el('gains-total-chip').textContent = (total >= 0 ? '+' : '') + '$' + total.toFixed(2);
-  el('gains-total-chip').style.color = total >= 0 ? 'var(--green)' : 'var(--red)';
-  if (!gains.length) {
-    list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin registros aún</div>';
-    return;
-  }
-  list.innerHTML = gains.slice().reverse().map((g, i) => `
-    <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:var(--bg);border-radius:6px;font-size:11px">
-      <span style="color:${g.amount >= 0 ? 'var(--green)' : 'var(--red)'};font-family:var(--mono);font-weight:700;flex-shrink:0">${g.amount >= 0 ? '+' : ''}$${g.amount.toFixed(2)}</span>
-      <span style="color:var(--muted);flex-shrink:0">${g.date}</span>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.note || ''}</span>
-      <button onclick="deleteGain(${gains.length - 1 - i})" style="border:none;background:none;cursor:pointer;color:var(--muted);font-size:10px;padding:0 2px">✕</button>
-    </div>
-  `).join('');
-}
-function addGain() {
-  const amt = parseFloat(el('gain-amt').value);
-  if (!amt || isNaN(amt)) { toast('Introduce un importe válido', 'error'); return; }
-  const note = el('gain-note').value.trim();
-  const gains = loadGains();
-  gains.push({ amount: amt, note, date: new Date().toLocaleDateString('es-ES') });
-  saveGains(gains);
-  el('gain-amt').value = '';
-  el('gain-note').value = '';
-  renderGains();
-  toast(`Ganancia registrada: ${amt >= 0 ? '+' : ''}$${amt.toFixed(2)}`, amt >= 0 ? 'success' : 'error');
-}
-function deleteGain(idx) {
-  const gains = loadGains();
-  gains.splice(idx, 1);
-  saveGains(gains);
-  renderGains();
 }
 
 // BANCA — transferencias
@@ -1405,19 +1333,19 @@ function renderPortfolio() {
   const gain = total - S.startTotal;
   const pct = S.startTotal > 0 ? gain / S.startTotal * 100 : 0;
 
-  el('hdr-bank').textContent = '$' + S.bankBalance.toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('bank-total').textContent = fmtM(S.bankBalance);
-  el('inv-cash').textContent   = fmtM(S.investCash);
-  el('in-pos-val').textContent = fmtM(inv);
+  el('hdr-bank').textContent = '$' + S.bankBalance.toFixed(2);
+  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toFixed(2);
+  el('bank-total').textContent = '$' + S.bankBalance.toFixed(2);
+  el('inv-cash').textContent   = '$' + S.investCash.toFixed(2);
+  el('in-pos-val').textContent = '$' + inv.toFixed(2);
   el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
-  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
+  el('pf-total').textContent = '$' + total.toFixed(2);
+  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + '$' + gain.toFixed(2);
   el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
   el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
   el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
   el('pf-ops').textContent = (S.trades || 0) + ' ops';
-  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
+  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + '$' + unrealPnl.toFixed(2);
   el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
   el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
   el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
@@ -1436,6 +1364,9 @@ function renderPortfolio() {
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
       const isLivePrice = !!m?.price;
 
+      // Colores según si gana o pierde
+      const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
@@ -1445,17 +1376,19 @@ function renderPortfolio() {
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
           </div>
-          ${isLivePrice ? `
-          <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
-          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
-          ` : '<div style="font-size:9px;color:var(--muted);margin-top:4px">Precio no disponible ahora</div>'}
+          <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnlColor}"></div></div>
+          <div class="prog-lbls">
+            <span>-${p.stopLoss}%</span>
+            <span style="color:${pnlColor};font-weight:700;font-size:12px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span>
+            <span>+${p.takeProfit}%</span>
+          </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-          ${isLivePrice ? `
           <div class="pos-pnl">
-            <div class="pv ${pnl >= 0 ? 'green' : 'red'}">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:13px;font-weight:700">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
-          </div>` : ''}
+            ${!isLivePrice ? '<div style="font-size:9px;color:var(--muted)">sin precio</div>' : ''}
+          </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
         </div>
       </div>`;
@@ -1740,4 +1673,3 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
-
