@@ -552,16 +552,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="tf">
             <div class="tf-f"><label>Mercado</label>
               <select id="t-mkt">
-                <option value="SP500">🇺🇸 S&P 500</option><option value="NASDAQ">🇺🇸 Nasdaq</option><option value="DOW">🇺🇸 Dow Jones</option>
-                <option value="IBEX">🇪🇸 IBEX 35</option><option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option>
-                <option value="CAC40">🇫🇷 CAC 40</option><option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
-                <option value="GOLD">🥇 Oro</option><option value="SILVER">🥈 Plata</option><option value="OIL">🛢️ Petróleo</option>
-                <option value="EURUSD">💶 EUR/USD</option><option value="GBPUSD">💷 GBP/USD</option><option value="USDJPY">¥ USD/JPY</option>
-                <option value="APPLE">🍎 Apple</option><option value="TESLA">⚡ Tesla</option><option value="AMAZON">📦 Amazon</option>
-                <option value="MICROSOFT">💻 Microsoft</option><option value="NVIDIA">🎮 Nvidia</option><option value="META">📘 Meta</option>
-                <option value="NETFLIX">🎬 Netflix</option><option value="SANTANDER">🏦 Santander</option><option value="INDITEX">👗 Inditex</option>
-                <option value="BBVA">🏛️ BBVA</option><option value="REPSOL">⛽ Repsol</option>
-                <option value="TOYOTA">🚗 Toyota</option><option value="SAMSUNG">📱 Samsung</option><option value="ALIBABA">🛒 Alibaba</option>
+                <optgroup label="🇺🇸 USA — Índices">
+                  <option value="SP500">🇺🇸 S&P 500</option><option value="NASDAQ">🇺🇸 Nasdaq</option><option value="DOW">🇺🇸 Dow Jones</option>
+                </optgroup>
+                <optgroup label="🇺🇸 USA — Big Tech">
+                  <option value="APPLE">🍎 Apple</option><option value="MICROSOFT">💻 Microsoft</option><option value="NVIDIA">🎮 Nvidia</option>
+                  <option value="GOOGLE">🔍 Google</option><option value="META">📘 Meta</option><option value="AMAZON">📦 Amazon</option>
+                  <option value="NETFLIX">🎬 Netflix</option><option value="TESLA">⚡ Tesla</option>
+                </optgroup>
+                <optgroup label="🇺🇸 USA — Finanzas/Otros">
+                  <option value="JPMORGAN">🏦 JPMorgan</option><option value="VISA">💳 Visa</option><option value="GOLDMANSACHS">📈 Goldman Sachs</option>
+                  <option value="JOHNSON">💊 Johnson & Johnson</option><option value="WALMART">🛒 Walmart</option>
+                  <option value="COCACOLA">🥤 Coca-Cola</option><option value="BOEING">✈️ Boeing</option>
+                </optgroup>
+                <optgroup label="🇪🇸 España — IBEX35">
+                  <option value="IBEX">🇪🇸 IBEX 35</option><option value="SANTANDER">🏦 Santander</option><option value="INDITEX">👗 Inditex</option>
+                  <option value="BBVA">🏛️ BBVA</option><option value="REPSOL">⛽ Repsol</option><option value="TELEFONICA">📞 Telefónica</option>
+                  <option value="IBERDROLA">⚡ Iberdrola</option><option value="CAIXABANK">🏧 CaixaBank</option><option value="AMADEUS">✈️ Amadeus</option>
+                </optgroup>
+                <optgroup label="🌍 Europa">
+                  <option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option><option value="CAC40">🇫🇷 CAC 40</option>
+                  <option value="ASML">🇳🇱 ASML</option><option value="LVMH">🇫🇷 LVMH</option><option value="SAP">🇩🇪 SAP</option><option value="SIEMENS">🇩🇪 Siemens</option>
+                </optgroup>
+                <optgroup label="🌏 Asia">
+                  <option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
+                  <option value="SAMSUNG">📱 Samsung</option><option value="TOYOTA">🚗 Toyota</option><option value="SOFTBANK">🇯🇵 SoftBank</option>
+                  <option value="SONY">🎮 Sony</option><option value="ALIBABA">🛒 Alibaba</option><option value="TENCENT">🇨🇳 Tencent</option>
+                  <option value="HONDA">🏍️ Honda</option><option value="BAIDU">🔍 Baidu</option>
+                </optgroup>
+                <optgroup label="💰 Materias Primas">
+                  <option value="GOLD">🥇 Oro</option><option value="SILVER">🥈 Plata</option><option value="OIL">🛢️ Petróleo</option><option value="NATGAS">🔥 Gas Natural</option>
+                </optgroup>
+                <optgroup label="💱 Forex">
+                  <option value="EURUSD">💶 EUR/USD</option><option value="GBPUSD">💷 GBP/USD</option><option value="USDJPY">¥ USD/JPY</option><option value="USDCHF">🇨🇭 USD/CHF</option>
+                </optgroup>
               </select>
             </div>
             <div class="tf-f"><label>Importe ($)</label><input type="number" id="t-amt" value="200" min="1"></div>
@@ -689,16 +713,35 @@ const WORKER = 'https://invertir.santibernabebb.workers.dev';
 const SK = 'santisystems_v10_token';
 
 const MKTINFO = {
+  // Índices USA
   SP500:{n:'S&P 500',f:'🇺🇸'},NASDAQ:{n:'Nasdaq',f:'🇺🇸'},DOW:{n:'Dow Jones',f:'🇺🇸'},
-  IBEX:{n:'IBEX 35',f:'🇪🇸'},DAX:{n:'DAX 40',f:'🇩🇪'},FTSE:{n:'FTSE 100',f:'🇬🇧'},
-  CAC40:{n:'CAC 40',f:'🇫🇷'},NIKKEI:{n:'Nikkei',f:'🇯🇵'},HKEX:{n:'Hang Seng',f:'🇭🇰'},
-  GOLD:{n:'Oro',f:'🥇'},SILVER:{n:'Plata',f:'🥈'},OIL:{n:'Petróleo',f:'🛢️'},
-  EURUSD:{n:'EUR/USD',f:'💶'},GBPUSD:{n:'GBP/USD',f:'💷'},USDJPY:{n:'USD/JPY',f:'¥'},
-  APPLE:{n:'Apple',f:'🍎'},TESLA:{n:'Tesla',f:'⚡'},AMAZON:{n:'Amazon',f:'📦'},
-  MICROSOFT:{n:'Microsoft',f:'💻'},NVIDIA:{n:'Nvidia',f:'🎮'},META:{n:'Meta',f:'📘'},
-  NETFLIX:{n:'Netflix',f:'🎬'},SANTANDER:{n:'Santander',f:'🏦'},INDITEX:{n:'Inditex',f:'👗'},
-  BBVA:{n:'BBVA',f:'🏛️'},REPSOL:{n:'Repsol',f:'⛽'},
-  TOYOTA:{n:'Toyota',f:'🚗'},SAMSUNG:{n:'Samsung',f:'📱'},ALIBABA:{n:'Alibaba',f:'🛒'},
+  // Índices Europa
+  IBEX:{n:'IBEX 35',f:'🇪🇸'},DAX:{n:'DAX 40',f:'🇩🇪'},FTSE:{n:'FTSE 100',f:'🇬🇧'},CAC40:{n:'CAC 40',f:'🇫🇷'},
+  // Índices Asia
+  NIKKEI:{n:'Nikkei',f:'🇯🇵'},HKEX:{n:'Hang Seng',f:'🇭🇰'},
+  // Materias primas
+  GOLD:{n:'Oro',f:'🥇'},SILVER:{n:'Plata',f:'🥈'},OIL:{n:'Petróleo',f:'🛢️'},NATGAS:{n:'Gas Natural',f:'🔥'},
+  // Forex
+  EURUSD:{n:'EUR/USD',f:'💶'},GBPUSD:{n:'GBP/USD',f:'💷'},USDJPY:{n:'USD/JPY',f:'¥'},USDCHF:{n:'USD/CHF',f:'🇨🇭'},
+  // USA — Big Tech
+  APPLE:{n:'Apple',f:'🍎'},MICROSOFT:{n:'Microsoft',f:'💻'},NVIDIA:{n:'Nvidia',f:'🎮'},
+  GOOGLE:{n:'Google',f:'🔍'},META:{n:'Meta',f:'📘'},AMAZON:{n:'Amazon',f:'📦'},
+  NETFLIX:{n:'Netflix',f:'🎬'},TESLA:{n:'Tesla',f:'⚡'},
+  // USA — Finanzas
+  JPMORGAN:{n:'JPMorgan',f:'🏦'},VISA:{n:'Visa',f:'💳'},GOLDMANSACHS:{n:'Goldman Sachs',f:'📈'},
+  // USA — Salud/Consumo/Industrial
+  JOHNSON:{n:'Johnson & Johnson',f:'💊'},WALMART:{n:'Walmart',f:'🛒'},
+  COCACOLA:{n:'Coca-Cola',f:'🥤'},BOEING:{n:'Boeing',f:'✈️'},
+  // España — IBEX35
+  SANTANDER:{n:'Santander',f:'🏦'},INDITEX:{n:'Inditex',f:'👗'},BBVA:{n:'BBVA',f:'🏛️'},
+  REPSOL:{n:'Repsol',f:'⛽'},TELEFONICA:{n:'Telefónica',f:'📞'},IBERDROLA:{n:'Iberdrola',f:'⚡'},
+  CAIXABANK:{n:'CaixaBank',f:'🏧'},AMADEUS:{n:'Amadeus',f:'✈️'},
+  // Europa
+  ASML:{n:'ASML',f:'🇳🇱'},LVMH:{n:'LVMH',f:'🇫🇷'},SAP:{n:'SAP',f:'🇩🇪'},SIEMENS:{n:'Siemens',f:'🇩🇪'},
+  // Asia
+  SAMSUNG:{n:'Samsung',f:'📱'},TOYOTA:{n:'Toyota',f:'🚗'},SOFTBANK:{n:'SoftBank',f:'🇯🇵'},
+  SONY:{n:'Sony',f:'🎮'},ALIBABA:{n:'Alibaba',f:'🛒'},TENCENT:{n:'Tencent',f:'🇨🇳'},
+  HONDA:{n:'Honda',f:'🏍️'},BAIDU:{n:'Baidu',f:'🔍'},
 };
 
 // ═══════════════════════════════════════════════
