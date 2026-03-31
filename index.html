@@ -224,19 +224,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .pos-ico.long{background:var(--green-light)}.pos-ico.short{background:var(--red-light)}
 .pos-body{flex:1;min-width:0}
-.pos-name{font-size:15px;font-weight:700}
-.pos-sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+.pos-name{font-size:12px;font-weight:600}
+.pos-sub{font-size:9px;color:var(--muted);margin-top:1px}
 .pos-lims{display:flex;gap:4px;margin-top:3px}
-.plim{font-size:11px;padding:3px 7px;border-radius:4px;font-weight:700;font-family:var(--mono)}
+.plim{font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;font-family:var(--mono)}
 .stop-l{background:var(--red-light);color:var(--red)}
 .take-l{background:var(--green-light);color:var(--green)}
 .prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px}
 .prog-f{height:100%;border-radius:2px;transition:width .5s}
 .prog-lbls{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
 .pos-pnl{text-align:right;flex-shrink:0}
-.pos-pnl .pv{font-family:var(--mono);font-size:16px;font-weight:700}
-.pos-pnl .pp{font-size:12px;margin-top:2px;font-weight:700}
-.close-btn{padding:6px 11px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:4px}
+.pos-pnl .pv{font-family:var(--mono);font-size:12px;font-weight:500}
+.pos-pnl .pp{font-size:9px;margin-top:1px}
+.close-btn{padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;transition:all .2s;margin-top:4px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* TRADE */
@@ -335,19 +335,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 #install-banner{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:11px;padding:10px 16px;box-shadow:var(--shadow-lg);z-index:8000;align-items:center;gap:9px;font-size:12px;font-weight:500;max-width:320px;width:90%}
 #install-banner button{padding:5px 11px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
 .btn-install{background:#fff;color:var(--accent)}.btn-close{background:rgba(255,255,255,.2);color:#fff}
-
-
-
-/* COSTES SIMULADOS */
-.cost-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
-.cost-stat{padding:10px 8px;background:var(--bg);border-radius:8px;border:1px solid var(--border);text-align:center}
-.cost-stat .lbl{font-size:9px;color:var(--muted);font-weight:500;margin-bottom:3px}
-.cost-stat .val{font-family:var(--mono);font-size:13px;font-weight:600}
-.cost-panel{background:var(--accent-light);border:1px solid var(--accent-mid);border-radius:9px;padding:10px}
-.cost-doc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px}
-.cost-preview{font-size:11px;color:var(--text);margin-top:8px;padding:8px;background:var(--white);border:1px dashed var(--accent-mid);border-radius:8px}
-.cost-row{display:flex;gap:6px;align-items:center;margin-bottom:7px;font-size:11px}
-@media(max-width:768px){.cost-grid{grid-template-columns:1fr 1fr}}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -469,10 +456,59 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- POSICIONES -->
+      <!-- GANANCIAS DIARIAS — registro manual -->
       <div class="card">
-        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+        <div class="ch">
+          <span class="ct">💰 Ganancias</span>
+          <span id="gains-total-chip" style="font-size:10px;font-weight:700;color:var(--green);background:var(--accent-light);padding:2px 8px;border-radius:16px">$0.00</span>
+        </div>
+        <div class="cb">
+          <div id="gains-list" style="max-height:120px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:4px">
+            <div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin registros aún</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:flex-end">
+            <div class="tr-field" style="flex:1">
+              <label>Importe ($)</label>
+              <input type="number" id="gain-amt" step="0.01" placeholder="ej: 1.33" style="width:100%">
+            </div>
+            <div class="tr-field" style="flex:1">
+              <label>Nota (opcional)</label>
+              <input type="text" id="gain-note" placeholder="ej: Inditex TP" style="width:100%">
+            </div>
+            <button class="tr-btn tr-in" onclick="addGain()" style="white-space:nowrap">+ Añadir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COSTES Y COMISIONES -->
+      <div class="card">
+        <div class="ch">
+          <span class="ct">💸 Costes y Comisiones</span>
+          <span id="cc-state" style="font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:16px">SIMULACIÓN ON</span>
+        </div>
+        <div class="cb">
+          <div class="ap-grid" style="grid-template-columns:1fr 1fr 1fr;display:grid;gap:6px;margin-bottom:8px">
+            <div class="ap-f"><label>Broker</label><input type="text" id="cc-broker" value="ibkr"></div>
+            <div class="ap-f"><label>Comisión %</label><input type="number" id="cc-pct" step="0.001"></div>
+            <div class="ap-f"><label>Mínimo/orden ($)</label><input type="number" id="cc-min" step="0.01"></div>
+            <div class="ap-f"><label>Fijo/orden ($)</label><input type="number" id="cc-fixed" step="0.01"></div>
+            <div class="ap-f"><label>Spread %</label><input type="number" id="cc-spread" step="0.001"></div>
+            <div class="ap-f"><label>FX no EUR %</label><input type="number" id="cc-fx" step="0.001"></div>
+          </div>
+          <div class="ap-row" style="margin-bottom:8px">
+            <label class="ap-toggle"><input type="checkbox" id="cc-enabled"> Activar simulación de costes</label>
+            <button class="ap-btn" style="width:auto;padding:8px 14px" onclick="saveCostConfig()">Guardar costes</button>
+          </div>
+          <div class="pf-grid" style="margin-bottom:8px">
+            <div class="pf-s"><div class="lbl">Costes abiertos</div><div class="val red" id="cc-openfees">$0.00</div><div class="sub" style="color:var(--muted)">entrada + salida estimada</div></div>
+            <div class="pf-s"><div class="lbl">Costes cerrados</div><div class="val red" id="cc-closedfees">$0.00</div><div class="sub" style="color:var(--muted)">ya pagados</div></div>
+            <div class="pf-s"><div class="lbl">Broker actual</div><div class="val blue" id="cc-brokerlbl">IBKR</div><div class="sub" style="color:var(--muted)">simulado</div></div>
+            <div class="pf-s"><div class="lbl">Estado</div><div class="val" id="cc-enabledlbl">ON</div><div class="sub" style="color:var(--muted)">costes activos</div></div>
+          </div>
+          <div id="cc-list" style="display:flex;flex-direction:column;gap:6px;max-height:210px;overflow-y:auto">
+            <div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin operaciones aún.</div>
+          </div>
+        </div>
       </div>
 
       <!-- RENDIMIENTO -->
@@ -488,44 +524,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-
-
-      <!-- COSTES SIMULADOS -->
+      <!-- POSICIONES -->
       <div class="card">
-        <div class="ch"><span class="ct">💸 Costes simulados</span><span id="cost-chip" style="font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:16px">IBKR</span></div>
-        <div class="cb">
-          <div class="cost-grid">
-            <div class="cost-stat"><div class="lbl">Broker</div><div class="val" id="cost-broker">IBKR</div></div>
-            <div class="cost-stat"><div class="lbl">Fees cerradas</div><div class="val" id="cost-closed-fees">$0.00</div></div>
-            <div class="cost-stat"><div class="lbl">Fees abiertas</div><div class="val" id="cost-open-fees">$0.00</div></div>
-            <div class="cost-stat"><div class="lbl">P&amp;L neto</div><div class="val" id="cost-net-pnl">$0.00</div></div>
-          </div>
-          <div class="cost-panel">
-            <div class="ap-title">⚙️ Simulación configurable de broker real</div>
-            <div class="ap-row">
-              <label class="ap-toggle"><input type="checkbox" id="cc-enabled"> Activar simulación de costes</label>
-            </div>
-            <div class="ap-grid">
-              <div class="ap-f"><label>Broker</label><input type="text" id="cc-broker" value="ibkr"></div>
-              <div class="ap-f"><label>Comisión %</label><input type="number" id="cc-commission" value="0.05" step="0.001" min="0"></div>
-              <div class="ap-f"><label>Mínimo / orden ($)</label><input type="number" id="cc-minimum" value="1" step="0.01" min="0"></div>
-              <div class="ap-f"><label>Fijo / orden ($)</label><input type="number" id="cc-fixed" value="0" step="0.01" min="0"></div>
-              <div class="ap-f"><label>Spread total %</label><input type="number" id="cc-spread" value="0.02" step="0.001" min="0"></div>
-              <div class="ap-f"><label>FX no EUR %</label><input type="number" id="cc-fx" value="0.002" step="0.001" min="0"></div>
-            </div>
-            <button class="ap-btn" onclick="saveCostConfig()">💾 Guardar costes simulados</button>
-            <div class="cost-preview" id="cost-preview">En una operación de $200 se aplicará comisión mínima, media horquilla de entrada/salida y cambio de divisa en mercados no EUR.</div>
-            <div class="cost-doc">
-              <strong>Cómo funciona esta simulación:</strong><br>
-              • Comisión %: porcentaje por cada orden.<br>
-              • Mínimo / orden: si el % sale menor, se cobra este mínimo.<br>
-              • Fijo / orden: coste extra fijo por cada compra o venta.<br>
-              • Spread total %: horquilla del mercado; el sistema usa media al entrar y media al salir.<br>
-              • FX no EUR %: coste de cambio de divisa solo en mercados no EUR.<br>
-              • El historial guarda <strong>bruto</strong>, <strong>costes</strong> y <strong>neto</strong> para que el paper trading se parezca al real.
-            </div>
-          </div>
-        </div>
+        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div class="card">
+        <div class="ch"><span class="ct">Historial</span></div>
+        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
       </div>
 
       <!-- ESTADO DEL BOT (visible) -->
@@ -597,6 +605,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
                   <option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option><option value="CAC40">🇫🇷 CAC 40</option>
                   <option value="ASML">🇳🇱 ASML</option><option value="LVMH">🇫🇷 LVMH</option><option value="SAP">🇩🇪 SAP</option><option value="SIEMENS">🇩🇪 Siemens</option>
                 </optgroup>
+                <optgroup label="🌏 Asia">
+                  <option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
+                  <option value="SAMSUNG">📱 Samsung</option><option value="TOYOTA">🚗 Toyota</option><option value="SOFTBANK">🇯🇵 SoftBank</option>
+                  <option value="SONY">🎮 Sony</option><option value="ALIBABA">🛒 Alibaba</option><option value="TENCENT">🇨🇳 Tencent</option>
+                  <option value="HONDA">🏍️ Honda</option><option value="BAIDU">🔍 Baidu</option>
+                </optgroup>
                 <optgroup label="💰 Materias Primas">
                   <option value="GOLD">🥇 Oro</option><option value="SILVER">🥈 Plata</option><option value="OIL">🛢️ Petróleo</option><option value="NATGAS">🔥 Gas Natural</option>
                 </optgroup>
@@ -630,11 +644,27 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="cb" id="news-body"></div>
       </div>
 
-      <!-- HISTORIAL -->
+      <!-- SENTIMIENTO — al final -->
       <div class="card">
-        <div class="ch"><span class="ct">Historial</span></div>
-        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+        <div class="ch"><span class="ct">Sentimiento</span><span id="fg-ts" style="font-size:10px;color:var(--muted)">—</span></div>
+        <div class="cb">
+          <div class="fg-bar">
+            <div class="fg-emoji" id="fg-emoji">😐</div>
+            <div class="fg-info">
+              <div class="fg-label" id="fg-label">Cargando...</div>
+              <div class="fg-track"><div class="fg-needle" id="fg-needle" style="left:50%"></div></div>
+              <div class="fg-interp" id="fg-interp"></div>
+            </div>
+            <div class="fg-score" id="fg-score">—</div>
+          </div>
+          <div class="macro-grid">
+            <div class="macro-chip"><div class="lbl">FED</div><div class="val" id="mc-fed">—</div></div>
+            <div class="macro-chip"><div class="lbl">BCE</div><div class="val" id="mc-bce">—</div></div>
+            <div class="macro-chip"><div class="lbl">VIX</div><div class="val" id="mc-vix">—</div></div>
+          </div>
+        </div>
       </div>
+    </div>
 
     <!-- CHAT -->
     <div class="right" id="right-col">
@@ -662,6 +692,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- Región activa -->
       <div class="region-bar" id="region-bar">
+        <span class="region-chip" id="rc-asia">🌏 Asia</span>
         <span class="region-chip" id="rc-europe">🇪🇺 Europa</span>
         <span class="region-chip" id="rc-usa">🇺🇸 USA</span>
         <span class="region-chip active" id="rc-fx">💶 Forex 24h</span>
@@ -773,7 +804,6 @@ let S = {
   botStatus: 'idle',
   botStatusReason: '',
   costConfig: { enabled:true, broker:'ibkr', commissionPercent:0.05, minimumPerOrder:1, fixedPerOrder:0, spreadPercent:0.02, fxPercent:0.002 },
-  costSummary: null,
   // Estado de mercado (solo display)
   markets: {},
   analysis: {},
@@ -801,7 +831,6 @@ window.addEventListener('load', () => {
     });
   }
   initPWA();
-  ['t-amt','ap-amt','cc-commission','cc-minimum','cc-fixed','cc-spread','cc-fx'].forEach(id => { const x = el(id); if (x) x.addEventListener('input', () => renderCostConfig()); });
 });
 
 async function doLogin() {
@@ -846,11 +875,12 @@ function showApp() {
   el('login-screen').style.display = 'none';
   el('app').classList.add('visible');
   loadDashboard();
-  loadCostConfig();
   pollNotifications();
+  loadCostConfig();
+  renderGains();
   updTPrice();
-  setInterval(pollNotifications, 30000);  // cada 30s — posiciones más actualizadas
-  setInterval(loadDashboard, 180000);     // cada 3 min
+  setInterval(pollNotifications, 60000);  // cada 60s (antes 15s) — reduce KV
+  setInterval(loadDashboard, 180000);     // cada 3 min (antes 2 min)
   if (window.innerWidth <= 768) showTab('markets');
 }
 
@@ -877,7 +907,8 @@ function applyState(state) {
   renderBotStatus();
   renderScheduled();
   syncBotPanel();
-  renderCostConfig();
+  syncCostPanel();
+  renderCosts();
 }
 
 async function syncFromWorker() {
@@ -888,6 +919,103 @@ async function syncFromWorker() {
     const d = await r.json();
     if (d.ok && d.state) applyState(d.state);
   } catch {}
+}
+
+async function loadCostConfig() {
+  if (!S.token) return;
+  try {
+    const r = await fetch(`${WORKER}/cost-config`, { headers: { 'Authorization': `Bearer ${S.token}` } });
+    if (r.status === 401) { doLogout(); return; }
+    const d = await r.json();
+    if (d.ok) {
+      if (d.costConfig) S.costConfig = { ...S.costConfig, ...d.costConfig };
+      syncCostPanel();
+      renderCosts();
+    }
+  } catch {}
+}
+
+function syncCostPanel() {
+  const c = S.costConfig || {};
+  if (!el('cc-broker')) return;
+  el('cc-enabled').checked = !!c.enabled;
+  el('cc-broker').value = c.broker || 'ibkr';
+  el('cc-pct').value = c.commissionPercent ?? 0.05;
+  el('cc-min').value = c.minimumPerOrder ?? 1;
+  el('cc-fixed').value = c.fixedPerOrder ?? 0;
+  el('cc-spread').value = c.spreadPercent ?? 0.02;
+  el('cc-fx').value = c.fxPercent ?? 0.002;
+}
+
+async function saveCostConfig() {
+  if (!S.token) return;
+  const body = {
+    enabled: el('cc-enabled').checked,
+    broker: el('cc-broker').value.trim() || 'ibkr',
+    commissionPercent: parseFloat(el('cc-pct').value) || 0,
+    minimumPerOrder: parseFloat(el('cc-min').value) || 0,
+    fixedPerOrder: parseFloat(el('cc-fixed').value) || 0,
+    spreadPercent: parseFloat(el('cc-spread').value) || 0,
+    fxPercent: parseFloat(el('cc-fx').value) || 0,
+  };
+  try {
+    const r = await fetch(`${WORKER}/cost-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify(body),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.costConfig) S.costConfig = { ...S.costConfig, ...d.costConfig };
+      if (d.state) applyState(d.state);
+      syncCostPanel();
+      renderCosts();
+      toast('Costes guardados', 'success');
+    } else {
+      toast(d.error || 'Error guardando costes', 'error');
+    }
+  } catch {
+    toast('Error de conexión', 'error');
+  }
+}
+
+function renderCosts() {
+  if (!el('cc-list')) return;
+  const c = S.costConfig || {};
+  const openFees = (S.positions || []).reduce((a, p) => a + (p.entryCosts?.total || 0) + (p.estimatedExitCosts?.total || 0), 0);
+  const closedFees = (S.history || []).reduce((a, h) => a + (h.totalFees || ((h.entryCosts?.total || 0) + (h.exitCosts?.total || 0))), 0);
+  el('cc-openfees').textContent = '$' + openFees.toFixed(2);
+  el('cc-closedfees').textContent = '$' + closedFees.toFixed(2);
+  el('cc-brokerlbl').textContent = String(c.broker || 'ibkr').toUpperCase();
+  el('cc-enabledlbl').textContent = c.enabled ? 'ON' : 'OFF';
+  el('cc-state').textContent = c.enabled ? 'SIMULACIÓN ON' : 'SIMULACIÓN OFF';
+  el('cc-state').style.color = c.enabled ? 'var(--accent)' : 'var(--muted)';
+  el('cc-state').style.background = c.enabled ? 'var(--accent-light)' : 'var(--bg)';
+
+  const items = [];
+  (S.positions || []).forEach(p => items.push({
+    type:'open', market:p.market, when:p.openedAt || '', entry:(p.entryCosts?.total || 0), exit:(p.estimatedExitCosts?.total || 0), total:((p.entryCosts?.total || 0)+(p.estimatedExitCosts?.total || 0)), label:'Abierta'
+  }));
+  (S.history || []).slice().reverse().forEach(h => items.push({
+    type:'closed', market:h.market, when:h.closedAt || '', entry:(h.entryCosts?.total || 0), exit:(h.exitCosts?.total || 0), total:(h.totalFees || ((h.entryCosts?.total || 0)+(h.exitCosts?.total || 0))), label:'Cerrada'
+  }));
+
+  if (!items.length) {
+    el('cc-list').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin operaciones aún.</div>';
+    return;
+  }
+  el('cc-list').innerHTML = items.slice(0, 12).map(it => `
+    <div style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:${it.type==='open' ? 'var(--accent-light)' : 'var(--bg)'}">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <strong style="font-size:11px">${MKTINFO[it.market]?.n || it.market} · ${it.label}</strong>
+        <span style="font-size:10px;color:var(--muted)">${it.when}</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;font-size:11px">
+        <span>Entrada: <strong class="red">$${it.entry.toFixed(2)}</strong></span>
+        <span>Salida: <strong class="red">$${it.exit.toFixed(2)}</strong></span>
+        <span>Total: <strong class="red">$${it.total.toFixed(2)}</strong></span>
+      </div>
+    </div>`).join('');
 }
 
 /**
@@ -946,11 +1074,6 @@ async function pollNotifications() {
       renderBotStatus();
     }
     if (d.scheduledOrders) { S.scheduledOrders = d.scheduledOrders; renderScheduled(); }
-
-    // Re-renderizar posiciones con precios actuales del dashboard (si los tenemos)
-    // Así el P&L se actualiza cada 30s sin llamadas extra
-    renderPositions();
-    renderPortfolio();
   } catch {}
 }
 
@@ -984,6 +1107,53 @@ async function clearNotifs() {
 
 function toggleNotif() {
   el('notif-panel').classList.toggle('vis');
+}
+
+// ═══════════════════════════════════════════════
+// GANANCIAS — registro manual diario
+function loadGains() {
+  try { return JSON.parse(localStorage.getItem('santi_gains') || '[]'); }
+  catch { return []; }
+}
+function saveGains(gains) {
+  localStorage.setItem('santi_gains', JSON.stringify(gains));
+}
+function renderGains() {
+  const gains = loadGains();
+  const list = el('gains-list');
+  const total = gains.reduce((a, g) => a + g.amount, 0);
+  el('gains-total-chip').textContent = (total >= 0 ? '+' : '') + '$' + total.toFixed(2);
+  el('gains-total-chip').style.color = total >= 0 ? 'var(--green)' : 'var(--red)';
+  if (!gains.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin registros aún</div>';
+    return;
+  }
+  list.innerHTML = gains.slice().reverse().map((g, i) => `
+    <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:var(--bg);border-radius:6px;font-size:11px">
+      <span style="color:${g.amount >= 0 ? 'var(--green)' : 'var(--red)'};font-family:var(--mono);font-weight:700;flex-shrink:0">${g.amount >= 0 ? '+' : ''}$${g.amount.toFixed(2)}</span>
+      <span style="color:var(--muted);flex-shrink:0">${g.date}</span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.note || ''}</span>
+      <button onclick="deleteGain(${gains.length - 1 - i})" style="border:none;background:none;cursor:pointer;color:var(--muted);font-size:10px;padding:0 2px">✕</button>
+    </div>
+  `).join('');
+}
+function addGain() {
+  const amt = parseFloat(el('gain-amt').value);
+  if (!amt || isNaN(amt)) { toast('Introduce un importe válido', 'error'); return; }
+  const note = el('gain-note').value.trim();
+  const gains = loadGains();
+  gains.push({ amount: amt, note, date: new Date().toLocaleDateString('es-ES') });
+  saveGains(gains);
+  el('gain-amt').value = '';
+  el('gain-note').value = '';
+  renderGains();
+  toast(`Ganancia registrada: ${amt >= 0 ? '+' : ''}$${amt.toFixed(2)}`, amt >= 0 ? 'success' : 'error');
+}
+function deleteGain(idx) {
+  const gains = loadGains();
+  gains.splice(idx, 1);
+  saveGains(gains);
+  renderGains();
 }
 
 // BANCA — transferencias
@@ -1033,6 +1203,8 @@ async function loadDashboard() {
     S.currentRegion = d.currentRegion || '';
 
     renderMarkets(d.invalidMarkets || {});
+    renderFG();
+    renderMacro();
     renderPoly(d.polyEvents || []);
     renderNews(d.news || []);
     renderRegionBar();
@@ -1049,9 +1221,10 @@ async function loadDashboard() {
 // ═══════════════════════════════════════════════
 function renderRegionBar() {
   const h = S.currentHour;
-  el('rc-europe').className = 'region-chip' + (h >= 8 && h < 15 ? ' active' : '');
+  el('rc-asia').className   = 'region-chip' + (h >= 1 && h < 9 ? ' active' : '');
+  el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
   el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
-  el('rc-fx').className     = 'region-chip' + (!(h >= 8 && h < 22) ? ' active' : '');
+  el('rc-fx').className     = 'region-chip active';
   el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion}`;
 }
 
@@ -1223,7 +1396,6 @@ function updTPrice() {
   const k = el('t-mkt').value;
   const m = S.markets[k];
   el('t-price').value = m ? fmtP(m.price) : '—';
-  renderCostConfig();
 }
 
 async function openManualTrade() {
@@ -1284,8 +1456,7 @@ async function closePosition(positionId, currentPnl, currentPct) {
     if (d.ok) {
       if (d.state) applyState(d.state);
       const pnl = d.pnl || 0;
-      const fees = d.totalFees || 0;
-      toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} neto | fees $${fees.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
+      toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
     } else {
       toast(d.error || 'Error cerrando posición', 'error');
     }
@@ -1345,91 +1516,6 @@ async function saveBotConfig() {
   }
 }
 
-
-// ═══════════════════════════════════════════════
-// COSTES SIMULADOS
-// ═══════════════════════════════════════════════
-function calcPreviewCosts(amount, market='SP500') {
-  const cfg = S.costConfig || {};
-  if (!cfg.enabled) return { totalPerSide: 0, roundTrip: 0 };
-  const commission = Math.max(amount * ((parseFloat(cfg.commissionPercent)||0)/100), parseFloat(cfg.minimumPerOrder)||0) + (parseFloat(cfg.fixedPerOrder)||0);
-  const spreadSide = amount * ((parseFloat(cfg.spreadPercent)||0)/100) / 2;
-  const fxSide = ['IBEX','SANTANDER','INDITEX','BBVA','REPSOL','TELEFONICA','IBERDROLA','CAIXABANK','AMADEUS','DAX','CAC40','ASML','LVMH','SAP','SIEMENS'].includes(market) ? 0 : amount * ((parseFloat(cfg.fxPercent)||0)/100);
-  const totalPerSide = commission + spreadSide + fxSide;
-  return { commission, spreadSide, fxSide, totalPerSide, roundTrip: totalPerSide * 2 };
-}
-
-function renderCostConfig() {
-  const cfg = S.costConfig || {};
-  el('cc-enabled').checked = !!cfg.enabled;
-  el('cc-broker').value = cfg.broker || 'ibkr';
-  el('cc-commission').value = cfg.commissionPercent ?? 0.05;
-  el('cc-minimum').value = cfg.minimumPerOrder ?? 1;
-  el('cc-fixed').value = cfg.fixedPerOrder ?? 0;
-  el('cc-spread').value = cfg.spreadPercent ?? 0.02;
-  el('cc-fx').value = cfg.fxPercent ?? 0.002;
-
-  const stats = S.costSummary?.totals || {};
-  el('cost-chip').textContent = (cfg.broker || 'custom').toUpperCase() + (cfg.enabled ? '' : ' OFF');
-  el('cost-broker').textContent = (cfg.broker || 'custom').toUpperCase();
-  el('cost-closed-fees').textContent = '$' + ((stats.closedFees || 0).toFixed ? stats.closedFees.toFixed(2) : '0.00');
-  el('cost-open-fees').textContent = '$' + (((stats.openFeesPaid || 0) + (stats.estimatedExitFees || 0)).toFixed ? ((stats.openFeesPaid || 0) + (stats.estimatedExitFees || 0)).toFixed(2) : '0.00');
-  const net = stats.closedNetPnl || 0;
-  el('cost-net-pnl').textContent = (net >= 0 ? '+' : '-') + '$' + Math.abs(net).toFixed(2);
-  el('cost-net-pnl').style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
-
-  const amount = parseFloat(el('t-amt')?.value || el('ap-amt')?.value || 200) || 200;
-  const p = calcPreviewCosts(amount);
-  el('cost-preview').innerHTML = cfg.enabled
-    ? `Ejemplo con <strong>$${amount.toFixed(2)}</strong>: por lado pagarías aprox <strong>$${p.totalPerSide.toFixed(2)}</strong> (comisión $${p.commission.toFixed(2)} + spread $${p.spreadSide.toFixed(2)} + FX $${p.fxSide.toFixed(2)}). Ida y vuelta: <strong>$${p.roundTrip.toFixed(2)}</strong>.`
-    : 'La simulación de costes está desactivada: el paper trading mostrará resultados brutos, no netos.';
-}
-
-async function loadCostConfig() {
-  if (!S.token) return;
-  try {
-    const r = await fetch(`${WORKER}/cost-config`, { headers: { 'Authorization': `Bearer ${S.token}` } });
-    const d = await r.json();
-    if (d.ok) {
-      if (d.costConfig) S.costConfig = d.costConfig;
-      if (d.costSummary) S.costSummary = d.costSummary;
-      if (d.state) applyState(d.state);
-      renderCostConfig();
-    }
-  } catch {}
-}
-
-async function saveCostConfig() {
-  const payload = {
-    enabled: el('cc-enabled').checked,
-    broker: el('cc-broker').value.trim() || 'ibkr',
-    commissionPercent: parseFloat(el('cc-commission').value) || 0,
-    minimumPerOrder: parseFloat(el('cc-minimum').value) || 0,
-    fixedPerOrder: parseFloat(el('cc-fixed').value) || 0,
-    spreadPercent: parseFloat(el('cc-spread').value) || 0,
-    fxPercent: parseFloat(el('cc-fx').value) || 0,
-  };
-  try {
-    const r = await fetch(`${WORKER}/cost-config`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-      body: JSON.stringify(payload),
-    });
-    const d = await r.json();
-    if (d.ok) {
-      if (d.costConfig) S.costConfig = d.costConfig;
-      if (d.costSummary) S.costSummary = d.costSummary;
-      if (d.state) applyState(d.state);
-      renderCostConfig();
-      toast('Costes simulados guardados', 'success');
-    } else {
-      toast(d.error || 'Error guardando costes', 'error');
-    }
-  } catch {
-    toast('Error de conexión', 'error');
-  }
-}
-
 // ═══════════════════════════════════════════════
 // PORTFOLIO RENDER
 // ═══════════════════════════════════════════════
@@ -1439,32 +1525,29 @@ function renderPortfolio() {
     const m = S.markets[p.market];
     if (!m || !m.price) return a;
     const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
-    const gross = p.value * (pct / 100);
-    const estimatedExit = p.estimatedExitCosts?.total ?? calcPreviewCosts(p.value, p.market).totalPerSide;
-    return a + gross - (p.entryCosts?.total || 0) - estimatedExit;
+    return a + p.value * (pct / 100);
   }, 0);
 
   const total = S.bankBalance + S.investCash + inv + unrealPnl;
   const gain = total - S.startTotal;
   const pct = S.startTotal > 0 ? gain / S.startTotal * 100 : 0;
 
-  el('hdr-bank').textContent = '$' + S.bankBalance.toFixed(2);
-  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toFixed(2);
-  el('bank-total').textContent = '$' + S.bankBalance.toFixed(2);
-  el('inv-cash').textContent   = '$' + S.investCash.toFixed(2);
-  el('in-pos-val').textContent = '$' + inv.toFixed(2);
+  el('hdr-bank').textContent = '$' + S.bankBalance.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('bank-total').textContent = fmtM(S.bankBalance);
+  el('inv-cash').textContent   = fmtM(S.investCash);
+  el('in-pos-val').textContent = fmtM(inv);
   el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
-  el('pf-total').textContent = '$' + total.toFixed(2);
-  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + '$' + gain.toFixed(2);
+  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
   el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
   el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
   el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
   el('pf-ops').textContent = (S.trades || 0) + ' ops';
-  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + '$' + unrealPnl.toFixed(2);
+  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
   el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
   el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
   el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
-  renderCostConfig();
 
   // Posiciones
   const pb = el('pos-body');
@@ -1473,39 +1556,33 @@ function renderPortfolio() {
   } else {
     pb.innerHTML = S.positions.map(p => {
       const m = S.markets[p.market];
-      const cur = m?.price || p.lastKnownPrice || p.entryPrice;
+      const cur = m?.price || p.entryPrice;
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
-      const grossPnl  = p.value * (pct2 / 100);
-      const estExit = (p.estimatedExitCosts?.total) || calcPreviewCosts(p.value, p.market).totalPerSide;
-      const pnl = grossPnl - ((p.entryCosts?.total)||0) - estExit;
+      const pnl  = p.value * (pct2 / 100);
       const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
       const isLivePrice = !!m?.price;
 
-      // Colores según si gana o pierde
-      const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-
+      const entryFee = p.entryCosts?.total || 0;
+      const exitFee = p.estimatedExitCosts?.total || 0;
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
-          <div class="pos-name">${info.n} <span style="font-size:9px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
-          <div class="pos-sub">Entrada real: ${fmtP(p.entryPrice)} → ${fmtP(cur)}${isLivePrice ? '' : ' (último precio disponible)'} · nominal $${p.value.toFixed(2)} · ${p.openedAt}</div><div class="pos-sub">Coste entrada: $${((p.entryCosts?.total)||0).toFixed(2)} · salida est.: $${((p.estimatedExitCosts?.total)||0).toFixed(2)} · broker: ${(p.simulatedBroker || (S.costConfig?.broker||'custom')).toUpperCase()}</div>
+          <div class="pos-name" style="font-size:14px">${info.n} <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
+          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
+          <div class="pos-sub" style="font-size:11px;color:var(--muted)">Comisión entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Comisión salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
           </div>
-          <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnlColor}"></div></div>
-          <div class="prog-lbls">
-            <span>-${p.stopLoss}%</span>
-            <span style="color:${pnlColor};font-weight:700;font-size:12px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span>
-            <span>+${p.takeProfit}%</span>
-          </div>
+          <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
+          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
+          ${!isLivePrice ? '<div style="font-size:10px;color:var(--muted);margin-top:4px">Usando último precio guardado</div>' : ''}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="pos-pnl">
-            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:13px;font-weight:700">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div><div style="font-size:9px;color:var(--muted)">bruto ${grossPnl >= 0 ? '+' : '-'}$${Math.abs(grossPnl).toFixed(2)}</div>
-            <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
-            ${!isLivePrice ? '<div style="font-size:11px;color:var(--muted)">mercado cerrado · usando último precio</div>' : ''}
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:14px">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
         </div>
@@ -1519,15 +1596,24 @@ function renderPortfolio() {
     hb.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div>';
   } else {
     hb.innerHTML = (S.history || []).slice(-8).reverse().map(h => `
-      <div class="hist-row">
-        <div style="display:flex;align-items:center;gap:5px">
-          <div class="hist-dot" style="background:${h.pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div>
-          <span>${MKTINFO[h.market]?.n || h.market}</span>
-          <span style="color:var(--muted);font-size:9px">${h.closedBy === 'stop' ? '🛑SL' : h.closedBy === 'take' ? '✅TP' : h.closedBy === 'manual' ? '👤' : '🤖'} $${h.value}</span>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+        <div class="hist-row" style="border-bottom:none;padding:0">
+          <div style="display:flex;align-items:center;gap:5px">
+            <div class="hist-dot" style="background:${h.pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div>
+            <span>${MKTINFO[h.market]?.n || h.market}</span>
+            <span style="color:var(--muted);font-size:9px">${h.closedBy === 'stop' ? '🛑SL' : h.closedBy === 'take' ? '✅TP' : h.closedBy === 'manual' ? '👤' : '🤖'} $${h.value}</span>
+          </div>
+          <div>
+            <span class="${h.pnl >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</span>
+            <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
+          </div>
         </div>
-        <div>
-          <span class="${(h.netPnl ?? h.pnl) >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${(h.netPnl ?? h.pnl) >= 0 ? '+' : '-'}$${Math.abs(h.netPnl ?? h.pnl).toFixed(2)}</span><span style="color:var(--muted);font-size:9px;margin-left:5px">fees $${Math.abs(h.totalFees || 0).toFixed(2)} | bruto ${h.grossPnl !== undefined ? ((h.grossPnl>=0?'+':'-') + '$' + Math.abs(h.grossPnl).toFixed(2)) : '—'}</span>
-          <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px">
+          Entrada: <strong class="red">$${((h.entryCosts?.total)||0).toFixed(2)}</strong> ·
+          Salida: <strong class="red">$${((h.exitCosts?.total)||0).toFixed(2)}</strong> ·
+          Total costes: <strong class="red">$${((h.totalFees)||(((h.entryCosts?.total)||0)+((h.exitCosts?.total)||0))).toFixed(2)}</strong> ·
+          Bruto: <strong>${((h.grossPnl ?? h.pnl)||0) >= 0 ? '+' : '-'}$${Math.abs((h.grossPnl ?? h.pnl)||0).toFixed(2)}</strong> ·
+          Neto: <strong class="${h.pnl >= 0 ? 'green' : 'red'}">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</strong>
         </div>
       </div>`).join('');
   }
@@ -1542,34 +1628,19 @@ function renderScheduled() {
   const list = el('sched-list');
   if (!orders.length) { cont.classList.remove('vis'); return; }
   cont.classList.add('vis');
-  list.innerHTML = orders.map(o =>
+  list.innerHTML = orders.map((o, i) =>
     `<div class="sched-item">
       <span class="sched-time">${o.time}h</span>
       <span class="sched-desc">$${o.amount} en ${o.region} — ${o.instructions}</span>
-      <button class="sched-del" onclick="deleteScheduled('${o.id || ''}')">✕</button>
+      <button class="sched-del" onclick="deleteScheduled(${i})">✕</button>
     </div>`
   ).join('');
 }
 
-async function deleteScheduled(orderId) {
-  if (!orderId) return;
-  try {
-    const r = await fetch(`${WORKER}/scheduled-order`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-      body: JSON.stringify({ orderId }),
-    });
-    const d = await r.json();
-    if (d.ok) {
-      if (d.state) applyState(d.state);
-      renderScheduled();
-      toast('Orden eliminada', 'info');
-    } else {
-      toast(d.error || 'Error eliminando orden', 'error');
-    }
-  } catch (e) {
-    toast('Error de conexión', 'error');
-  }
+async function deleteScheduled(i) {
+  S.scheduledOrders.splice(i, 1);
+  renderScheduled();
+  scheduleSave();
 }
 
 // ═══════════════════════════════════════════════
