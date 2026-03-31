@@ -227,14 +227,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-name{font-size:15px;font-weight:700}
 .pos-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45}
 .pos-lims{display:flex;gap:4px;margin-top:3px}
-.plim{font-size:10px;padding:3px 6px;border-radius:4px;font-weight:700;font-family:var(--mono)}
+.plim{font-size:11px;padding:3px 7px;border-radius:4px;font-weight:700;font-family:var(--mono)}
 .stop-l{background:var(--red-light);color:var(--red)}
 .take-l{background:var(--green-light);color:var(--green)}
 .prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px}
 .prog-f{height:100%;border-radius:2px;transition:width .5s}
 .prog-lbls{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
 .pos-pnl{text-align:right;flex-shrink:0}
-.pos-pnl .pv{font-family:var(--mono);font-size:15px;font-weight:700}
+.pos-pnl .pv{font-family:var(--mono);font-size:16px;font-weight:700}
 .pos-pnl .pp{font-size:11px;margin-top:2px;font-weight:600}
 .close-btn{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:6px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
@@ -456,25 +456,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- POSICIONES -->
-      <div class="card">
-        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
-      </div>
-
-      <!-- RENDIMIENTO -->
-      <div class="card">
-        <div class="ch"><span class="ct">Rendimiento</span></div>
-        <div class="cb">
-          <div class="pf-grid">
-            <div class="pf-s"><div class="lbl">Capital Total</div><div class="val" id="pf-total">$10,000</div><div class="sub green" id="pf-gain">+$0</div></div>
-            <div class="pf-s"><div class="lbl">Rentabilidad</div><div class="val green" id="pf-pct">0.00%</div><div class="sub" id="pf-ops" style="color:var(--muted)">0 ops</div></div>
-            <div class="pf-s"><div class="lbl">P&L Abierto</div><div class="val" id="pf-pnl">$0.00</div><div class="sub" style="color:var(--muted)">no realizado</div></div>
-            <div class="pf-s"><div class="lbl">Retirado</div><div class="val gold" id="pf-withdrawn">$0</div><div class="sub" style="color:var(--muted)">a banca</div></div>
-          </div>
-        </div>
-      </div>
-
       <!-- GANANCIAS DIARIAS — registro manual -->
       <div class="card">
         <div class="ch">
@@ -530,10 +511,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- HISTORIAL -->
+      <!-- POSICIONES -->
       <div class="card">
-        <div class="ch"><span class="ct">Historial</span></div>
-        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+      </div>
+
+      <!-- RENDIMIENTO -->
+      <div class="card">
+        <div class="ch"><span class="ct">Rendimiento</span></div>
+        <div class="cb">
+          <div class="pf-grid">
+            <div class="pf-s"><div class="lbl">Capital Total</div><div class="val" id="pf-total">$10,000</div><div class="sub green" id="pf-gain">+$0</div></div>
+            <div class="pf-s"><div class="lbl">Rentabilidad</div><div class="val green" id="pf-pct">0.00%</div><div class="sub" id="pf-ops" style="color:var(--muted)">0 ops</div></div>
+            <div class="pf-s"><div class="lbl">P&L Abierto</div><div class="val" id="pf-pnl">$0.00</div><div class="sub" style="color:var(--muted)">no realizado</div></div>
+            <div class="pf-s"><div class="lbl">Retirado</div><div class="val gold" id="pf-withdrawn">$0</div><div class="sub" style="color:var(--muted)">a banca</div></div>
+          </div>
+        </div>
       </div>
 
       <!-- ESTADO DEL BOT (visible) -->
@@ -605,12 +599,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
                   <option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option><option value="CAC40">🇫🇷 CAC 40</option>
                   <option value="ASML">🇳🇱 ASML</option><option value="LVMH">🇫🇷 LVMH</option><option value="SAP">🇩🇪 SAP</option><option value="SIEMENS">🇩🇪 Siemens</option>
                 </optgroup>
-                <optgroup label="🌏 Asia">
-                  <option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
-                  <option value="SAMSUNG">📱 Samsung</option><option value="TOYOTA">🚗 Toyota</option><option value="SOFTBANK">🇯🇵 SoftBank</option>
-                  <option value="SONY">🎮 Sony</option><option value="ALIBABA">🛒 Alibaba</option><option value="TENCENT">🇨🇳 Tencent</option>
-                  <option value="HONDA">🏍️ Honda</option><option value="BAIDU">🔍 Baidu</option>
-                </optgroup>
                 <optgroup label="💰 Materias Primas">
                   <option value="GOLD">🥇 Oro</option><option value="SILVER">🥈 Plata</option><option value="OIL">🛢️ Petróleo</option><option value="NATGAS">🔥 Gas Natural</option>
                 </optgroup>
@@ -644,7 +632,77 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="cb" id="news-body"></div>
       </div>
 
-      <div id="install-banner">
+      <!-- HISTORIAL -->
+      <div class="card">
+        <div class="ch"><span class="ct">Historial</span></div>
+        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+      </div>
+
+    </div>
+
+    <!-- CHAT -->
+    <div class="right" id="right-col">
+      <div class="chat-hdr">
+        <div class="chat-hdr-top">
+          <span class="chat-title">🤖 ORACLE — Asistente IA</span>
+          <span class="online"><span class="online-dot"></span>24h</span>
+        </div>
+        <!-- Bot config panel -->
+        <div class="ap" id="bot-panel">
+          <div class="ap-title">⚙️ Configuración del Bot Automático</div>
+          <div class="ap-grid">
+            <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-amt" value="200" min="10"></div>
+            <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-stop" value="0.5" step="0.1" min="0.1"></div>
+            <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-take" value="1.0" step="0.1" min="0.2"></div>
+            <div class="ap-f"><label>Pérd. diaria máx ($)</label><input type="number" id="ap-maxloss" value="10" min="1"></div>
+            <div class="ap-f" style="grid-column:span 2;display:flex;align-items:center;gap:10px;padding-top:16px">
+              <label class="ap-toggle"><input type="checkbox" id="ap-auto"> Bot automático</label>
+              <label class="ap-toggle"><input type="checkbox" id="ap-reinvest"> Reinversión</label>
+            </div>
+          </div>
+          <button class="ap-btn" onclick="saveBotConfig()">💾 Guardar configuración</button>
+        </div>
+      </div>
+
+      <!-- Región activa -->
+      <div class="region-bar" id="region-bar">
+        <span class="region-chip" id="rc-europe">🇪🇺 Europa</span>
+        <span class="region-chip" id="rc-usa">🇺🇸 USA</span>
+        <span class="region-chip active" id="rc-fx">💶 Forex 24h</span>
+      </div>
+
+      <!-- Órdenes programadas -->
+      <div class="sched-container" id="sched-container">
+        <div class="sched-title">📅 Órdenes Programadas</div>
+        <div class="sched-list" id="sched-list"></div>
+      </div>
+
+      <div class="chat-body" id="chat-body">
+        <div class="msg ai">
+          <div class="ai-lbl">🤖 ORACLE</div>
+          <div class="bubble">¡Hola! Soy ORACLE, tu asistente de inversión. 📈<br><br>El sistema ahora usa un <strong>algoritmo determinista</strong> para decidir operaciones automáticas — yo te explico y asesoro, pero la decisión automática la toma el algoritmo con criterios fijos y auditables.<br><br>Puedes preguntarme sobre el mercado, activar el bot, programar órdenes o pedir una operación manual. ¿Empezamos?</div>
+          <div class="msg-meta">ORACLE • ahora</div>
+        </div>
+      </div>
+
+      <div class="qa-wrap">
+        <button class="qa" onclick="qa('Analiza el mercado ahora y explícame qué señales ves')">💡 Análisis mercado</button>
+        <button class="qa" onclick="qa('¿Por qué el bot está operando o esperando ahora mismo?')">🔍 Estado del bot</button>
+        <button class="qa" onclick="qa('A las 9:00 invierte $200 en Europa')">🇪🇺 Orden 9h Europa</button>
+        <button class="qa" onclick="qa('A las 15:30 invierte $200 en USA')">🇺🇸 Orden 15:30 USA</button>
+        <button class="qa" onclick="toggleBotPanel()">⚙️ Configurar bot</button>
+      </div>
+
+      <div class="chat-ft">
+        <textarea class="chat-in" id="chat-in" rows="2"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+        <button class="send-btn" onclick="send()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="install-banner">
   <span>📲 Instalar como app</span>
   <button class="btn-install" onclick="installApp()">Instalar</button>
   <button class="btn-close" onclick="closeInstall()">✕</button>
@@ -657,7 +715,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 // ═══════════════════════════════════════════════
 const WORKER = 'https://invertir.santibernabebb.workers.dev';
 const SK = 'santisystems_v10_token';
-const LAST_PRICES_KEY = 'santisystems_last_prices';
 
 const MKTINFO = {
   // Índices USA
@@ -737,6 +794,8 @@ let S = {
 // ═══════════════════════════════════════════════
 // AUTENTICACIÓN Y SESIÓN
 // ═══════════════════════════════════════════════
+const LAST_PRICES_KEY = 'santisystems_last_prices';
+
 window.addEventListener('load', () => {
   try { S.lastPrices = JSON.parse(localStorage.getItem(LAST_PRICES_KEY) || '{}'); } catch { S.lastPrices = {}; }
   const t = localStorage.getItem(SK);
@@ -1113,11 +1172,7 @@ async function loadDashboard() {
     if (!d.ok) return;
 
     S.markets = d.markets || {};
-    for (const [k, v] of Object.entries(S.markets)) {
-      if (v && v.price) {
-        S.lastPrices[k] = { price: v.price, change: v.change ?? 0, ts: Date.now() };
-      }
-    }
+    Object.entries(S.markets).forEach(([k,m]) => { if (m && typeof m.price === 'number') S.lastPrices[k] = m.price; });
     try { localStorage.setItem(LAST_PRICES_KEY, JSON.stringify(S.lastPrices)); } catch {}
     S.analysis = d.analysis || {};
     S.fearGreed = d.fearGreed || null;
@@ -1127,6 +1182,7 @@ async function loadDashboard() {
     S.currentRegion = d.currentRegion || '';
 
     renderMarkets(d.invalidMarkets || {});
+    renderFG();
     renderMacro();
     renderPoly(d.polyEvents || []);
     renderNews(d.news || []);
@@ -1144,17 +1200,25 @@ async function loadDashboard() {
 // ═══════════════════════════════════════════════
 function renderRegionBar() {
   const h = S.currentHour;
-  el('rc-asia').className   = 'region-chip' + (h >= 1 && h < 9 ? ' active' : '');
-  el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
-  el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
-  el('rc-fx').className     = 'region-chip active';
-  el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion}`;
+  if (el('rc-europe')) el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
+  if (el('rc-usa')) el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
+  if (el('rc-fx')) el('rc-fx').className      = 'region-chip active';
+  const regionLabel = S.currentRegion === 'europe' ? 'Europa' : S.currentRegion === 'usa' ? 'USA' : 'Forex';
+  el('region-info').textContent = `${hhm()} España · Activo: ${regionLabel}`;
 }
 
-function renderFG() {}
+function renderFG() {
+  const fg = S.fearGreed; if (!fg || !el('fg-emoji')) return;
+  el('fg-emoji').textContent = fg.emoji || '😐';
+  el('fg-label').textContent = fg.label || '—';
+  el('fg-score').textContent = fg.score || '—';
+  el('fg-needle').style.left = `${fg.score || 50}%`;
+  el('fg-interp').textContent = fg.interpretation || '';
+  el('fg-ts').textContent = 'En vivo';
+}
 
 function renderMacro() {
-  const m = S.macro; if (!m) return;
+  const m = S.macro; if (!m || !el('mc-fed')) return;
   el('mc-fed').textContent = m.fedRate || '—';
   el('mc-bce').textContent = m.bceRate || '—';
   const vix = m.vix;
@@ -1470,37 +1534,36 @@ function renderPortfolio() {
     pb.innerHTML = '<div class="pos-empty">Sin posiciones abiertas.</div>';
   } else {
     pb.innerHTML = S.positions.map(p => {
-      const liveMarket = S.markets[p.market];
-      const cachedMarket = S.lastPrices[p.market];
-      const sourceMarket = (liveMarket && liveMarket.price) ? liveMarket : cachedMarket;
-      const hasPrice = !!sourceMarket?.price;
-      const cur = hasPrice ? sourceMarket.price : p.entryPrice;
+      const m = S.markets[p.market];
+      const lastKnown = S.lastPrices?.[p.market];
+      const cur = (m?.price ?? lastKnown ?? p.entryPrice);
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const pnl  = p.value * (pct2 / 100);
       const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
-      const usingLastPrice = !!cachedMarket && !(liveMarket && liveMarket.price);
+      const isLivePrice = !!m?.price;
+      const hasAnyPrice = cur !== undefined && cur !== null;
 
       const entryFee = p.entryCosts?.total || 0;
       const exitFee = p.estimatedExitCosts?.total || 0;
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
-          <div class="pos-name">${info.n} <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
-          <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · ${usingLastPrice ? 'Último precio guardado' : 'Precio actual'} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
-          <div class="pos-sub">Comisión entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Comisión salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
+          <div class="pos-name" style="font-size:14px">${info.n} <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
+          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
+          <div class="pos-sub" style="font-size:11px;color:var(--muted)">Comisión entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Comisión salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
           </div>
           <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
-          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:700">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
-          ${usingLastPrice ? '<div style="font-size:11px;color:var(--muted);margin-top:4px">Mercado cerrado: mostrando la última referencia guardada.</div>' : ''}
+          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
+          ${!isLivePrice ? '<div style="font-size:10px;color:var(--muted);margin-top:4px">Usando último precio guardado</div>' : ''}
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="pos-pnl">
-            <div class="pv ${pnl >= 0 ? 'green' : 'red'}">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
-            <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:14px">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
         </div>
