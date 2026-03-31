@@ -336,6 +336,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 #install-banner button{padding:5px 11px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
 .btn-install{background:#fff;color:var(--accent)}.btn-close{background:rgba(255,255,255,.2);color:#fff}
 
+
+
+/* COSTES SIMULADOS */
+.cost-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
+.cost-stat{padding:10px 8px;background:var(--bg);border-radius:8px;border:1px solid var(--border);text-align:center}
+.cost-stat .lbl{font-size:9px;color:var(--muted);font-weight:500;margin-bottom:3px}
+.cost-stat .val{font-family:var(--mono);font-size:13px;font-weight:600}
+.cost-panel{background:var(--accent-light);border:1px solid var(--accent-mid);border-radius:9px;padding:10px}
+.cost-doc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px}
+.cost-preview{font-size:11px;color:var(--text);margin-top:8px;padding:8px;background:var(--white);border:1px dashed var(--accent-mid);border-radius:8px}
+.cost-row{display:flex;gap:6px;align-items:center;margin-bottom:7px;font-size:11px}
+@media(max-width:768px){.cost-grid{grid-template-columns:1fr 1fr}}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .main{display:block;overflow:auto}
@@ -479,6 +492,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
       <div class="card">
         <div class="ch"><span class="ct">Historial</span></div>
         <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
+      </div>
+
+
+
+      <!-- COSTES SIMULADOS -->
+      <div class="card">
+        <div class="ch"><span class="ct">💸 Costes simulados</span><span id="cost-chip" style="font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:16px">IBKR</span></div>
+        <div class="cb">
+          <div class="cost-grid">
+            <div class="cost-stat"><div class="lbl">Broker</div><div class="val" id="cost-broker">IBKR</div></div>
+            <div class="cost-stat"><div class="lbl">Fees cerradas</div><div class="val" id="cost-closed-fees">$0.00</div></div>
+            <div class="cost-stat"><div class="lbl">Fees abiertas</div><div class="val" id="cost-open-fees">$0.00</div></div>
+            <div class="cost-stat"><div class="lbl">P&amp;L neto</div><div class="val" id="cost-net-pnl">$0.00</div></div>
+          </div>
+          <div class="cost-panel">
+            <div class="ap-title">⚙️ Simulación configurable de broker real</div>
+            <div class="ap-row">
+              <label class="ap-toggle"><input type="checkbox" id="cc-enabled"> Activar simulación de costes</label>
+            </div>
+            <div class="ap-grid">
+              <div class="ap-f"><label>Broker</label><input type="text" id="cc-broker" value="ibkr"></div>
+              <div class="ap-f"><label>Comisión %</label><input type="number" id="cc-commission" value="0.05" step="0.001" min="0"></div>
+              <div class="ap-f"><label>Mínimo / orden ($)</label><input type="number" id="cc-minimum" value="1" step="0.01" min="0"></div>
+              <div class="ap-f"><label>Fijo / orden ($)</label><input type="number" id="cc-fixed" value="0" step="0.01" min="0"></div>
+              <div class="ap-f"><label>Spread total %</label><input type="number" id="cc-spread" value="0.02" step="0.001" min="0"></div>
+              <div class="ap-f"><label>FX no EUR %</label><input type="number" id="cc-fx" value="0.002" step="0.001" min="0"></div>
+            </div>
+            <button class="ap-btn" onclick="saveCostConfig()">💾 Guardar costes simulados</button>
+            <div class="cost-preview" id="cost-preview">En una operación de $200 se aplicará comisión mínima, media horquilla de entrada/salida y cambio de divisa en mercados no EUR.</div>
+            <div class="cost-doc">
+              <strong>Cómo funciona esta simulación:</strong><br>
+              • Comisión %: porcentaje por cada orden.<br>
+              • Mínimo / orden: si el % sale menor, se cobra este mínimo.<br>
+              • Fijo / orden: coste extra fijo por cada compra o venta.<br>
+              • Spread total %: horquilla del mercado; el sistema usa media al entrar y media al salir.<br>
+              • FX no EUR %: coste de cambio de divisa solo en mercados no EUR.<br>
+              • El historial guarda <strong>bruto</strong>, <strong>costes</strong> y <strong>neto</strong> para que el paper trading se parezca al real.
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ESTADO DEL BOT (visible) -->
@@ -748,6 +801,8 @@ let S = {
   scheduledOrders: [],
   botStatus: 'idle',
   botStatusReason: '',
+  costConfig: { enabled:true, broker:'ibkr', commissionPercent:0.05, minimumPerOrder:1, fixedPerOrder:0, spreadPercent:0.02, fxPercent:0.002 },
+  costSummary: null,
   // Estado de mercado (solo display)
   markets: {},
   analysis: {},
@@ -775,6 +830,7 @@ window.addEventListener('load', () => {
     });
   }
   initPWA();
+  ['t-amt','ap-amt','cc-commission','cc-minimum','cc-fixed','cc-spread','cc-fx'].forEach(id => { const x = el(id); if (x) x.addEventListener('input', () => renderCostConfig()); });
 });
 
 async function doLogin() {
@@ -819,6 +875,7 @@ function showApp() {
   el('login-screen').style.display = 'none';
   el('app').classList.add('visible');
   loadDashboard();
+  loadCostConfig();
   pollNotifications();
   updTPrice();
   setInterval(pollNotifications, 30000);  // cada 30s — posiciones más actualizadas
@@ -840,7 +897,7 @@ function applyState(state) {
     'bankBalance','investCash','startTotal','withdrawn','positions','history',
     'trades','mode','autoOn','autoAmount','autoStop','autoTake','reinvestOn',
     'maxDailyLoss','dailyLoss','dailyLossHit','consecutiveLosses','waitCycles',
-    'scheduledOrders','botStatus','botStatusReason',
+    'scheduledOrders','botStatus','botStatusReason','costConfig',
   ];
   for (const f of fields) {
     if (state[f] !== undefined) S[f] = state[f];
@@ -849,6 +906,7 @@ function applyState(state) {
   renderBotStatus();
   renderScheduled();
   syncBotPanel();
+  renderCostConfig();
 }
 
 async function syncFromWorker() {
@@ -1197,6 +1255,7 @@ function updTPrice() {
   const k = el('t-mkt').value;
   const m = S.markets[k];
   el('t-price').value = m ? fmtP(m.price) : '—';
+  renderCostConfig();
 }
 
 async function openManualTrade() {
@@ -1257,7 +1316,8 @@ async function closePosition(positionId, currentPnl, currentPct) {
     if (d.ok) {
       if (d.state) applyState(d.state);
       const pnl = d.pnl || 0;
-      toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
+      const fees = d.totalFees || 0;
+      toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} neto | fees $${fees.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
     } else {
       toast(d.error || 'Error cerrando posición', 'error');
     }
@@ -1317,6 +1377,91 @@ async function saveBotConfig() {
   }
 }
 
+
+// ═══════════════════════════════════════════════
+// COSTES SIMULADOS
+// ═══════════════════════════════════════════════
+function calcPreviewCosts(amount, market='SP500') {
+  const cfg = S.costConfig || {};
+  if (!cfg.enabled) return { totalPerSide: 0, roundTrip: 0 };
+  const commission = Math.max(amount * ((parseFloat(cfg.commissionPercent)||0)/100), parseFloat(cfg.minimumPerOrder)||0) + (parseFloat(cfg.fixedPerOrder)||0);
+  const spreadSide = amount * ((parseFloat(cfg.spreadPercent)||0)/100) / 2;
+  const fxSide = ['IBEX','SANTANDER','INDITEX','BBVA','REPSOL','TELEFONICA','IBERDROLA','CAIXABANK','AMADEUS','DAX','CAC40','ASML','LVMH','SAP','SIEMENS'].includes(market) ? 0 : amount * ((parseFloat(cfg.fxPercent)||0)/100);
+  const totalPerSide = commission + spreadSide + fxSide;
+  return { commission, spreadSide, fxSide, totalPerSide, roundTrip: totalPerSide * 2 };
+}
+
+function renderCostConfig() {
+  const cfg = S.costConfig || {};
+  el('cc-enabled').checked = !!cfg.enabled;
+  el('cc-broker').value = cfg.broker || 'ibkr';
+  el('cc-commission').value = cfg.commissionPercent ?? 0.05;
+  el('cc-minimum').value = cfg.minimumPerOrder ?? 1;
+  el('cc-fixed').value = cfg.fixedPerOrder ?? 0;
+  el('cc-spread').value = cfg.spreadPercent ?? 0.02;
+  el('cc-fx').value = cfg.fxPercent ?? 0.002;
+
+  const stats = S.costSummary?.totals || {};
+  el('cost-chip').textContent = (cfg.broker || 'custom').toUpperCase() + (cfg.enabled ? '' : ' OFF');
+  el('cost-broker').textContent = (cfg.broker || 'custom').toUpperCase();
+  el('cost-closed-fees').textContent = '$' + ((stats.closedFees || 0).toFixed ? stats.closedFees.toFixed(2) : '0.00');
+  el('cost-open-fees').textContent = '$' + (((stats.openFeesPaid || 0) + (stats.estimatedExitFees || 0)).toFixed ? ((stats.openFeesPaid || 0) + (stats.estimatedExitFees || 0)).toFixed(2) : '0.00');
+  const net = stats.closedNetPnl || 0;
+  el('cost-net-pnl').textContent = (net >= 0 ? '+' : '-') + '$' + Math.abs(net).toFixed(2);
+  el('cost-net-pnl').style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
+
+  const amount = parseFloat(el('t-amt')?.value || el('ap-amt')?.value || 200) || 200;
+  const p = calcPreviewCosts(amount);
+  el('cost-preview').innerHTML = cfg.enabled
+    ? `Ejemplo con <strong>$${amount.toFixed(2)}</strong>: por lado pagarías aprox <strong>$${p.totalPerSide.toFixed(2)}</strong> (comisión $${p.commission.toFixed(2)} + spread $${p.spreadSide.toFixed(2)} + FX $${p.fxSide.toFixed(2)}). Ida y vuelta: <strong>$${p.roundTrip.toFixed(2)}</strong>.`
+    : 'La simulación de costes está desactivada: el paper trading mostrará resultados brutos, no netos.';
+}
+
+async function loadCostConfig() {
+  if (!S.token) return;
+  try {
+    const r = await fetch(`${WORKER}/cost-config`, { headers: { 'Authorization': `Bearer ${S.token}` } });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.costConfig) S.costConfig = d.costConfig;
+      if (d.costSummary) S.costSummary = d.costSummary;
+      if (d.state) applyState(d.state);
+      renderCostConfig();
+    }
+  } catch {}
+}
+
+async function saveCostConfig() {
+  const payload = {
+    enabled: el('cc-enabled').checked,
+    broker: el('cc-broker').value.trim() || 'ibkr',
+    commissionPercent: parseFloat(el('cc-commission').value) || 0,
+    minimumPerOrder: parseFloat(el('cc-minimum').value) || 0,
+    fixedPerOrder: parseFloat(el('cc-fixed').value) || 0,
+    spreadPercent: parseFloat(el('cc-spread').value) || 0,
+    fxPercent: parseFloat(el('cc-fx').value) || 0,
+  };
+  try {
+    const r = await fetch(`${WORKER}/cost-config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify(payload),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.costConfig) S.costConfig = d.costConfig;
+      if (d.costSummary) S.costSummary = d.costSummary;
+      if (d.state) applyState(d.state);
+      renderCostConfig();
+      toast('Costes simulados guardados', 'success');
+    } else {
+      toast(d.error || 'Error guardando costes', 'error');
+    }
+  } catch {
+    toast('Error de conexión', 'error');
+  }
+}
+
 // ═══════════════════════════════════════════════
 // PORTFOLIO RENDER
 // ═══════════════════════════════════════════════
@@ -1326,7 +1471,9 @@ function renderPortfolio() {
     const m = S.markets[p.market];
     if (!m || !m.price) return a;
     const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
-    return a + p.value * (pct / 100);
+    const gross = p.value * (pct / 100);
+    const estimatedExit = p.estimatedExitCosts?.total ?? calcPreviewCosts(p.value, p.market).totalPerSide;
+    return a + gross - (p.entryCosts?.total || 0) - estimatedExit;
   }, 0);
 
   const total = S.bankBalance + S.investCash + inv + unrealPnl;
@@ -1349,6 +1496,7 @@ function renderPortfolio() {
   el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
   el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
   el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
+  renderCostConfig();
 
   // Posiciones
   const pb = el('pos-body');
@@ -1359,7 +1507,9 @@ function renderPortfolio() {
       const m = S.markets[p.market];
       const cur = m?.price || p.entryPrice;
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
-      const pnl  = p.value * (pct2 / 100);
+      const grossPnl  = p.value * (pct2 / 100);
+      const estExit = (p.estimatedExitCosts?.total) || calcPreviewCosts(p.value, p.market).totalPerSide;
+      const pnl = grossPnl - ((p.entryCosts?.total)||0) - estExit;
       const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
       const isLivePrice = !!m?.price;
@@ -1371,7 +1521,7 @@ function renderPortfolio() {
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
           <div class="pos-name">${info.n} <span style="font-size:9px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
-          <div class="pos-sub">Entrada: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
+          <div class="pos-sub">Entrada real: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · nominal $${p.value.toFixed(2)} · ${p.openedAt}</div><div class="pos-sub">Coste entrada: $${((p.entryCosts?.total)||0).toFixed(2)} · salida est.: $${((p.estimatedExitCosts?.total)||0).toFixed(2)} · broker: ${(p.simulatedBroker || (S.costConfig?.broker||'custom')).toUpperCase()}</div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
@@ -1385,7 +1535,7 @@ function renderPortfolio() {
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="pos-pnl">
-            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:13px;font-weight:700">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:13px;font-weight:700">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div><div style="font-size:9px;color:var(--muted)">bruto ${grossPnl >= 0 ? '+' : '-'}$${Math.abs(grossPnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
             ${!isLivePrice ? '<div style="font-size:9px;color:var(--muted)">sin precio</div>' : ''}
           </div>
@@ -1408,7 +1558,7 @@ function renderPortfolio() {
           <span style="color:var(--muted);font-size:9px">${h.closedBy === 'stop' ? '🛑SL' : h.closedBy === 'take' ? '✅TP' : h.closedBy === 'manual' ? '👤' : '🤖'} $${h.value}</span>
         </div>
         <div>
-          <span class="${h.pnl >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</span>
+          <span class="${(h.netPnl ?? h.pnl) >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${(h.netPnl ?? h.pnl) >= 0 ? '+' : '-'}$${Math.abs(h.netPnl ?? h.pnl).toFixed(2)}</span><span style="color:var(--muted);font-size:9px;margin-left:5px">fees $${Math.abs(h.totalFees || 0).toFixed(2)} | bruto ${h.grossPnl !== undefined ? ((h.grossPnl>=0?'+':'-') + '$' + Math.abs(h.grossPnl).toFixed(2)) : '—'}</span>
           <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
         </div>
       </div>`).join('');
