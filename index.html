@@ -846,8 +846,8 @@ function showApp() {
   pollNotifications();
   renderGains();
   updTPrice();
-  setInterval(pollNotifications, 60000);  // cada 60s (antes 15s) — reduce KV
-  setInterval(loadDashboard, 180000);     // cada 3 min (antes 2 min)
+  setInterval(pollNotifications, 30000);  // cada 30s — posiciones más actualizadas
+  setInterval(loadDashboard, 180000);     // cada 3 min
   if (window.innerWidth <= 768) showTab('markets');
 }
 
@@ -942,6 +942,11 @@ async function pollNotifications() {
       renderBotStatus();
     }
     if (d.scheduledOrders) { S.scheduledOrders = d.scheduledOrders; renderScheduled(); }
+
+    // Re-renderizar posiciones con precios actuales del dashboard (si los tenemos)
+    // Así el P&L se actualiza cada 30s sin llamadas extra
+    renderPositions();
+    renderPortfolio();
   } catch {}
 }
 
@@ -1486,19 +1491,34 @@ function renderScheduled() {
   const list = el('sched-list');
   if (!orders.length) { cont.classList.remove('vis'); return; }
   cont.classList.add('vis');
-  list.innerHTML = orders.map((o, i) =>
+  list.innerHTML = orders.map(o =>
     `<div class="sched-item">
       <span class="sched-time">${o.time}h</span>
       <span class="sched-desc">$${o.amount} en ${o.region} — ${o.instructions}</span>
-      <button class="sched-del" onclick="deleteScheduled(${i})">✕</button>
+      <button class="sched-del" onclick="deleteScheduled('${o.id || ''}')">✕</button>
     </div>`
   ).join('');
 }
 
-async function deleteScheduled(i) {
-  S.scheduledOrders.splice(i, 1);
-  renderScheduled();
-  scheduleSave();
+async function deleteScheduled(orderId) {
+  if (!orderId) return;
+  try {
+    const r = await fetch(`${WORKER}/scheduled-order`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify({ orderId }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      renderScheduled();
+      toast('Orden eliminada', 'info');
+    } else {
+      toast(d.error || 'Error eliminando orden', 'error');
+    }
+  } catch (e) {
+    toast('Error de conexión', 'error');
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -1720,3 +1740,4 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
+
