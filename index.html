@@ -224,19 +224,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .pos-ico.long{background:var(--green-light)}.pos-ico.short{background:var(--red-light)}
 .pos-body{flex:1;min-width:0}
-.pos-name{font-size:12px;font-weight:600}
-.pos-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.pos-name{font-size:15px;font-weight:700}
+.pos-sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
 .pos-lims{display:flex;gap:4px;margin-top:3px}
-.plim{font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700;font-family:var(--mono)}
+.plim{font-size:11px;padding:3px 7px;border-radius:4px;font-weight:700;font-family:var(--mono)}
 .stop-l{background:var(--red-light);color:var(--red)}
 .take-l{background:var(--green-light);color:var(--green)}
 .prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px}
 .prog-f{height:100%;border-radius:2px;transition:width .5s}
 .prog-lbls{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
 .pos-pnl{text-align:right;flex-shrink:0}
-.pos-pnl .pv{font-family:var(--mono);font-size:12px;font-weight:500}
-.pos-pnl .pp{font-size:9px;margin-top:1px}
-.close-btn{padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;transition:all .2s;margin-top:4px}
+.pos-pnl .pv{font-family:var(--mono);font-size:16px;font-weight:700}
+.pos-pnl .pp{font-size:12px;margin-top:2px;font-weight:700}
+.close-btn{padding:6px 11px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:4px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* TRADE */
@@ -469,6 +469,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
+      <!-- POSICIONES -->
+      <div class="card">
+        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+      </div>
+
       <!-- RENDIMIENTO -->
       <div class="card">
         <div class="ch"><span class="ct">Rendimiento</span></div>
@@ -480,18 +486,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
             <div class="pf-s"><div class="lbl">Retirado</div><div class="val gold" id="pf-withdrawn">$0</div><div class="sub" style="color:var(--muted)">a banca</div></div>
           </div>
         </div>
-      </div>
-
-      <!-- POSICIONES -->
-      <div class="card">
-        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
-      </div>
-
-      <!-- HISTORIAL -->
-      <div class="card">
-        <div class="ch"><span class="ct">Historial</span></div>
-        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
       </div>
 
 
@@ -603,12 +597,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
                   <option value="DAX">🇩🇪 DAX 40</option><option value="FTSE">🇬🇧 FTSE 100</option><option value="CAC40">🇫🇷 CAC 40</option>
                   <option value="ASML">🇳🇱 ASML</option><option value="LVMH">🇫🇷 LVMH</option><option value="SAP">🇩🇪 SAP</option><option value="SIEMENS">🇩🇪 Siemens</option>
                 </optgroup>
-                <optgroup label="🌏 Asia">
-                  <option value="NIKKEI">🇯🇵 Nikkei</option><option value="HKEX">🇭🇰 Hang Seng</option>
-                  <option value="SAMSUNG">📱 Samsung</option><option value="TOYOTA">🚗 Toyota</option><option value="SOFTBANK">🇯🇵 SoftBank</option>
-                  <option value="SONY">🎮 Sony</option><option value="ALIBABA">🛒 Alibaba</option><option value="TENCENT">🇨🇳 Tencent</option>
-                  <option value="HONDA">🏍️ Honda</option><option value="BAIDU">🔍 Baidu</option>
-                </optgroup>
                 <optgroup label="💰 Materias Primas">
                   <option value="GOLD">🥇 Oro</option><option value="SILVER">🥈 Plata</option><option value="OIL">🛢️ Petróleo</option><option value="NATGAS">🔥 Gas Natural</option>
                 </optgroup>
@@ -642,27 +630,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <div class="cb" id="news-body"></div>
       </div>
 
-      <!-- SENTIMIENTO — al final -->
+      <!-- HISTORIAL -->
       <div class="card">
-        <div class="ch"><span class="ct">Sentimiento</span><span id="fg-ts" style="font-size:10px;color:var(--muted)">—</span></div>
-        <div class="cb">
-          <div class="fg-bar">
-            <div class="fg-emoji" id="fg-emoji">😐</div>
-            <div class="fg-info">
-              <div class="fg-label" id="fg-label">Cargando...</div>
-              <div class="fg-track"><div class="fg-needle" id="fg-needle" style="left:50%"></div></div>
-              <div class="fg-interp" id="fg-interp"></div>
-            </div>
-            <div class="fg-score" id="fg-score">—</div>
-          </div>
-          <div class="macro-grid">
-            <div class="macro-chip"><div class="lbl">FED</div><div class="val" id="mc-fed">—</div></div>
-            <div class="macro-chip"><div class="lbl">BCE</div><div class="val" id="mc-bce">—</div></div>
-            <div class="macro-chip"><div class="lbl">VIX</div><div class="val" id="mc-vix">—</div></div>
-          </div>
-        </div>
+        <div class="ch"><span class="ct">Historial</span></div>
+        <div class="cb" id="hist-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div></div>
       </div>
-    </div>
 
     <!-- CHAT -->
     <div class="right" id="right-col">
@@ -690,7 +662,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- Región activa -->
       <div class="region-bar" id="region-bar">
-        <span class="region-chip" id="rc-asia">🌏 Asia</span>
         <span class="region-chip" id="rc-europe">🇪🇺 Europa</span>
         <span class="region-chip" id="rc-usa">🇺🇸 USA</span>
         <span class="region-chip active" id="rc-fx">💶 Forex 24h</span>
@@ -1062,8 +1033,6 @@ async function loadDashboard() {
     S.currentRegion = d.currentRegion || '';
 
     renderMarkets(d.invalidMarkets || {});
-    renderFG();
-    renderMacro();
     renderPoly(d.polyEvents || []);
     renderNews(d.news || []);
     renderRegionBar();
@@ -1080,10 +1049,9 @@ async function loadDashboard() {
 // ═══════════════════════════════════════════════
 function renderRegionBar() {
   const h = S.currentHour;
-  el('rc-asia').className   = 'region-chip' + (h >= 1 && h < 9 ? ' active' : '');
-  el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
+  el('rc-europe').className = 'region-chip' + (h >= 8 && h < 15 ? ' active' : '');
   el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
-  el('rc-fx').className     = 'region-chip active';
+  el('rc-fx').className     = 'region-chip' + (!(h >= 8 && h < 22) ? ' active' : '');
   el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion}`;
 }
 
@@ -1505,7 +1473,7 @@ function renderPortfolio() {
   } else {
     pb.innerHTML = S.positions.map(p => {
       const m = S.markets[p.market];
-      const cur = m?.price || p.entryPrice;
+      const cur = m?.price || p.lastKnownPrice || p.entryPrice;
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const grossPnl  = p.value * (pct2 / 100);
       const estExit = (p.estimatedExitCosts?.total) || calcPreviewCosts(p.value, p.market).totalPerSide;
@@ -1521,7 +1489,7 @@ function renderPortfolio() {
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
           <div class="pos-name">${info.n} <span style="font-size:9px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
-          <div class="pos-sub">Entrada real: ${fmtP(p.entryPrice)} → ${isLivePrice ? fmtP(cur) : '?'} · nominal $${p.value.toFixed(2)} · ${p.openedAt}</div><div class="pos-sub">Coste entrada: $${((p.entryCosts?.total)||0).toFixed(2)} · salida est.: $${((p.estimatedExitCosts?.total)||0).toFixed(2)} · broker: ${(p.simulatedBroker || (S.costConfig?.broker||'custom')).toUpperCase()}</div>
+          <div class="pos-sub">Entrada real: ${fmtP(p.entryPrice)} → ${fmtP(cur)}${isLivePrice ? '' : ' (último precio disponible)'} · nominal $${p.value.toFixed(2)} · ${p.openedAt}</div><div class="pos-sub">Coste entrada: $${((p.entryCosts?.total)||0).toFixed(2)} · salida est.: $${((p.estimatedExitCosts?.total)||0).toFixed(2)} · broker: ${(p.simulatedBroker || (S.costConfig?.broker||'custom')).toUpperCase()}</div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
@@ -1537,7 +1505,7 @@ function renderPortfolio() {
           <div class="pos-pnl">
             <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:13px;font-weight:700">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div><div style="font-size:9px;color:var(--muted)">bruto ${grossPnl >= 0 ? '+' : '-'}$${Math.abs(grossPnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
-            ${!isLivePrice ? '<div style="font-size:9px;color:var(--muted)">sin precio</div>' : ''}
+            ${!isLivePrice ? '<div style="font-size:11px;color:var(--muted)">mercado cerrado · usando último precio</div>' : ''}
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
         </div>
@@ -1823,3 +1791,4 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
+
