@@ -1541,8 +1541,8 @@ function renderPortfolio() {
   const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
   const unrealPnl = (S.positions || []).reduce((a, p) => {
     const m = S.markets[p.market];
-    const cur = m?.price || p.lastPrice || p.entryPrice;
-    const pct = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
+    if (!m || !m.price) return a;
+    const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
     return a + p.value * (pct / 100);
   }, 0);
 
@@ -1574,8 +1574,8 @@ function renderPortfolio() {
   } else {
     pb.innerHTML = S.positions.map(p => {
       const m = S.markets[p.market];
-      const cur = m?.price || p.lastPrice || p.entryPrice;
-      if (m?.price) p.lastPrice = m.price;
+      const cur = (m?.price && isFinite(m.price)) ? m.price : (p.lastPrice || p.entryPrice);
+      if (m?.price && isFinite(m.price)) p.lastPrice = m.price;
       // P&L de la posición (mi ganancia/pérdida)
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const pnl  = p.value * (pct2 / 100);
@@ -1586,16 +1586,17 @@ function renderPortfolio() {
       const exitFee  = p.estimatedExitCosts?.total || 0;
 
       // Cambio diario del mercado en general (no mi posición)
-      const mktDailyChange = m?.change ?? null;
+      const mktDailyChange = (m && typeof m.change === 'number' && isFinite(m.change)) ? m.change : null;
+      const mktSourceLabel = m?.changeSource === 'finnhub' ? ' · real' : (m?.changeSource ? ' · estimado' : '');
       const mktDailyHtml = mktDailyChange !== null
-        ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%</span>`
+        ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%${mktSourceLabel}</span>`
         : '';
 
-      // Estado horario del mercado: solo informativo, no debe congelar el P&L.
+      // ¿Mercado cerrado ahora?
       const isMarketOpen = S.openMarkets.includes(p.market);
-      const marketStatusHtml = !isMarketOpen
-        ? `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`
-        : `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`;
+      const marketStatusHtml = isMarketOpen
+        ? `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`
+        : `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`;
 
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
@@ -1606,7 +1607,7 @@ function renderPortfolio() {
             ${marketStatusHtml}
             ${mktDailyHtml}
           </div>
-          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
+          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}${m?.priceSource ? ` · fuente: ${m.priceSource}` : ''}</div>
           <div class="pos-sub" style="font-size:11px;color:var(--muted)">Com. entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Com. salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
