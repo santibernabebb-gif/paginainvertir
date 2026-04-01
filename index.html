@@ -650,11 +650,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- Región activa -->
-      <div class="region-bar" id="region-bar">
-        <span class="region-chip" id="rc-europe">🇪🇺 Europa</span>
-        <span class="region-chip" id="rc-usa">🇺🇸 USA</span>
-        <span class="region-chip active" id="rc-fx">💶 Forex 24h</span>
+      <!-- Región activa + filtros de mercado -->
+      <div class="region-bar" id="region-bar" style="flex-wrap:wrap;gap:4px">
+        <span class="region-chip active" id="rc-all" onclick="filterMarkets('all')" style="cursor:pointer">📊 Todo</span>
+        <span class="region-chip" id="rc-europe" onclick="filterMarkets('europe')" style="cursor:pointer">🇪🇺 Europa</span>
+        <span class="region-chip" id="rc-usa" onclick="filterMarkets('usa')" style="cursor:pointer">🇺🇸 USA</span>
+        <span class="region-chip" id="rc-fx" onclick="filterMarkets('forex')" style="cursor:pointer">💶 Forex</span>
+        <span class="region-chip" id="rc-commodities" onclick="filterMarkets('commodities')" style="cursor:pointer">🥇 Materias</span>
+        <span class="region-chip" id="rc-crypto" onclick="filterMarkets('crypto')" style="cursor:pointer">₿ Crypto</span>
       </div>
 
       <!-- Órdenes programadas -->
@@ -1166,13 +1169,46 @@ async function loadDashboard() {
 // ═══════════════════════════════════════════════
 // RENDERS DE MERCADO
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// FILTROS DE MERCADO
+// ═══════════════════════════════════════════════
+const MARKET_CATEGORIES = {
+  europe: ['IBEX','DAX','FTSE','CAC40','AEX','SMI','MIBTEL',
+           'SANTANDER','INDITEX','BBVA','REPSOL','TELEFONICA','IBERDROLA',
+           'CAIXABANK','AMADEUS','FERROVIAL','AENA','ACCIONA','ENDESA',
+           'NATURGY','MAPFRE','IAG','INDRA','BANKINTER','ARCELORMITTAL',
+           'SACYR','FLUIDRA','SOLARIA','MELIA','GRIFOLS','UNICAJA',
+           'ASML','LVMH','SAP','SIEMENS','TOTALENERGIES','AIRBUS',
+           'VOLKSWAGEN','BMW','NESTLE','NOVARTIS','ROCHE','UNILEVER',
+           'HSBC','BP','ASTRAZENECA','ALLIANZ','ADIDAS','BNPPARIBAS'],
+  usa:    ['SP500','NASDAQ','DOW','RUSSEL2000',
+           'APPLE','MICROSOFT','NVIDIA','GOOGLE','META','AMAZON','NETFLIX','TESLA',
+           'JPMORGAN','VISA','GOLDMANSACHS','MASTERCARD','BANKOFAMERICA','CITIGROUP',
+           'JOHNSON','PFIZER','ABBVIE','MERCK','UNITEDHEALTH',
+           'WALMART','COCACOLA','PEPSI','MCDONALDS','NIKE','STARBUCKS',
+           'BOEING','EXXON','CHEVRON','CATERPILLAR','DEERE',
+           'AMD','DISNEY','SALESFORCE','ADOBE','PAYPAL','UBER','INTEL','QUALCOMM','BROADCOM'],
+  forex:  ['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','EURGBP'],
+  commodities: ['GOLD','SILVER','COPPER','PLATINUM','OIL','NATGAS','BRENT'],
+  crypto: ['BITCOIN','ETHEREUM'],
+};
+
+let S_marketFilter = 'all';
+
+function filterMarkets(cat) {
+  S_marketFilter = cat;
+  // Update tab styles
+  ['all','europe','usa','forex','commodities','crypto'].forEach(c => {
+    const el2 = el('rc-' + (c === 'all' ? 'all' : c));
+    if (el2) el2.classList.toggle('active', c === cat);
+  });
+  renderMarkets(S.invalidMarkets || {});
+}
+
 function renderRegionBar() {
   const h = S.currentHour;
-  if (el('rc-asia')) el('rc-asia').className   = 'region-chip' + (h >= 1 && h < 9 ? ' active' : '');
-  el('rc-europe').className = 'region-chip' + (h >= 9 && h < 15 ? ' active' : '');
-  el('rc-usa').className    = 'region-chip' + (h >= 15 && h < 22 ? ' active' : '');
-  el('rc-fx').className     = 'region-chip active';
   el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion}`;
+}
 }
 
 function renderFG() {
@@ -1197,10 +1233,18 @@ function renderMacro() {
 }
 
 function renderMarkets(invalidMarkets = {}) {
+  S.invalidMarkets = invalidMarkets;
   const g = el('mkt-grid');
-  const allKeys = [...new Set([...Object.keys(S.markets), ...Object.keys(invalidMarkets)])];
+  let allKeys = [...new Set([...Object.keys(S.markets), ...Object.keys(invalidMarkets)])];
+
+  // Aplicar filtro de categoría
+  if (S_marketFilter !== 'all') {
+    const cat = MARKET_CATEGORIES[S_marketFilter] || [];
+    allKeys = allKeys.filter(k => cat.includes(k));
+  }
+
   if (!allKeys.length) {
-    g.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">Sin datos</div>';
+    g.innerHTML = '<div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">Sin datos para este filtro</div>';
     return;
   }
 
@@ -1944,3 +1988,4 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
+
