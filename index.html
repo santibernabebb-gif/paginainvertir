@@ -1607,7 +1607,11 @@ function renderPortfolio() {
     const byDay = {};
     [...(S.history || [])].reverse().forEach((h, revIdx) => {
       const realIdx = (S.history.length - 1) - revIdx;
-      const day = (h.closedAt || h.openedAt || 'Sin fecha').split(' ')[0];
+      // closedAt puede ser "01/04/2026 11:30" (nuevo) o "11:30" (antiguo sin fecha)
+      // Si tiene / es formato nuevo con fecha, si no usamos la fecha de hoy como fallback
+      const rawDate = h.closedAt || h.openedAt || '';
+      const hasDate = rawDate.includes('/');
+      const day = hasDate ? rawDate.split(' ')[0] : ('Hoy · ' + rawDate);
       if (!byDay[day]) byDay[day] = [];
       byDay[day].push({ ...h, _idx: realIdx });
     });
