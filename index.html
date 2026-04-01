@@ -515,6 +515,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="bot-detail-row"><span class="bd-label">Pérdida diaria</span><span class="bd-value" id="bd-daily-loss">$0.00 / $10.00</span></div>
           <div class="bot-detail-row"><span class="bd-label">Pérdidas seguidas</span><span class="bd-value" id="bd-consec">0</span></div>
           <div class="bot-detail-row"><span class="bd-label">Ciclos espera</span><span class="bd-value" id="bd-wait">0</span></div>
+          <div id="unlock-row" style="display:none;margin-top:10px">
+            <button onclick="unlockBot()" style="width:100%;padding:8px;background:var(--orange);color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:var(--font)">
+              🔓 Desbloquear Bot
+            </button>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px;text-align:center">Reinicia pérdida diaria y pérdidas consecutivas</div>
+          </div>
         </div>
       </div>
 
@@ -1271,6 +1277,24 @@ function renderNews(news) {
 // ═══════════════════════════════════════════════
 // ESTADO DEL BOT
 // ═══════════════════════════════════════════════
+async function unlockBot() {
+  try {
+    const r = await fetch(`${WORKER}/unlock-bot`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      toast('🔓 Bot desbloqueado — pérdidas reiniciadas', 'success');
+    } else {
+      toast(d.error || 'Error desbloqueando bot', 'error');
+    }
+  } catch {
+    toast('Error de conexión', 'error');
+  }
+}
+
 function renderBotStatus() {
   const btn = el('bot-status-btn');
   const lbl = el('bot-status-lbl');
@@ -1302,6 +1326,10 @@ function renderBotStatus() {
   chip.style.color = S.botStatus === 'operating' ? 'var(--green)' :
                      S.botStatus === 'blocked'  ? 'var(--red)'   :
                      S.botStatus === 'waiting'  ? 'var(--orange)': 'var(--muted)';
+
+  // Mostrar botón desbloqueo si el bot está bloqueado por pérdida diaria o pérdidas consecutivas
+  const isBlocked = S.dailyLossHit || (S.consecutiveLosses || 0) >= 3;
+  el('unlock-row').style.display = isBlocked ? 'block' : 'none';
 }
 
 // ═══════════════════════════════════════════════
