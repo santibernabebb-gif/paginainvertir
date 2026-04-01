@@ -525,10 +525,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- MERCADOS -->
       <div class="card">
-        <div class="ch"><span class="ct">Mercados Globales</span><span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span></div>
-        <div class="cb">
-          <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:7px"></div>
-          <div class="mkt-grid" id="mkt-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+        <div class="ch" onclick="toggleMarkets()" style="cursor:pointer">
+          <span class="ct">Mercados Globales</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span>
+            <span id="mkt-toggle-arrow" style="font-size:11px;color:var(--muted)">▶</span>
+          </div>
+        </div>
+        <div id="mkt-body" style="display:none">
+          <div class="cb">
+            <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:7px"></div>
+            <div class="mkt-grid" id="mkt-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+          </div>
         </div>
       </div>
 
@@ -601,11 +609,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- POLYMARKET -->
-      <div class="card">
-        <div class="ch"><span class="ct">Polymarket</span><span style="font-size:10px;color:var(--muted)">Solo contexto</span></div>
-        <div class="cb" id="pm-body"><div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Cargando...</div></div>
-      </div>
+
 
       <!-- NOTICIAS -->
       <div class="card" id="news-card" style="display:none">
@@ -1155,7 +1159,6 @@ async function loadDashboard() {
     renderMarkets(d.invalidMarkets || {});
     renderFG();
     renderMacro();
-    renderPoly(d.polyEvents || []);
     renderNews(d.news || []);
     renderRegionBar();
     updTPrice();
@@ -1199,6 +1202,14 @@ function filterMarkets(cat) {
     if (btn) btn.classList.toggle('active', c === cat);
   });
   renderMarkets(S.invalidMarkets || {});
+}
+
+function toggleMarkets() {
+  const body = el('mkt-body');
+  const arrow = el('mkt-toggle-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.textContent = isOpen ? '▶' : '▼';
 }
 
 function renderRegionBar() {
@@ -1322,13 +1333,6 @@ function renderAnalysis(k) {
   el('score-txt').textContent = `Score: ${sc >= 0 ? '+' : ''}${sc}/8 | Conf: ${a.confidence || 0}%`;
 }
 
-function renderPoly(events) {
-  el('pm-body').innerHTML = events.length ? events.map(e => {
-    const prices = e.outcomePrices ? JSON.parse(e.outcomePrices) : [];
-    const yp = prices[0] ? (parseFloat(prices[0]) * 100).toFixed(0) + '%' : '—';
-    return `<div class="pm-item"><div class="pm-q">${e.question}</div><div class="pm-stats"><div class="pm-prob">${yp} Sí</div><div class="pm-vol">$${(e.volume || 0).toFixed(0)}</div></div></div>`;
-  }).join('') : '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin eventos</div>';
-}
 
 function renderNews(news) {
   if (!news.length) { el('news-card').style.display = 'none'; return; }
@@ -1463,7 +1467,12 @@ async function closePosition(positionId, currentPnl, currentPct) {
     });
     const d = await r.json();
     if (d.ok) {
+      // Aplicar state del worker — fuente de verdad
       if (d.state) applyState(d.state);
+      // Eliminar también del estado local inmediatamente para evitar que
+      // pollNotifications la restaure antes del próximo sync completo
+      S.positions = S.positions.filter(p => p.id !== positionId);
+      renderPortfolio();
       const pnl = d.pnl || 0;
       toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
     } else {
@@ -1566,31 +1575,48 @@ function renderPortfolio() {
     pb.innerHTML = S.positions.map(p => {
       const m = S.markets[p.market];
       const cur = m?.price || p.entryPrice;
+      // P&L de la posición (mi ganancia/pérdida)
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const pnl  = p.value * (pct2 / 100);
       const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
       const isLivePrice = !!m?.price;
-
       const entryFee = p.entryCosts?.total || 0;
-      const exitFee = p.estimatedExitCosts?.total || 0;
+      const exitFee  = p.estimatedExitCosts?.total || 0;
+
+      // Cambio diario del mercado en general (no mi posición)
+      const mktDailyChange = m?.change ?? null;
+      const mktDailyHtml = mktDailyChange !== null
+        ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%</span>`
+        : '';
+
+      // ¿Mercado cerrado ahora?
+      const isMarketOpen = S.openMarkets.includes(p.market);
+      const marketStatusHtml = !isMarketOpen
+        ? `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`
+        : '';
+
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
         <div class="pos-body">
-          <div class="pos-name" style="font-size:14px">${info.n} <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span></div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
+            <span class="pos-name" style="font-size:14px">${info.n}</span>
+            <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span>
+            ${marketStatusHtml}
+            ${mktDailyHtml}
+          </div>
           <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}</div>
-          <div class="pos-sub" style="font-size:11px;color:var(--muted)">Comisión entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Comisión salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
+          <div class="pos-sub" style="font-size:11px;color:var(--muted)">Com. entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Com. salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
             <span class="plim take-l">✅ +${p.takeProfit}%</span>
           </div>
           <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
-          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</span><span>+${p.takeProfit}%</span></div>
-          ${!isLivePrice ? '<div style="font-size:10px;color:var(--muted);margin-top:4px">Usando último precio guardado</div>' : ''}
+          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}% mío</span><span>+${p.takeProfit}%</span></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="pos-pnl">
-            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:14px">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
+            <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:15px;font-weight:800">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
