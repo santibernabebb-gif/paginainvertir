@@ -1541,8 +1541,8 @@ function renderPortfolio() {
   const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
   const unrealPnl = (S.positions || []).reduce((a, p) => {
     const m = S.markets[p.market];
-    if (!m || !m.price) return a;
-    const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
+    const cur = m?.price || p.lastPrice || p.entryPrice;
+    const pct = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
     return a + p.value * (pct / 100);
   }, 0);
 
@@ -1574,7 +1574,8 @@ function renderPortfolio() {
   } else {
     pb.innerHTML = S.positions.map(p => {
       const m = S.markets[p.market];
-      const cur = m?.price || p.entryPrice;
+      const cur = m?.price || p.lastPrice || p.entryPrice;
+      if (m?.price) p.lastPrice = m.price;
       // P&L de la posición (mi ganancia/pérdida)
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const pnl  = p.value * (pct2 / 100);
@@ -1590,11 +1591,11 @@ function renderPortfolio() {
         ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%</span>`
         : '';
 
-      // ¿Mercado cerrado ahora?
+      // Estado horario del mercado: solo informativo, no debe congelar el P&L.
       const isMarketOpen = S.openMarkets.includes(p.market);
       const marketStatusHtml = !isMarketOpen
         ? `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`
-        : '';
+        : `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`;
 
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
