@@ -332,7 +332,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .toast.success{border-left:3px solid var(--green)}.toast.error{border-left:3px solid var(--red)}.toast.info{border-left:3px solid var(--accent)}
 
 /* PWA */
-#install-banner{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:11px;padding:10px 16px;box-shadow:var(--shadow-lg);z-index:8000;align-items:center;gap:9px;font-size:12px;font-weight:500;max-width:320px;width:90%}
+#install-banner{display:none!important;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border-radius:11px;padding:10px 16px;box-shadow:var(--shadow-lg);z-index:8000;align-items:center;gap:9px;font-size:12px;font-weight:500;max-width:320px;width:90%}
 #install-banner button{padding:5px 11px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
 .btn-install{background:#fff;color:var(--accent)}.btn-close{background:rgba(255,255,255,.2);color:#fff}
 
@@ -475,14 +475,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
             <label class="ap-toggle"><input type="checkbox" id="cc-enabled"> Activar simulación de costes</label>
             <button class="ap-btn" style="width:auto;padding:8px 14px" onclick="saveCostConfig()">Guardar costes</button>
           </div>
-          <div class="pf-grid" style="margin-bottom:8px">
-            <div class="pf-s"><div class="lbl">Costes abiertos</div><div class="val red" id="cc-openfees">$0.00</div><div class="sub" style="color:var(--muted)">entrada + salida estimada</div></div>
-            <div class="pf-s"><div class="lbl">Costes cerrados</div><div class="val red" id="cc-closedfees">$0.00</div><div class="sub" style="color:var(--muted)">ya pagados</div></div>
-            <div class="pf-s"><div class="lbl">Broker actual</div><div class="val blue" id="cc-brokerlbl">IBKR</div><div class="sub" style="color:var(--muted)">simulado</div></div>
-            <div class="pf-s"><div class="lbl">Estado</div><div class="val" id="cc-enabledlbl">ON</div><div class="sub" style="color:var(--muted)">costes activos</div></div>
+          <div class="pf-grid">
+            <div class="pf-s"><div class="lbl">Comisiones pagadas</div><div class="val red" id="cc-closedfees">$0.00</div><div class="sub" style="color:var(--muted)">operaciones cerradas</div></div>
+            <div class="pf-s"><div class="lbl">Comisiones pendientes</div><div class="val red" id="cc-openfees">$0.00</div><div class="sub" style="color:var(--muted)">posiciones abiertas</div></div>
+            <div class="pf-s"><div class="lbl">Broker</div><div class="val blue" id="cc-brokerlbl">IBKR</div><div class="sub" id="cc-enabledlbl" style="color:var(--muted)">activo</div></div>
           </div>
-          <div id="cc-list" style="display:flex;flex-direction:column;gap:6px;max-height:210px;overflow-y:auto">
-            <div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin operaciones aún.</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:8px;padding:6px;background:var(--bg);border-radius:6px">
+            💡 Los costes detallados por operación aparecen en el Historial
           </div>
         </div>
       </div>
@@ -683,7 +682,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
   </div>
 </div>
 
-<div id="install-banner">
+<div id="install-banner" style="display:none!important">
   <span>📲 Instalar como app</span>
   <button class="btn-install" onclick="installApp()">Instalar</button>
   <button class="btn-close" onclick="closeInstall()">✕</button>
@@ -699,7 +698,9 @@ const SK = 'santisystems_v10_token';
 
 const MKTINFO = {
   // Índices USA
-  SP500:{n:'S&P 500',f:'🇺🇸'},NASDAQ:{n:'Nasdaq',f:'🇺🇸'},DOW:{n:'Dow Jones',f:'🇺🇸'},
+  SP500:{n:'S&P 500',f:'🇺🇸'},NASDAQ:{n:'Nasdaq',f:'🇺🇸'},DOW:{n:'Dow Jones',f:'🇺🇸'},RUSSEL2000:{n:'Russell 2000',f:'🇺🇸'},
+  // Índices Europa
+  AEX:{n:'AEX Amsterdam',f:'🇳🇱'},SMI:{n:'SMI Suiza',f:'🇨🇭'},MIBTEL:{n:'FTSE MIB Italia',f:'🇮🇹'},
   // Índices Europa
   IBEX:{n:'IBEX 35',f:'🇪🇸'},DAX:{n:'DAX 40',f:'🇩🇪'},FTSE:{n:'FTSE 100',f:'🇬🇧'},CAC40:{n:'CAC 40',f:'🇫🇷'},
   // Índices Asia
@@ -717,16 +718,37 @@ const MKTINFO = {
   // USA — Salud/Consumo/Industrial
   JOHNSON:{n:'Johnson & Johnson',f:'💊'},WALMART:{n:'Walmart',f:'🛒'},
   COCACOLA:{n:'Coca-Cola',f:'🥤'},BOEING:{n:'Boeing',f:'✈️'},
-  // España — IBEX35
+  // España — IBEX35 completo
   SANTANDER:{n:'Santander',f:'🏦'},INDITEX:{n:'Inditex',f:'👗'},BBVA:{n:'BBVA',f:'🏛️'},
   REPSOL:{n:'Repsol',f:'⛽'},TELEFONICA:{n:'Telefónica',f:'📞'},IBERDROLA:{n:'Iberdrola',f:'⚡'},
   CAIXABANK:{n:'CaixaBank',f:'🏧'},AMADEUS:{n:'Amadeus',f:'✈️'},
-  // Europa
+  FERROVIAL:{n:'Ferrovial',f:'🏗️'},AENA:{n:'Aena',f:'✈️'},ACCIONA:{n:'Acciona',f:'🌱'},
+  ENDESA:{n:'Endesa',f:'⚡'},NATURGY:{n:'Naturgy',f:'🔵'},MAPFRE:{n:'Mapfre',f:'🛡️'},
+  IAG:{n:'IAG (Iberia)',f:'✈️'},INDRA:{n:'Indra',f:'💻'},BANKINTER:{n:'Bankinter',f:'🏦'},
+  ARCELORMITTAL:{n:'ArcelorMittal',f:'🔩'},SACYR:{n:'Sacyr',f:'🏗️'},FLUIDRA:{n:'Fluidra',f:'💧'},
+  SOLARIA:{n:'Solaria',f:'☀️'},MELIA:{n:'Meliá Hotels',f:'🏨'},GRIFOLS:{n:'Grifols',f:'💊'},UNICAJA:{n:'Unicaja',f:'🏦'},
+  // Europa grandes
   ASML:{n:'ASML',f:'🇳🇱'},LVMH:{n:'LVMH',f:'🇫🇷'},SAP:{n:'SAP',f:'🇩🇪'},SIEMENS:{n:'Siemens',f:'🇩🇪'},
-  // Asia
-  SAMSUNG:{n:'Samsung',f:'📱'},TOYOTA:{n:'Toyota',f:'🚗'},SOFTBANK:{n:'SoftBank',f:'🇯🇵'},
-  SONY:{n:'Sony',f:'🎮'},ALIBABA:{n:'Alibaba',f:'🛒'},TENCENT:{n:'Tencent',f:'🇨🇳'},
-  HONDA:{n:'Honda',f:'🏍️'},BAIDU:{n:'Baidu',f:'🔍'},
+  TOTALENERGIES:{n:'TotalEnergies',f:'🇫🇷'},AIRBUS:{n:'Airbus',f:'✈️'},
+  VOLKSWAGEN:{n:'Volkswagen',f:'🚗'},BMW:{n:'BMW',f:'🚗'},
+  NESTLE:{n:'Nestlé',f:'🇨🇭'},NOVARTIS:{n:'Novartis',f:'💊'},ROCHE:{n:'Roche',f:'💊'},
+  UNILEVER:{n:'Unilever',f:'🧴'},HSBC:{n:'HSBC',f:'🏦'},BP:{n:'BP',f:'⛽'},
+  ASTRAZENECA:{n:'AstraZeneca',f:'💊'},ALLIANZ:{n:'Allianz',f:'🛡️'},
+  ADIDAS:{n:'Adidas',f:'👟'},BNPPARIBAS:{n:'BNP Paribas',f:'🇫🇷'},
+  // USA adicional
+  MASTERCARD:{n:'Mastercard',f:'💳'},AMD:{n:'AMD',f:'💻'},DISNEY:{n:'Disney',f:'🎬'},
+  BANKOFAMERICA:{n:'Bank of America',f:'🏦'},CITIGROUP:{n:'Citigroup',f:'🏦'},RUSSEL2000:{n:'Russell 2000',f:'🇺🇸'},
+  PFIZER:{n:'Pfizer',f:'💊'},ABBVIE:{n:'AbbVie',f:'💊'},MERCK:{n:'Merck',f:'💊'},UNITEDHEALTH:{n:'UnitedHealth',f:'🏥'},
+  PEPSI:{n:'PepsiCo',f:'🥤'},MCDONALDS:{n:"McDonald's",f:'🍔'},NIKE:{n:'Nike',f:'👟'},STARBUCKS:{n:'Starbucks',f:'☕'},
+  EXXON:{n:'ExxonMobil',f:'⛽'},CHEVRON:{n:'Chevron',f:'⛽'},CATERPILLAR:{n:'Caterpillar',f:'🚜'},DEERE:{n:'John Deere',f:'🚜'},
+  SALESFORCE:{n:'Salesforce',f:'☁️'},ADOBE:{n:'Adobe',f:'🎨'},PAYPAL:{n:'PayPal',f:'💳'},UBER:{n:'Uber',f:'🚗'},
+  INTEL:{n:'Intel',f:'💻'},QUALCOMM:{n:'Qualcomm',f:'📱'},BROADCOM:{n:'Broadcom',f:'💻'},
+  // Materias primas adicional
+  COPPER:{n:'Cobre',f:'🟤'},PLATINUM:{n:'Platino',f:'⚪'},BRENT:{n:'Brent',f:'🛢️'},
+  // Forex adicional
+  AUDUSD:{n:'AUD/USD',f:'🇦🇺'},USDCAD:{n:'USD/CAD',f:'🇨🇦'},EURGBP:{n:'EUR/GBP',f:'💶'},
+  // Crypto
+  BITCOIN:{n:'Bitcoin',f:'₿'},ETHEREUM:{n:'Ethereum',f:'Ξ'},
 };
 
 // ═══════════════════════════════════════════════
@@ -1206,7 +1228,7 @@ function renderMarkets(invalidMarkets = {}) {
       <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig ${sigCls}">${sigTxt}</span></div>
       <div class="mkt-name">${info.n}${!isOpen ? ' 🔒' : ''}</div>
       <div class="mkt-price">${fmtP(m.price)}</div>
-      <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}%</div>
+      <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}" title="Cambio hoy vs cierre anterior">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}% <span style="font-weight:400;opacity:0.7">hoy</span></div>
       ${preMarketHtml}
       ${a?.rsi != null ? `<div class="mkt-rsi">RSI:${a.rsi} S:${sc >= 0 ? '+' : ''}${sc} C:${a.confidence}%</div>` : ''}
     </div>`;
@@ -1538,27 +1560,41 @@ function renderPortfolio() {
   if (!(S.history || []).length) {
     hb.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div>';
   } else {
-    hb.innerHTML = (S.history || []).slice(-8).reverse().map(h => `
-      <div style="padding:8px 0;border-bottom:1px solid var(--border)">
-        <div class="hist-row" style="border-bottom:none;padding:0">
-          <div style="display:flex;align-items:center;gap:5px">
-            <div class="hist-dot" style="background:${h.pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div>
-            <span>${MKTINFO[h.market]?.n || h.market}</span>
-            <span style="color:var(--muted);font-size:9px">${h.closedBy === 'stop' ? '🛑SL' : h.closedBy === 'take' ? '✅TP' : h.closedBy === 'manual' ? '👤' : '🤖'} $${h.value}</span>
+    hb.innerHTML = (S.history || []).slice(-20).reverse().map(h => {
+      const grossPnl = h.grossPnl ?? h.pnl ?? 0;
+      const netPnl   = h.netPnl   ?? h.pnl ?? 0;
+      const totalFees = h.totalFees ?? ((h.entryCosts?.total || 0) + (h.exitCosts?.total || 0));
+      const entryFee  = h.entryCosts?.total || 0;
+      const exitFee   = h.exitCosts?.total  || 0;
+      const entryPrice = h.entryPrice || 0;
+      const exitPrice  = h.closePrice || h.rawClosePrice || 0;
+      const icon = h.closedBy === 'stop' ? '🛑 Stop Loss' : h.closedBy === 'take' ? '✅ Take Profit' : h.closedBy === 'manual' ? '👤 Manual' : '🤖 Auto';
+      const who  = h.openedBy === 'auto' ? '🤖' : h.openedBy === 'reinvest' ? '♻️' : '👤';
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="hist-dot" style="background:${netPnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div>
+            <div>
+              <span style="font-weight:600">${MKTINFO[h.market]?.n || h.market}</span>
+              <span style="color:var(--muted);font-size:9px;margin-left:4px">${who} ${icon}</span>
+              <div style="font-size:9px;color:var(--muted)">${h.openedAt || ''} → ${h.closedAt || ''}</div>
+            </div>
           </div>
-          <div>
-            <span class="${h.pnl >= 0 ? 'green' : 'red'}" style="font-weight:600;font-family:var(--mono)">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</span>
-            <span style="color:var(--muted);font-size:9px;margin-left:5px">${h.closedAt}</span>
+          <div style="text-align:right">
+            <div style="font-weight:700;font-family:var(--mono);color:${netPnl >= 0 ? 'var(--green)' : 'var(--red)'};font-size:13px">${netPnl >= 0 ? '+' : '-'}$${Math.abs(netPnl).toFixed(2)} <span style="font-size:9px;font-weight:400">neto</span></div>
+            <div style="font-size:10px;color:var(--muted)">${grossPnl >= 0 ? '+' : '-'}$${Math.abs(grossPnl).toFixed(2)} bruto</div>
           </div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px">
-          Entrada: <strong class="red">$${((h.entryCosts?.total)||0).toFixed(2)}</strong> ·
-          Salida: <strong class="red">$${((h.exitCosts?.total)||0).toFixed(2)}</strong> ·
-          Total costes: <strong class="red">$${((h.totalFees)||(((h.entryCosts?.total)||0)+((h.exitCosts?.total)||0))).toFixed(2)}</strong> ·
-          Bruto: <strong>${((h.grossPnl ?? h.pnl)||0) >= 0 ? '+' : '-'}$${Math.abs((h.grossPnl ?? h.pnl)||0).toFixed(2)}</strong> ·
-          Neto: <strong class="${h.pnl >= 0 ? 'green' : 'red'}">${h.pnl >= 0 ? '+' : '-'}$${Math.abs(h.pnl).toFixed(2)}</strong>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;background:var(--bg);border-radius:6px;padding:6px">
+          <div><span style="color:var(--muted)">Capital</span><br><strong>$${(h.value||0).toFixed(2)}</strong></div>
+          <div><span style="color:var(--muted)">Precio entrada</span><br><strong>${fmtP(entryPrice)}</strong></div>
+          <div><span style="color:var(--muted)">Precio salida</span><br><strong>${fmtP(exitPrice)}</strong></div>
+          <div><span style="color:var(--muted)">Comisión entrada</span><br><strong class="red">$${entryFee.toFixed(2)}</strong></div>
+          <div><span style="color:var(--muted)">Comisión salida</span><br><strong class="red">$${exitFee.toFixed(2)}</strong></div>
+          <div><span style="color:var(--muted)">Total comisiones</span><br><strong class="red">$${totalFees.toFixed(2)}</strong></div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 }
 
@@ -1805,5 +1841,3 @@ function toast(msg, type = 'info') {
 </script>
 </body>
 </html>
-
-
