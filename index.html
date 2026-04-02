@@ -238,9 +238,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-pnl .pp{font-size:12px;margin-top:2px}
 .close-btn{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:6px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
-.venue-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:999px;border:1px solid var(--border);line-height:1}
-.venue-badge.alpaca{background:var(--green-light);border-color:#bbf7d0;color:#166534}
-.venue-badge.internal{background:var(--accent-light);border-color:var(--accent-mid);color:var(--accent)}
 
 /* TRADE */
 .tf{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
@@ -1587,7 +1584,6 @@ function renderPortfolio() {
       const isLivePrice = !!m?.price;
       const entryFee = p.entryCosts?.total || 0;
       const exitFee  = p.estimatedExitCosts?.total || 0;
-      const venueBadge = renderVenueBadge(p);
 
       // Cambio diario del mercado en general (no mi posición)
       const mktDailyChange = (m && typeof m.change === 'number' && isFinite(m.change)) ? m.change : null;
@@ -1608,7 +1604,6 @@ function renderPortfolio() {
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">
             <span class="pos-name" style="font-size:14px">${info.n}</span>
             <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span>
-            ${venueBadge}
             ${marketStatusHtml}
             ${mktDailyHtml}
           </div>
@@ -1662,7 +1657,6 @@ function renderPortfolio() {
         const exitPrice  = h.closePrice || h.rawClosePrice || 0;
         const icon = h.closedBy==='stop' ? '🛑 SL' : h.closedBy==='take' ? '✅ TP' : h.closedBy==='manual' ? '👤' : '🤖';
         const who  = h.openedBy==='auto' ? '🤖' : h.openedBy==='reinvest' ? '♻️' : '👤';
-        const venueBadge = renderVenueBadge(h);
         return `<div style="padding:10px;border:1px solid var(--border);border-top:none;background:var(--white)">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
             <div style="display:flex;align-items:center;gap:6px">
@@ -1670,7 +1664,6 @@ function renderPortfolio() {
               <div>
                 <span style="font-weight:600">${MKTINFO[h.market]?.n||h.market}</span>
                 <span style="color:var(--muted);font-size:9px;margin-left:4px">${who} ${icon}</span>
-                ${venueBadge}
                 <div style="font-size:9px;color:var(--muted)">${h.openedAt||''} → ${h.closedAt||''}</div>
               </div>
             </div>
@@ -2002,18 +1995,6 @@ function closeInstall() { el('install-banner').style.display = 'none'; }
 // HELPERS
 // ═══════════════════════════════════════════════
 function el(id) { return document.getElementById(id); }
-function getVenueSource(obj) {
-  return obj?.source || obj?.executionVenue || 'internal';
-}
-function getVenueLabel(obj) {
-  return getVenueSource(obj) === 'alpaca' ? 'Alpaca' : 'Simulación';
-}
-function renderVenueBadge(obj) {
-  const source = getVenueSource(obj);
-  return source === 'alpaca'
-    ? '<span class="venue-badge alpaca">🟢 Alpaca</span>'
-    : '<span class="venue-badge internal">🔵 Simulación</span>';
-}
 function fmtP(p) {
   if (!p && p !== 0) return '—';
   if (p >= 1000) return '$' + p.toLocaleString('es-ES', { maximumFractionDigits: 0 });
