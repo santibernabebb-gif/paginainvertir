@@ -1608,33 +1608,6 @@ async function closePosition(positionId, currentPnl, currentPct, market = null, 
   }
 }
 
-async function purgePosition(positionId, market = null, externalVenue = '') {
-  const venueMsg = externalVenue === 'alpaca'
-    ? '\n\nEsto solo quita la posición del panel si YA NO existe realmente en Alpaca.'
-    : '\n\nEsto eliminará la posición del panel sin vender nada.';
-  if (!confirm(`¿Eliminar esta posición del panel?${venueMsg}`)) return;
-
-  try {
-    const r = await fetch(`${WORKER}/action`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-      body: JSON.stringify({ type: 'purge', positionId, market }),
-    });
-    const d = await r.json();
-    if (d.ok) {
-      if (d.state) applyState(d.state);
-      S.positions = (S.positions || []).filter(p => p.id !== positionId && (!market || p.market !== market));
-      if (market) S.alpacaPositions = (S.alpacaPositions || []).filter(p => p.market !== market);
-      renderPortfolio();
-      await loadDashboard();
-      toast(d.message || 'Posición eliminada del panel', 'success');
-    } else {
-      toast(d.error || 'No se pudo eliminar del panel', 'error');
-    }
-  } catch (e) {
-    toast('Error de conexión', 'error');
-  }
-
 // ═══════════════════════════════════════════════
 // BOT CONFIG
 // ═══════════════════════════════════════════════
@@ -1790,7 +1763,6 @@ function renderPositionSection(list, bodyId, emptyText) {
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)}, '${p.market}', '${p.executionVenue === 'alpaca' || p.source === 'alpaca' ? 'alpaca' : 'internal'}')">Cerrar</button>
-          <button class="close-btn" style="background:#6b7280" onclick="purgePosition('${p.id}', '${p.market}', '${p.executionVenue === 'alpaca' || p.source === 'alpaca' ? 'alpaca' : 'internal'}')">Eliminar</button>
         </div>
       </div>`;
     }).join('');
