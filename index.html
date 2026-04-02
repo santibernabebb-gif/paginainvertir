@@ -181,6 +181,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .mkt-price{font-family:var(--mono);font-size:11px;font-weight:500;margin:2px 0}
 .mkt-chg{font-size:9px;font-weight:600}
 .mkt-rsi{font-size:8px;color:var(--muted);font-family:var(--mono)}
+.market-split{display:flex;flex-direction:column;gap:10px}.market-block{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px}.market-block-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.market-block-title{font-size:12px;font-weight:700}.venue-chip{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px}.venue-chip.internal{background:#eff6ff;color:#1d4ed8}.venue-chip.alpaca{background:#ecfdf5;color:#15803d}.venue-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:999px}.venue-badge.internal{background:#eff6ff;color:#1d4ed8}.venue-badge.alpaca{background:#ecfdf5;color:#15803d}.alpaca-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.alpaca-stat{padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px}.alpaca-stat .lbl{font-size:9px;color:var(--muted);margin-bottom:2px}.alpaca-stat .val{font-family:var(--mono);font-size:13px;font-weight:700}.alpaca-note{font-size:10px;color:var(--muted);margin-top:6px}
 
 /* ANÁLISIS */
 .analysis-card{display:none}
@@ -349,6 +350,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
   .mkt-grid{grid-template-columns:repeat(2,1fr)}
   .ind-grid{grid-template-columns:1fr 1fr}
   .macro-grid{grid-template-columns:1fr 1fr 1fr}
+  .alpaca-grid{grid-template-columns:1fr 1fr}
   .bank-grid{grid-template-columns:1fr 1fr}
   .bank-grid .bank-stat:last-child{grid-column:span 2}
   .tf{grid-template-columns:1fr 1fr}
@@ -523,10 +525,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
+      <!-- ALPACA USA -->
+      <div class="card">
+        <div class="ch"><span class="ct">🇺🇸 Alpaca USA</span><span id="alpaca-conn-chip" class="venue-chip alpaca">Conectando…</span></div>
+        <div class="cb">
+          <div class="alpaca-grid">
+            <div class="alpaca-stat"><div class="lbl">Cash Alpaca</div><div class="val" id="alpaca-cash">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Buying Power</div><div class="val" id="alpaca-buying">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Equity</div><div class="val" id="alpaca-equity">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Estado</div><div class="val" id="alpaca-status">—</div></div>
+          </div>
+          <div class="alpaca-note" id="alpaca-note">Los mercados USA se envían a Alpaca cuando son compatibles. Europa sigue interna.</div>
+        </div>
+      </div>
+
       <!-- MERCADOS -->
       <div class="card">
         <div class="ch" onclick="toggleMarkets()" style="cursor:pointer">
-          <span class="ct">Mercados Globales</span>
+          <span class="ct">Mercados Separados</span>
           <div style="display:flex;align-items:center;gap:8px">
             <span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span>
             <span id="mkt-toggle-arrow" style="font-size:11px;color:var(--muted)">▶</span>
@@ -534,8 +550,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
         <div id="mkt-body" style="display:none">
           <div class="cb">
-            <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:7px"></div>
-            <div class="mkt-grid" id="mkt-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+            <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:9px"></div>
+            <div class="market-split">
+              <div class="market-block">
+                <div class="market-block-header">
+                  <span class="market-block-title">🇪🇺 Europa · simulación interna</span>
+                  <span class="venue-chip internal">INTERNO</span>
+                </div>
+                <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+              </div>
+              <div class="market-block">
+                <div class="market-block-header">
+                  <span class="market-block-title">🇺🇸 USA · Alpaca</span>
+                  <span class="venue-chip alpaca">ALPACA</span>
+                </div>
+                <div class="mkt-grid" id="usa-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -795,8 +826,14 @@ let S = {
   costConfig: { enabled:true, broker:'ibkr', commissionPercent:0.05, minimumPerOrder:1, fixedPerOrder:0, spreadPercent:0.02, fxPercent:0.002 },
   // Estado de mercado (solo display)
   markets: {},
+  europeMarkets: {},
+  usaMarkets: {},
+  europeInvalidMarkets: {},
+  usaInvalidMarkets: {},
   analysis: {},
   fearGreed: null,
+  alpacaAccount: null,
+  alpacaError: '',
   macro: null,
   currentHour: 12,
   openMarkets: [],
@@ -1149,9 +1186,15 @@ async function loadDashboard() {
     if (!d.ok) return;
 
     S.markets = d.markets || {};
+    S.europeMarkets = d.europeMarkets || {};
+    S.usaMarkets = d.usaMarkets || {};
+    S.europeInvalidMarkets = d.europeInvalidMarkets || {};
+    S.usaInvalidMarkets = d.usaInvalidMarkets || {};
     S.analysis = d.analysis || {};
     S.fearGreed = d.fearGreed || null;
     S.macro = d.macro || null;
+    S.alpacaAccount = d.alpacaAccount || null;
+    S.alpacaError = d.alpacaError || '';
     S.currentHour = d.currentHour || 12;
     S.openMarkets = d.openMarkets || [];
     S.currentRegion = d.currentRegion || '';
@@ -1161,6 +1204,7 @@ async function loadDashboard() {
     renderMacro();
     renderNews(d.news || []);
     renderRegionBar();
+    renderAlpacaPanel();
     updTPrice();
     el('mkt-ts').textContent = '✅ ' + hhm();
     if (S.selected && S.analysis[S.selected]) renderAnalysis(S.selected);
@@ -1215,7 +1259,7 @@ function toggleMarkets() {
 function renderRegionBar() {
   const h = S.currentHour;
   // Solo actualiza el texto de región — los tabs de filtro los gestiona filterMarkets()
-  el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion || 'europe'} — Mercados ${S.openMarkets?.length || 0} abiertos`;
+  el('region-info').textContent = `${hhm()} España · Activo: ${S.currentRegion || 'europe'} · Europa interna y USA por Alpaca · Mercados ${S.openMarkets?.length || 0} abiertos`;
 }
 
 function renderFG() {
@@ -1239,11 +1283,10 @@ function renderMacro() {
   el('mc-vix').style.color = vix > 30 ? 'var(--red)' : vix > 20 ? 'var(--orange)' : 'var(--green)';
 }
 
-function renderMarkets(invalidMarkets = {}) {
-  S.invalidMarkets = invalidMarkets;
-  const g = el('mkt-grid');
-  let allKeys = [...new Set([...Object.keys(S.markets), ...Object.keys(invalidMarkets)])];
-  // Aplicar filtro de categoría
+function renderMarketGrid(gridId, keys, invalidMap = {}) {
+  const g = el(gridId);
+  if (!g) return;
+  let allKeys = [...new Set([...keys.filter(Boolean), ...Object.keys(invalidMap || {})])];
   if (S_marketFilter && S_marketFilter !== 'all') {
     const cat = MARKET_CATEGORIES[S_marketFilter] || [];
     allKeys = allKeys.filter(k => cat.includes(k));
@@ -1257,11 +1300,13 @@ function renderMarkets(invalidMarkets = {}) {
     const m = S.markets[k];
     const info = MKTINFO[k] || { n: k, f: '📊' };
     const isOpen = S.openMarkets.includes(k);
-    const isInvalid = !m && invalidMarkets[k];
+    const isInvalid = !m && invalidMap[k];
+    const venueCls = MARKET_CATEGORIES.usa.includes(k) ? 'alpaca' : 'internal';
+    const venueLbl = MARKET_CATEGORIES.usa.includes(k) ? '🟢 Alpaca' : '🔵 Interno';
 
     if (isInvalid) {
-      return `<div class="mkt invalid" title="Datos no válidos: ${invalidMarkets[k]}">
-        <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig sig-inv">N/D</span></div>
+      return `<div class="mkt invalid" title="Datos no válidos: ${invalidMap[k]}">
+        <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="venue-badge ${venueCls}">${venueLbl}</span></div>
         <div class="mkt-name">${info.n}</div>
         <div class="mkt-price" style="color:var(--muted);font-size:9px">Sin datos</div>
       </div>`;
@@ -1273,21 +1318,50 @@ function renderMarkets(invalidMarkets = {}) {
     const sc = a?.score || 0;
     const sigCls = sc >= 3 ? 'sig-buy' : sc <= -3 ? 'sig-sell' : 'sig-neu';
     const sigTxt = sc >= 5 ? '▲▲▲' : sc >= 3 ? '▲▲' : sc >= 1 ? '▲' : sc <= -5 ? '▼▼▼' : sc <= -3 ? '▼▼' : sc <= -1 ? '▼' : '—';
-
-    // Pre-market solo para Apple y Nvidia
     const preMarketHtml = (k === 'APPLE' || k === 'NVIDIA') && m.preMarketPrice
       ? `<div style="font-size:9px;color:var(--muted);margin-top:1px">Pre: $${m.preMarketPrice} <span style="color:${(m.preMarketChange||0) >= 0 ? 'var(--green)' : 'var(--red)'}">${(m.preMarketChange||0) >= 0 ? '+' : ''}${(m.preMarketChange||0).toFixed(2)}%</span></div>`
       : '';
+    const sourceLabel = m?.priceSource || m?.source || 'yahoo';
 
     return `<div class="mkt ${k === S.selected ? 'sel' : ''} ${!isOpen ? 'closed' : ''}" onclick="selMkt('${k}')" title="${!isOpen ? 'Mercado cerrado ahora' : ''}">
       <div class="mkt-top"><span class="mkt-flag">${info.f}</span><span class="sig ${sigCls}">${sigTxt}</span></div>
       <div class="mkt-name">${info.n}${!isOpen ? ' 🔒' : ''}</div>
       <div class="mkt-price">${fmtP(m.price)}</div>
-      <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}" title="Cambio hoy vs cierre anterior">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}% <span style="font-weight:400;opacity:0.7">hoy</span></div>
+      <div class="mkt-chg ${(m.change || 0) >= 0 ? 'green' : 'red'}">${(m.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(m.change || 0).toFixed(2)}% <span style="font-weight:400;opacity:0.7">hoy</span></div>
+      <div style="margin-top:3px"><span class="venue-badge ${venueCls}">${venueLbl}</span> <span style="font-size:9px;color:var(--muted)">datos: ${sourceLabel}</span></div>
       ${preMarketHtml}
       ${a?.rsi != null ? `<div class="mkt-rsi">RSI:${a.rsi} S:${sc >= 0 ? '+' : ''}${sc} C:${a.confidence}%</div>` : ''}
     </div>`;
   }).join('');
+}
+
+function renderMarkets(invalidMarkets = {}) {
+  S.invalidMarkets = invalidMarkets;
+  renderMarketGrid('eu-grid', Object.keys(S.europeMarkets || {}), S.europeInvalidMarkets || {});
+  renderMarketGrid('usa-grid', Object.keys(S.usaMarkets || {}), S.usaInvalidMarkets || {});
+}
+
+function renderAlpacaPanel() {
+  const acc = S.alpacaAccount;
+  const chip = el('alpaca-conn-chip');
+  if (!chip) return;
+  if (acc) {
+    chip.textContent = 'ALPACA OK';
+    chip.className = 'venue-chip alpaca';
+    el('alpaca-cash').textContent = acc.cash != null ? '$' + Number(acc.cash).toFixed(2) : '—';
+    el('alpaca-buying').textContent = acc.buyingPower != null ? '$' + Number(acc.buyingPower).toFixed(2) : '—';
+    el('alpaca-equity').textContent = acc.equity != null ? '$' + Number(acc.equity).toFixed(2) : '—';
+    el('alpaca-status').textContent = acc.status || 'OK';
+    el('alpaca-note').textContent = acc.tradingBlocked ? '⚠️ Alpaca conectado pero el trading sale bloqueado en la cuenta.' : 'USA usa Alpaca para ejecución cuando el activo es compatible. Europa sigue interna.';
+  } else {
+    chip.textContent = 'SIN ALPACA';
+    chip.className = 'venue-chip internal';
+    el('alpaca-cash').textContent = '—';
+    el('alpaca-buying').textContent = '—';
+    el('alpaca-equity').textContent = '—';
+    el('alpaca-status').textContent = 'OFF';
+    el('alpaca-note').textContent = S.alpacaError ? `⚠️ ${S.alpacaError}` : 'No hay conexión Alpaca en este momento. Europa sigue funcionando igual que ahora.';
+  }
 }
 
 function selMkt(k) {
@@ -1597,6 +1671,7 @@ function renderPortfolio() {
       const marketStatusHtml = isMarketOpen
         ? `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`
         : `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`;
+      const venueBadge = `<span class="venue-badge ${(p.executionVenue === 'alpaca' || p.source === 'alpaca') ? 'alpaca' : 'internal'}">${(p.executionVenue === 'alpaca' || p.source === 'alpaca') ? '🟢 Alpaca' : '🔵 Simulación'}</span>`;
 
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
@@ -1605,9 +1680,10 @@ function renderPortfolio() {
             <span class="pos-name" style="font-size:14px">${info.n}</span>
             <span style="font-size:10px;color:var(--muted)">${p.openedBy === 'auto' ? '🤖' : p.openedBy === 'reinvest' ? '♻️' : p.openedBy === 'scheduled' ? '📅' : '👤'}</span>
             ${marketStatusHtml}
+            ${venueBadge}
             ${mktDailyHtml}
           </div>
-          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}${m?.priceSource ? ` · fuente: ${m.priceSource}` : ''}</div>
+          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}${m?.priceSource ? ` · datos: ${m.priceSource}` : ''}${p.executionVenue ? ` · ejecución: ${p.executionVenue}` : ''}</div>
           <div class="pos-sub" style="font-size:11px;color:var(--muted)">Com. entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Com. salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
             <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
