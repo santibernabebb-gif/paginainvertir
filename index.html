@@ -568,6 +568,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
           <div class="bot-detail-row"><span class="bd-label">Pérdida diaria</span><span class="bd-value" id="bd-daily-loss">$0.00 / $10.00</span></div>
           <div class="bot-detail-row"><span class="bd-label">Pérdidas seguidas</span><span class="bd-value" id="bd-consec">0</span></div>
           <div class="bot-detail-row"><span class="bd-label">Ciclos espera</span><span class="bd-value" id="bd-wait">0</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Riesgo/trade</span><span class="bd-value" id="bd-risk">1.0%</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Exposición máx</span><span class="bd-value" id="bd-exposure">70%</span></div>
+          <div class="bot-detail-row"><span class="bd-label">Última decisión</span><span class="bd-value" style="font-weight:400;color:var(--muted);font-family:var(--font);font-size:11px;text-align:right;max-width:220px" id="bd-last-decision">—</span></div>
           <div id="unlock-row" style="display:none;margin-top:10px">
             <button onclick="unlockBot()" style="width:100%;padding:8px;background:var(--orange);color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:var(--font)">
               🔓 Desbloquear Bot
@@ -704,7 +707,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
           <div class="ap-grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
             <div class="ap-f"><label>Pérd. diaria máx ($)</label><input type="number" id="ap-maxloss" value="10" min="1"></div>
-            <div class="ap-f"><label>Nota</label><div style="font-size:11px;color:var(--muted);padding-top:8px">Cada región usa solo su propia configuración.</div></div>
+            <div class="ap-f"><label>Riesgo por trade (%)</label><input type="number" id="ap-risk-per-trade" value="1" min="0.1" max="5" step="0.1"></div>
+            <div class="ap-f"><label>Exposición máxima (%)</label><input type="number" id="ap-max-exposure" value="70" min="10" max="100" step="1"></div>
+            <div class="ap-f"><label>Máx posiciones</label><input type="number" id="ap-max-open" value="3" min="1" max="5" step="1"></div>
+            <div class="ap-f"><label>Cooldown mercado (min)</label><input type="number" id="ap-cooldown" value="30" min="0" max="240" step="5"></div>
+            <div class="ap-f"><label>Nota</label><div style="font-size:11px;color:var(--muted);padding-top:8px">Fase 3: riesgo dinámico, ranking inteligente, diversificación y trailing stop.</div></div>
           </div>
 
           <button class="ap-btn" onclick="saveBotConfig()">💾 Guardar configuración</button>
@@ -845,6 +852,8 @@ let S = {
     usa:    { enabled:false, amount:200, stop:0.5, take:1.0, reinvestOn:false },
     europe: { enabled:false, amount:200, stop:0.5, take:1.0, reinvestOn:false },
   },
+  riskConfig: { enabled:true, riskPerTradePercent:1.0, maxExposurePercent:70, maxOpenPositions:3, marketCooldownMinutes:30 },
+  lastDecisionLog: null,
   maxDailyLoss: 10,
   dailyLoss: 0,
   dailyLossHit: false,
@@ -953,7 +962,7 @@ function applyState(state) {
     'bankBalance','investCash','startTotal','withdrawn','positions','history',
     'trades','mode','autoOn','autoAmount','autoStop','autoTake','reinvestOn',
     'maxDailyLoss','dailyLoss','dailyLossHit','consecutiveLosses','waitCycles',
-    'scheduledOrders','botStatus','botStatusReason','costConfig','autoConfig',
+    'scheduledOrders','botStatus','botStatusReason','costConfig','autoConfig','riskConfig','lastDecisionLog',
   ];
   for (const f of fields) {
     if (state[f] !== undefined) S[f] = state[f];
@@ -1490,6 +1499,14 @@ function renderBotStatus() {
   el('bd-consec').textContent = S.consecutiveLosses || 0;
   el('bd-consec').style.color = (S.consecutiveLosses || 0) >= 2 ? 'var(--red)' : 'var(--text)';
   el('bd-wait').textContent = S.waitCycles || 0;
+  if (el('bd-risk')) el('bd-risk').textContent = `${(S.riskConfig?.riskPerTradePercent ?? 1).toFixed(1)}%`;
+  if (el('bd-exposure')) el('bd-exposure').textContent = `${S.riskConfig?.maxExposurePercent ?? 70}% · ${S.riskConfig?.maxOpenPositions ?? 3} pos`;
+  if (el('bd-last-decision')) {
+    const log = S.lastDecisionLog || null;
+    el('bd-last-decision').textContent = !log ? 'Sin decisiones aún'
+      : (log.action === 'buy' ? `${log.market} · score ${log.score} · conf ${log.confidence}%`
+      : (log.reason || log.blockedBy || 'Esperando'));
+  }
 
   // Chip de estado
   const chip = el('bot-detail-status');
@@ -1611,6 +1628,10 @@ function syncBotPanel() {
   el('ap-eu-reinvest').checked = !!eu.reinvestOn;
 
   el('ap-maxloss').value = S.maxDailyLoss || 10;
+  el('ap-risk-per-trade').value = S.riskConfig?.riskPerTradePercent ?? 1;
+  el('ap-max-exposure').value = S.riskConfig?.maxExposurePercent ?? 70;
+  el('ap-max-open').value = S.riskConfig?.maxOpenPositions ?? 3;
+  el('ap-cooldown').value = S.riskConfig?.marketCooldownMinutes ?? 30;
 }
 
 async function saveBotConfig() {
@@ -1630,6 +1651,10 @@ async function saveBotConfig() {
       take: parseFloat(el('ap-eu-take').value) || 1.0,
     },
     maxDailyLoss: parseFloat(el('ap-maxloss').value) || 10,
+    riskPerTradePercent: parseFloat(el('ap-risk-per-trade').value) || 1,
+    maxExposurePercent: parseFloat(el('ap-max-exposure').value) || 70,
+    maxOpenPositions: parseInt(el('ap-max-open').value) || 3,
+    marketCooldownMinutes: parseInt(el('ap-cooldown').value) || 30,
   };
 
   for (const region of ['usa','europe']) {
@@ -1654,6 +1679,10 @@ async function saveBotConfig() {
       addAI(`⚙️ Configuración guardada:
 - USA: **${config.usa.enabled ? 'Activa' : 'Pausada'}** · $${config.usa.amount}/op · SL:${config.usa.stop}% · TP:${config.usa.take}%
 - Europa: **${config.europe.enabled ? 'Activa' : 'Pausada'}** · $${config.europe.amount}/op · SL:${config.europe.stop}% · TP:${config.europe.take}%
+- Riesgo/trade: **${config.riskPerTradePercent}%**
+- Exposición máxima: **${config.maxExposurePercent}%**
+- Máx posiciones: **${config.maxOpenPositions}**
+- Cooldown: **${config.marketCooldownMinutes} min**
 - Límite diario: $${config.maxDailyLoss}`);
     } else {
       toast('Error guardando configuración', 'error');
@@ -1685,7 +1714,7 @@ function renderPositionSection(list, bodyId, emptyText) {
       const entryFee = p.entryCosts?.total || 0;
       const exitFee  = p.estimatedExitCosts?.total || 0;
       const mktDailyChange = (m && typeof m.change === 'number' && isFinite(m.change)) ? m.change : null;
-      const mktSourceLabel = m?.changeSource === 'finnhub' ? ' · real' : (m?.changeSource ? ' · estimado' : '');
+      const mktSourceLabel = (m?.changeSource === 'finnhub' || m?.changeSource === 'alpaca') ? ' · real' : (m?.changeSource ? ' · estimado' : '');
       const mktDailyHtml = mktDailyChange !== null
         ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%${mktSourceLabel}</span>`
         : '';
@@ -1695,6 +1724,7 @@ function renderPositionSection(list, bodyId, emptyText) {
         ? `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`
         : `<span style="font-size:10px;background:#fff3cd;color:#856404;padding:2px 6px;border-radius:4px;font-weight:600">🔒 Mercado cerrado</span>`;
       const venueBadge = `<span class="venue-badge ${(p.executionVenue === 'alpaca' || p.source === 'alpaca') ? 'alpaca' : 'internal'}">${(p.executionVenue === 'alpaca' || p.source === 'alpaca') ? '🟢 Alpaca' : '🔵 Simulación'}</span>`;
+      const trailingBadge = p.trailingFloorPct != null ? `<span class="plim" style="background:var(--orange-light);color:var(--orange)">Trail +${Number(p.trailingFloorPct).toFixed(2)}%</span>` : '';
 
       return `<div class="pos-item">
         <div class="pos-ico long">${info.f}</div>
@@ -1960,6 +1990,8 @@ function buildChatContext() {
     botStatusReason: S.botStatusReason,
     dailyLoss: S.dailyLoss,
     maxDailyLoss: S.maxDailyLoss,
+    riskConfig: S.riskConfig,
+    lastDecisionLog: S.lastDecisionLog,
     consecutiveLosses: S.consecutiveLosses,
     waitCycles: S.waitCycles,
     positions: (S.positions || []).map(p => ({
