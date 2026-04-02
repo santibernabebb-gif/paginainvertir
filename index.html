@@ -677,16 +677,36 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         <!-- Bot config panel -->
         <div class="ap" id="bot-panel">
           <div class="ap-title">⚙️ Configuración del Bot Automático</div>
-          <div class="ap-grid">
-            <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-amt" value="200" min="10"></div>
-            <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-stop" value="0.5" step="0.1" min="0.1"></div>
-            <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-take" value="1.0" step="0.1" min="0.2"></div>
-            <div class="ap-f"><label>Pérd. diaria máx ($)</label><input type="number" id="ap-maxloss" value="10" min="1"></div>
-            <div class="ap-f" style="grid-column:span 2;display:flex;align-items:center;gap:10px;padding-top:16px">
-              <label class="ap-toggle"><input type="checkbox" id="ap-auto"> Bot automático</label>
-              <label class="ap-toggle"><input type="checkbox" id="ap-reinvest"> Reinversión</label>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--white);border:1px solid var(--accent-mid);border-radius:8px;padding:10px">
+              <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px">🇺🇸 USA · Alpaca</div>
+              <div class="ap-grid" style="grid-template-columns:1fr 1fr">
+                <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-usa-amt" value="200" min="10"></div>
+                <div class="ap-f"><label>Reinversión</label><div class="ap-row" style="margin:0;padding-top:7px"><label class="ap-toggle"><input type="checkbox" id="ap-usa-reinvest"> Activada</label></div></div>
+                <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-usa-stop" value="0.5" step="0.1" min="0.1"></div>
+                <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-usa-take" value="1.0" step="0.1" min="0.2"></div>
+              </div>
+              <div class="ap-row" style="margin-top:6px"><label class="ap-toggle"><input type="checkbox" id="ap-usa-enabled"> Activar bot USA</label></div>
+            </div>
+
+            <div style="background:var(--white);border:1px solid var(--accent-mid);border-radius:8px;padding:10px">
+              <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px">🇪🇺 Europa · Interno</div>
+              <div class="ap-grid" style="grid-template-columns:1fr 1fr">
+                <div class="ap-f"><label>Capital/op ($)</label><input type="number" id="ap-eu-amt" value="200" min="10"></div>
+                <div class="ap-f"><label>Reinversión</label><div class="ap-row" style="margin:0;padding-top:7px"><label class="ap-toggle"><input type="checkbox" id="ap-eu-reinvest"> Activada</label></div></div>
+                <div class="ap-f"><label>Stop Loss %</label><input type="number" id="ap-eu-stop" value="0.5" step="0.1" min="0.1"></div>
+                <div class="ap-f"><label>Take Profit %</label><input type="number" id="ap-eu-take" value="1.0" step="0.1" min="0.2"></div>
+              </div>
+              <div class="ap-row" style="margin-top:6px"><label class="ap-toggle"><input type="checkbox" id="ap-eu-enabled"> Activar bot Europa</label></div>
             </div>
           </div>
+
+          <div class="ap-grid" style="grid-template-columns:1fr 1fr; margin-top:8px">
+            <div class="ap-f"><label>Pérd. diaria máx ($)</label><input type="number" id="ap-maxloss" value="10" min="1"></div>
+            <div class="ap-f"><label>Nota</label><div style="font-size:11px;color:var(--muted);padding-top:8px">Cada región usa solo su propia configuración.</div></div>
+          </div>
+
           <button class="ap-btn" onclick="saveBotConfig()">💾 Guardar configuración</button>
         </div>
       </div>
@@ -821,6 +841,10 @@ let S = {
   autoStop: 0.5,
   autoTake: 1.0,
   reinvestOn: false,
+  autoConfig: {
+    usa:    { enabled:false, amount:200, stop:0.5, take:1.0, reinvestOn:false },
+    europe: { enabled:false, amount:200, stop:0.5, take:1.0, reinvestOn:false },
+  },
   maxDailyLoss: 10,
   dailyLoss: 0,
   dailyLossHit: false,
@@ -929,7 +953,7 @@ function applyState(state) {
     'bankBalance','investCash','startTotal','withdrawn','positions','history',
     'trades','mode','autoOn','autoAmount','autoStop','autoTake','reinvestOn',
     'maxDailyLoss','dailyLoss','dailyLossHit','consecutiveLosses','waitCycles',
-    'scheduledOrders','botStatus','botStatusReason','costConfig',
+    'scheduledOrders','botStatus','botStatusReason','costConfig','autoConfig',
   ];
   for (const f of fields) {
     if (state[f] !== undefined) S[f] = state[f];
@@ -1571,27 +1595,48 @@ function toggleBotPanel() {
 }
 
 function syncBotPanel() {
-  el('ap-amt').value = S.autoAmount || 200;
-  el('ap-stop').value = S.autoStop || 0.5;
-  el('ap-take').value = S.autoTake || 1.0;
+  const usa = S.autoConfig?.usa || {};
+  const eu  = S.autoConfig?.europe || {};
+
+  el('ap-usa-amt').value = usa.amount || 200;
+  el('ap-usa-stop').value = usa.stop || 0.5;
+  el('ap-usa-take').value = usa.take || 1.0;
+  el('ap-usa-enabled').checked = !!usa.enabled;
+  el('ap-usa-reinvest').checked = !!usa.reinvestOn;
+
+  el('ap-eu-amt').value = eu.amount || 200;
+  el('ap-eu-stop').value = eu.stop || 0.5;
+  el('ap-eu-take').value = eu.take || 1.0;
+  el('ap-eu-enabled').checked = !!eu.enabled;
+  el('ap-eu-reinvest').checked = !!eu.reinvestOn;
+
   el('ap-maxloss').value = S.maxDailyLoss || 10;
-  el('ap-auto').checked = !!S.autoOn;
-  el('ap-reinvest').checked = !!S.reinvestOn;
 }
 
 async function saveBotConfig() {
   const config = {
-    autoOn:      el('ap-auto').checked,
-    reinvestOn:  el('ap-reinvest').checked,
-    autoAmount:  parseFloat(el('ap-amt').value) || 200,
-    autoStop:    parseFloat(el('ap-stop').value) || 0.5,
-    autoTake:    parseFloat(el('ap-take').value) || 1.0,
+    usa: {
+      enabled: el('ap-usa-enabled').checked,
+      reinvestOn: el('ap-usa-reinvest').checked,
+      amount: parseFloat(el('ap-usa-amt').value) || 200,
+      stop: parseFloat(el('ap-usa-stop').value) || 0.5,
+      take: parseFloat(el('ap-usa-take').value) || 1.0,
+    },
+    europe: {
+      enabled: el('ap-eu-enabled').checked,
+      reinvestOn: el('ap-eu-reinvest').checked,
+      amount: parseFloat(el('ap-eu-amt').value) || 200,
+      stop: parseFloat(el('ap-eu-stop').value) || 0.5,
+      take: parseFloat(el('ap-eu-take').value) || 1.0,
+    },
     maxDailyLoss: parseFloat(el('ap-maxloss').value) || 10,
   };
 
-  if (config.autoTake < config.autoStop * 1.5) {
-    toast('Take Profit debe ser al menos 1.5x el Stop Loss', 'error');
-    return;
+  for (const region of ['usa','europe']) {
+    if (config[region].take < config[region].stop * 1.5) {
+      toast(`En ${region.toUpperCase()} el Take Profit debe ser al menos 1.5x el Stop Loss`, 'error');
+      return;
+    }
   }
 
   try {
@@ -1604,8 +1649,12 @@ async function saveBotConfig() {
     if (d.ok) {
       if (d.state) applyState(d.state);
       el('bot-panel').classList.remove('vis');
-      toast(`Bot ${config.autoOn ? 'activado' : 'pausado'}`, config.autoOn ? 'success' : 'info');
-      addAI(`⚙️ Configuración guardada:\n- Bot: **${config.autoOn ? 'Activo' : 'Pausado'}**\n- Reinversión: **${config.reinvestOn ? 'Sí' : 'No'}**\n- $${config.autoAmount}/op | SL:${config.autoStop}% TP:${config.autoTake}%\n- Límite diario: $${config.maxDailyLoss}`);
+      const activeRegions = [config.usa.enabled ? 'USA' : null, config.europe.enabled ? 'Europa' : null].filter(Boolean).join(' + ') || 'ninguna región';
+      toast(`Configuración guardada (${activeRegions})`, 'success');
+      addAI(`⚙️ Configuración guardada:
+- USA: **${config.usa.enabled ? 'Activa' : 'Pausada'}** · $${config.usa.amount}/op · SL:${config.usa.stop}% · TP:${config.usa.take}%
+- Europa: **${config.europe.enabled ? 'Activa' : 'Pausada'}** · $${config.europe.amount}/op · SL:${config.europe.stop}% · TP:${config.europe.take}%
+- Límite diario: $${config.maxDailyLoss}`);
     } else {
       toast('Error guardando configuración', 'error');
     }
