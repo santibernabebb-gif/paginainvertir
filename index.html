@@ -505,13 +505,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- MERCADOS EUROPA -->
       <div class="card">
-        <div class="ch">
+        <div class="ch" onclick="toggleEuropeMarkets()" style="cursor:pointer">
           <span class="ct">🇪🇺 Mercados Europa</span>
-          <span class="venue-chip internal">INTERNO</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="venue-chip internal">INTERNO</span>
+            <span id="eu-toggle-arrow" style="font-size:11px;color:var(--muted)">▶</span>
+          </div>
         </div>
-        <div class="cb">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:9px">Mercados europeos y resto en simulación interna.</div>
-          <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+        <div id="eu-mkt-body" style="display:none">
+          <div class="cb">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:9px">Mercados europeos y resto en simulación interna.</div>
+            <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+          </div>
         </div>
       </div>
 
@@ -1263,6 +1268,14 @@ function filterMarkets(cat) {
 function toggleMarkets() {
   const body = el('mkt-body');
   const arrow = el('mkt-toggle-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.textContent = isOpen ? '▶' : '▼';
+}
+
+function toggleEuropeMarkets() {
+  const body = el('eu-mkt-body');
+  const arrow = el('eu-toggle-arrow');
   const isOpen = body.style.display !== 'none';
   body.style.display = isOpen ? 'none' : 'block';
   if (arrow) arrow.textContent = isOpen ? '▶' : '▼';
