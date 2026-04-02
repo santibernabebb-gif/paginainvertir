@@ -475,13 +475,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
                 </div>
                 <div class="mkt-grid" id="usa-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
               </div>
-              <div class="market-block">
-                <div class="market-block-header">
-                  <span class="market-block-title">🇪🇺 Europa · simulación interna</span>
-                  <span class="venue-chip internal">INTERNO</span>
-                </div>
-                <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
-              </div>
             </div>
           </div>
         </div>
@@ -508,6 +501,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
             <button class="tr-btn tr-out" onclick="transferFrom()">🏦 → Banca</button>
           </div>
         </div>
+      </div>
+
+      <!-- MERCADOS EUROPA -->
+      <div class="card">
+        <div class="ch">
+          <span class="ct">🇪🇺 Mercados Europa</span>
+          <span class="venue-chip internal">INTERNO</span>
+        </div>
+        <div class="cb">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:9px">Mercados europeos y resto en simulación interna.</div>
+          <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+        </div>
+      </div>
+
+      <!-- POSICIONES EUROPA -->
+      <div class="card">
+        <div class="ch"><span class="ct">🇪🇺 Posiciones Europa y resto</span><span id="pos-cnt-eu" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body-eu"><div class="pos-empty">Sin posiciones Europa.</div></div>
       </div>
 
       <!-- COSTES Y COMISIONES -->
@@ -540,45 +551,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- POSICIONES EUROPA -->
-      <div class="card">
-        <div class="ch"><span class="ct">🇪🇺 Posiciones Europa y resto</span><span id="pos-cnt-eu" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body-eu"><div class="pos-empty">Sin posiciones Europa.</div></div>
-      </div>
-
-      <!-- RENDIMIENTO -->
-      <div class="card">
-        <div class="ch"><span class="ct">Rendimiento</span></div>
-        <div class="cb">
-          <div class="pf-grid">
-            <div class="pf-s"><div class="lbl">Capital Total</div><div class="val" id="pf-total">$10,000</div><div class="sub green" id="pf-gain">+$0</div></div>
-            <div class="pf-s"><div class="lbl">Rentabilidad</div><div class="val green" id="pf-pct">0.00%</div><div class="sub" id="pf-ops" style="color:var(--muted)">0 ops</div></div>
-            <div class="pf-s"><div class="lbl">P&L Abierto</div><div class="val" id="pf-pnl">$0.00</div><div class="sub" style="color:var(--muted)">no realizado</div></div>
-            <div class="pf-s"><div class="lbl">Retirado</div><div class="val gold" id="pf-withdrawn">$0</div><div class="sub" style="color:var(--muted)">a banca</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ESTADO DEL BOT (visible) -->
-      <div class="card" id="bot-detail-card">
-        <div class="ch"><span class="ct">Estado del Bot</span><span id="bot-detail-status" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:16px;background:var(--bg);color:var(--muted)">Pausado</span></div>
-        <div class="cb">
-          <div class="bot-detail-row"><span class="bd-label">Estado</span><span class="bd-value" id="bd-status">idle</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Motivo</span><span class="bd-value" style="font-weight:400;color:var(--muted);font-family:var(--font);font-size:11px" id="bd-reason">—</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Pérdida diaria</span><span class="bd-value" id="bd-daily-loss">$0.00 / $10.00</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Pérdidas seguidas</span><span class="bd-value" id="bd-consec">0</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Ciclos espera</span><span class="bd-value" id="bd-wait">0</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Riesgo/trade</span><span class="bd-value" id="bd-risk">1.0%</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Exposición máx</span><span class="bd-value" id="bd-exposure">70%</span></div>
-          <div class="bot-detail-row"><span class="bd-label">Última decisión</span><span class="bd-value" style="font-weight:400;color:var(--muted);font-family:var(--font);font-size:11px;text-align:right;max-width:220px" id="bd-last-decision">—</span></div>
-          <div id="unlock-row" style="display:none;margin-top:10px">
-            <button onclick="unlockBot()" style="width:100%;padding:8px;background:var(--orange);color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:var(--font)">
-              🔓 Desbloquear Bot
-            </button>
-            <div style="font-size:10px;color:var(--muted);margin-top:4px;text-align:center">Reinicia pérdida diaria y pérdidas consecutivas</div>
-          </div>
-        </div>
-      </div>
 
       <!-- ANÁLISIS TÉCNICO -->
       <div class="card analysis-card" id="analysis-card">
@@ -1045,7 +1017,6 @@ async function saveCostConfig() {
 }
 
 function renderCosts() {
-  if (!el('cc-list')) return;
   const c = S.costConfig || {};
   const openFees = (S.positions || []).reduce((a, p) => a + (p.entryCosts?.total || 0) + (p.estimatedExitCosts?.total || 0), 0);
   const closedFees = (S.history || []).reduce((a, h) => a + (h.totalFees || ((h.entryCosts?.total || 0) + (h.exitCosts?.total || 0))), 0);
@@ -1066,10 +1037,10 @@ function renderCosts() {
   }));
 
   if (!items.length) {
-    el('cc-list').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin operaciones aún.</div>';
+    if (el('cc-list')) el('cc-list').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:8px">Sin operaciones aún.</div>';
     return;
   }
-  el('cc-list').innerHTML = items.slice(0, 12).map(it => `
+  if (el('cc-list')) el('cc-list').innerHTML = items.slice(0, 12).map(it => `
     <div style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:${it.type==='open' ? 'var(--accent-light)' : 'var(--bg)'}">
       <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
         <strong style="font-size:11px">${MKTINFO[it.market]?.n || it.market} · ${it.label}</strong>
@@ -1500,10 +1471,12 @@ function renderBotStatus() {
     'idle':      { cls: '',        label: S.autoOn ? 'Bot: Activo' : 'Bot: Pausado' },
   };
   const s = statusMap[S.botStatus] || statusMap['idle'];
-  btn.className = 'bot-status ' + s.cls;
-  lbl.textContent = s.label;
+  if (btn) btn.className = 'bot-status ' + s.cls;
+  if (lbl) lbl.textContent = s.label;
 
-  // Detail card
+  // Si la tarjeta detallada no existe, no intentamos pintar esos campos
+  if (!el('bd-status')) return;
+
   el('bd-status').textContent = S.botStatus || 'idle';
   el('bd-reason').textContent = S.botStatusReason || (S.autoOn ? 'Analizando mercado...' : 'Bot pausado');
   el('bd-daily-loss').textContent = `$${(S.dailyLoss || 0).toFixed(2)} / $${S.maxDailyLoss || 10}`;
@@ -1520,19 +1493,19 @@ function renderBotStatus() {
       : (log.reason || log.blockedBy || 'Esperando'));
   }
 
-  // Chip de estado
   const chip = el('bot-detail-status');
-  chip.textContent = s.label.replace('Bot: ', '');
-  chip.style.background = S.botStatus === 'operating' ? 'var(--green-light)' :
-                           S.botStatus === 'blocked'  ? 'var(--red-light)'   :
-                           S.botStatus === 'waiting'  ? 'var(--orange-light)': 'var(--bg)';
-  chip.style.color = S.botStatus === 'operating' ? 'var(--green)' :
-                     S.botStatus === 'blocked'  ? 'var(--red)'   :
-                     S.botStatus === 'waiting'  ? 'var(--orange)': 'var(--muted)';
+  if (chip) {
+    chip.textContent = s.label.replace('Bot: ', '');
+    chip.style.background = S.botStatus === 'operating' ? 'var(--green-light)' :
+                             S.botStatus === 'blocked'  ? 'var(--red-light)'   :
+                             S.botStatus === 'waiting'  ? 'var(--orange-light)': 'var(--bg)';
+    chip.style.color = S.botStatus === 'operating' ? 'var(--green)' :
+                       S.botStatus === 'blocked'  ? 'var(--red)'   :
+                       S.botStatus === 'waiting'  ? 'var(--orange)': 'var(--muted)';
+  }
 
-  // Mostrar botón desbloqueo si el bot está bloqueado por pérdida diaria o pérdidas consecutivas
   const isBlocked = S.dailyLossHit || (S.consecutiveLosses || 0) >= 3;
-  el('unlock-row').style.display = isBlocked ? 'block' : 'none';
+  if (el('unlock-row')) el('unlock-row').style.display = isBlocked ? 'block' : 'none';
 }
 
 // ═══════════════════════════════════════════════
@@ -1810,15 +1783,17 @@ function renderPortfolio() {
   el('inv-cash').textContent   = fmtM(S.investCash);
   el('in-pos-val').textContent = fmtM(inv);
   el('pos-count-s').textContent = internalPositions.length + ' internas';
-  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
-  el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
-  el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-  el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
-  el('pf-ops').textContent = (S.trades || 0) + ' ops';
-  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
-  el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
-  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
+  if (el('pf-total')) {
+    el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+    el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
+    el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
+    el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+    el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
+    el('pf-ops').textContent = (S.trades || 0) + ' ops';
+    el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
+    el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
+    el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
+  }
 
   const usaPositions = alpacaPositions;
   const euPositions = internalPositions;
