@@ -1598,15 +1598,16 @@ async function closePosition(positionId, currentPnl, currentPct, market = null, 
       }
       renderPortfolio();
       await loadDashboard();
-      const pnl = d.pnl || 0;
-      if (d.ghostPurged) {
-        toast(d.message || 'Posición fantasma eliminada', 'success');
-      } else if (d.pending) {
-        toast(d.message || 'Cierre enviado a Alpaca, pendiente de confirmación', 'info');
+      if (d.purged) {
+        toast(d.message || 'Posición fantasma eliminada del panel', 'success');
       } else {
+        const pnl = d.pnl || 0;
         toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
       }
     } else {
+      if ((d.error || '').toLowerCase().includes('posición no encontrada') && market) {
+        await loadDashboard();
+      }
       toast(d.error || 'Error cerrando posición', 'error');
     }
   } catch (e) {
