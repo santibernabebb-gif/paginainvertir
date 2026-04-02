@@ -237,8 +237,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .pos-pnl{text-align:right;flex-shrink:0}
 .pos-pnl .pv{font-family:var(--mono);font-size:15px;font-weight:700}
 .pos-pnl .pp{font-size:12px;margin-top:2px}
-.close-btn{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:6px}
+.close-btn,.delete-btn{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .2s;margin-top:6px}
 .close-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.delete-btn{border-color:#f59e0b;color:#b45309;background:#fffbeb}
+.delete-btn:hover{border-color:#d97706;color:#92400e;background:#fef3c7}
 
 /* TRADE */
 .tf{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
@@ -1608,6 +1610,38 @@ async function closePosition(positionId, currentPnl, currentPct, market = null, 
   }
 }
 
+
+async function purgeGhostUsaPosition(positionId, market, externalVenue = '') {
+  if (externalVenue !== 'alpaca') {
+    toast('Eliminar completo solo está pensado para posiciones USA/Alpaca', 'error');
+    return;
+  }
+
+  const msg = `¿Eliminar completamente esta posición USA del panel?\n\nSolo haz esto si ya NO existe realmente en Alpaca.\n\nSi todavía existe en Alpaca, el worker no la borrará y te obligará a cerrarla bien.`;
+  if (!confirm(msg)) return;
+
+  try {
+    const r = await fetch(`${WORKER}/action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
+      body: JSON.stringify({ type: 'purge-ghost-usa', positionId, market }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      if (d.state) applyState(d.state);
+      S.positions = (S.positions || []).filter(p => !(String(p.id) === String(positionId) || (market && p.market === market && (p.executionVenue === 'alpaca' || p.source === 'alpaca'))));
+      S.alpacaPositions = (S.alpacaPositions || []).filter(p => !(market && p.market === market));
+      renderPortfolio();
+      await loadDashboard();
+      toast(d.message || 'Posición eliminada del panel', 'success');
+    } else {
+      toast(d.error || 'No se pudo eliminar del panel', 'error');
+    }
+  } catch (e) {
+    toast('Error de conexión', 'error');
+  }
+}
+
 // ═══════════════════════════════════════════════
 // BOT CONFIG
 // ═══════════════════════════════════════════════
@@ -1763,6 +1797,7 @@ function renderPositionSection(list, bodyId, emptyText) {
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
           <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)}, '${p.market}', '${p.executionVenue === 'alpaca' || p.source === 'alpaca' ? 'alpaca' : 'internal'}')">Cerrar</button>
+          ${(p.executionVenue === 'alpaca' || p.source === 'alpaca') ? `<button class="delete-btn" onclick="purgeGhostUsaPosition('${p.id}', '${p.market}', 'alpaca')">Eliminar</button>` : ''}
         </div>
       </div>`;
     }).join('');
