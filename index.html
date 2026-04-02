@@ -1386,6 +1386,14 @@ function renderAlpacaPanel() {
   const acc = S.alpacaAccount;
   const chip = el('alpaca-conn-chip');
   if (!chip) return;
+
+  const usaStatePositions = (S.positions || []).filter(p =>
+    p && ((p.executionVenue === 'alpaca') || (p.source === 'alpaca'))
+  );
+  const usaLiveCount = Array.isArray(S.alpacaPositions) && S.alpacaPositions.length
+    ? S.alpacaPositions.length
+    : usaStatePositions.length;
+
   if (acc) {
     chip.textContent = 'ALPACA OK';
     chip.className = 'venue-chip alpaca';
@@ -1393,8 +1401,9 @@ function renderAlpacaPanel() {
     el('alpaca-buying').textContent = acc.buyingPower != null ? '$' + Number(acc.buyingPower).toFixed(2) : '—';
     el('alpaca-equity').textContent = acc.equity != null ? '$' + Number(acc.equity).toFixed(2) : '—';
     el('alpaca-status').textContent = acc.status || 'OK';
-    const usaCount = Array.isArray(S.alpacaPositions) ? S.alpacaPositions.length : 0;
-    el('alpaca-note').textContent = acc.tradingBlocked ? '⚠️ Alpaca conectado pero el trading sale bloqueado en la cuenta.' : `USA usa saldo y posiciones reales de Alpaca. Posiciones USA activas: ${usaCount}. Europa sigue interna.`;
+    el('alpaca-note').textContent = acc.tradingBlocked
+      ? '⚠️ Alpaca conectado pero el trading sale bloqueado en la cuenta.'
+      : `USA usa Alpaca para saldo y ejecución. Posiciones USA visibles: ${usaLiveCount}. Europa sigue interna.`;
   } else {
     chip.textContent = 'SIN ALPACA';
     chip.className = 'venue-chip internal';
@@ -1774,9 +1783,16 @@ function renderPositionSection(list, bodyId, emptyText) {
 }
 
 function renderPortfolio() {
-  const internalPositions = (S.positions || []).filter(p => !MARKET_CATEGORIES.usa.includes(p.market));
-  const alpacaPositions = Array.isArray(S.alpacaPositions) ? S.alpacaPositions : [];
-  const inv = internalPositions.reduce((a, p) => a + p.value, 0);
+  const usaStatePositions = (S.positions || []).filter(p =>
+    p && ((p.executionVenue === 'alpaca') || (p.source === 'alpaca'))
+  );
+  const internalPositions = (S.positions || []).filter(p =>
+    p && !((p.executionVenue === 'alpaca') || (p.source === 'alpaca'))
+  );
+  const alpacaPositions = Array.isArray(S.alpacaPositions) && S.alpacaPositions.length
+    ? S.alpacaPositions
+    : usaStatePositions;
+  const inv = internalPositions.reduce((a, p) => a + (p.value || 0), 0);
   const unrealPnl = internalPositions.reduce((a, p) => {
     const m = S.markets[p.market];
     if (!m || !m.price) return a;
