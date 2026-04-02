@@ -435,6 +435,58 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
   <div class="main">
     <div class="left" id="left-col">
 
+<!-- ALPACA USA -->
+      <div class="card">
+        <div class="ch"><span class="ct">🇺🇸 Alpaca USA</span><span id="alpaca-conn-chip" class="venue-chip alpaca">Conectando…</span></div>
+        <div class="cb">
+          <div class="alpaca-grid">
+            <div class="alpaca-stat"><div class="lbl">Cash Alpaca</div><div class="val" id="alpaca-cash">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Buying Power</div><div class="val" id="alpaca-buying">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Equity</div><div class="val" id="alpaca-equity">—</div></div>
+            <div class="alpaca-stat"><div class="lbl">Estado</div><div class="val" id="alpaca-status">—</div></div>
+          </div>
+          <div class="alpaca-note" id="alpaca-note">Los mercados USA se envían a Alpaca cuando son compatibles. Europa sigue interna.</div>
+        </div>
+      </div>
+
+      <!-- POSICIONES USA -->
+      <div class="card">
+        <div class="ch"><span class="ct">🇺🇸 Posiciones USA</span><span id="pos-cnt-usa" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body-usa"><div class="pos-empty">Sin posiciones USA.</div></div>
+      </div>
+
+      <!-- MERCADOS -->
+      <div class="card">
+        <div class="ch" onclick="toggleMarkets()" style="cursor:pointer">
+          <span class="ct">Mercados Separados</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span>
+            <span id="mkt-toggle-arrow" style="font-size:11px;color:var(--muted)">▶</span>
+          </div>
+        </div>
+        <div id="mkt-body" style="display:none">
+          <div class="cb">
+            <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:9px"></div>
+            <div class="market-split">
+              <div class="market-block">
+                <div class="market-block-header">
+                  <span class="market-block-title">🇺🇸 USA · Alpaca</span>
+                  <span class="venue-chip alpaca">ALPACA</span>
+                </div>
+                <div class="mkt-grid" id="usa-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+              </div>
+              <div class="market-block">
+                <div class="market-block-header">
+                  <span class="market-block-title">🇪🇺 Europa · simulación interna</span>
+                  <span class="venue-chip internal">INTERNO</span>
+                </div>
+                <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- BANCA -->
       <div class="card">
         <div class="ch">
@@ -488,10 +540,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
         </div>
       </div>
 
-      <!-- POSICIONES -->
+      <!-- POSICIONES EUROPA -->
       <div class="card">
-        <div class="ch"><span class="ct">Posiciones Abiertas</span><span id="pos-cnt" style="font-size:10px;color:var(--muted)">0</span></div>
-        <div class="cb" id="pos-body"><div class="pos-empty">Sin posiciones.</div></div>
+        <div class="ch"><span class="ct">🇪🇺 Posiciones Europa y resto</span><span id="pos-cnt-eu" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="cb" id="pos-body-eu"><div class="pos-empty">Sin posiciones Europa.</div></div>
       </div>
 
       <!-- RENDIMIENTO -->
@@ -521,52 +573,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
               🔓 Desbloquear Bot
             </button>
             <div style="font-size:10px;color:var(--muted);margin-top:4px;text-align:center">Reinicia pérdida diaria y pérdidas consecutivas</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ALPACA USA -->
-      <div class="card">
-        <div class="ch"><span class="ct">🇺🇸 Alpaca USA</span><span id="alpaca-conn-chip" class="venue-chip alpaca">Conectando…</span></div>
-        <div class="cb">
-          <div class="alpaca-grid">
-            <div class="alpaca-stat"><div class="lbl">Cash Alpaca</div><div class="val" id="alpaca-cash">—</div></div>
-            <div class="alpaca-stat"><div class="lbl">Buying Power</div><div class="val" id="alpaca-buying">—</div></div>
-            <div class="alpaca-stat"><div class="lbl">Equity</div><div class="val" id="alpaca-equity">—</div></div>
-            <div class="alpaca-stat"><div class="lbl">Estado</div><div class="val" id="alpaca-status">—</div></div>
-          </div>
-          <div class="alpaca-note" id="alpaca-note">Los mercados USA se envían a Alpaca cuando son compatibles. Europa sigue interna.</div>
-        </div>
-      </div>
-
-      <!-- MERCADOS -->
-      <div class="card">
-        <div class="ch" onclick="toggleMarkets()" style="cursor:pointer">
-          <span class="ct">Mercados Separados</span>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span id="mkt-ts" style="font-size:10px;color:var(--muted)">—</span>
-            <span id="mkt-toggle-arrow" style="font-size:11px;color:var(--muted)">▶</span>
-          </div>
-        </div>
-        <div id="mkt-body" style="display:none">
-          <div class="cb">
-            <div id="region-info" style="font-size:11px;color:var(--muted);margin-bottom:9px"></div>
-            <div class="market-split">
-              <div class="market-block">
-                <div class="market-block-header">
-                  <span class="market-block-title">🇪🇺 Europa · simulación interna</span>
-                  <span class="venue-chip internal">INTERNO</span>
-                </div>
-                <div class="mkt-grid" id="eu-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
-              </div>
-              <div class="market-block">
-                <div class="market-block-header">
-                  <span class="market-block-title">🇺🇸 USA · Alpaca</span>
-                  <span class="venue-chip alpaca">ALPACA</span>
-                </div>
-                <div class="mkt-grid" id="usa-grid"><div style="grid-column:span 4;text-align:center;color:var(--muted);padding:16px;font-size:12px">⏳ Cargando...</div></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1611,62 +1617,30 @@ async function saveBotConfig() {
 // ═══════════════════════════════════════════════
 // PORTFOLIO RENDER
 // ═══════════════════════════════════════════════
-function renderPortfolio() {
-  const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
-  const unrealPnl = (S.positions || []).reduce((a, p) => {
-    const m = S.markets[p.market];
-    if (!m || !m.price) return a;
-    const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
-    return a + p.value * (pct / 100);
-  }, 0);
 
-  const total = S.bankBalance + S.investCash + inv + unrealPnl;
-  const gain = total - S.startTotal;
-  const pct = S.startTotal > 0 ? gain / S.startTotal * 100 : 0;
-
-  el('hdr-bank').textContent = '$' + S.bankBalance.toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('bank-total').textContent = fmtM(S.bankBalance);
-  el('inv-cash').textContent   = fmtM(S.investCash);
-  el('in-pos-val').textContent = fmtM(inv);
-  el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
-  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
-  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
-  el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
-  el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-  el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
-  el('pf-ops').textContent = (S.trades || 0) + ' ops';
-  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
-  el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
-  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
-  el('pos-cnt').textContent = (S.positions || []).length + ' posiciones';
-
-  // Posiciones
-  const pb = el('pos-body');
-  if (!(S.positions || []).length) {
-    pb.innerHTML = '<div class="pos-empty">Sin posiciones abiertas.</div>';
-  } else {
-    pb.innerHTML = S.positions.map(p => {
+function renderPositionSection(list, bodyId, emptyText) {
+  const pb = el(bodyId);
+  if (!pb) return;
+  if (!list.length) {
+    pb.innerHTML = `<div class="pos-empty">${emptyText}</div>`;
+    return;
+  }
+  pb.innerHTML = list.map(p => {
       const m = S.markets[p.market];
       const cur = (m?.price && isFinite(m.price)) ? m.price : (p.lastPrice || p.entryPrice);
       if (m?.price && isFinite(m.price)) p.lastPrice = m.price;
-      // P&L de la posición (mi ganancia/pérdida)
       const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
       const pnl  = p.value * (pct2 / 100);
       const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
-      const isLivePrice = !!m?.price;
       const entryFee = p.entryCosts?.total || 0;
       const exitFee  = p.estimatedExitCosts?.total || 0;
-
-      // Cambio diario del mercado en general (no mi posición)
       const mktDailyChange = (m && typeof m.change === 'number' && isFinite(m.change)) ? m.change : null;
       const mktSourceLabel = m?.changeSource === 'finnhub' ? ' · real' : (m?.changeSource ? ' · estimado' : '');
       const mktDailyHtml = mktDailyChange !== null
         ? `<span style="font-size:10px;font-weight:600;color:${mktDailyChange >= 0 ? 'var(--green)' : 'var(--red)'}">Mercado hoy: ${mktDailyChange >= 0 ? '+' : ''}${mktDailyChange.toFixed(2)}%${mktSourceLabel}</span>`
         : '';
 
-      // ¿Mercado cerrado ahora?
       const isMarketOpen = S.openMarkets.includes(p.market);
       const marketStatusHtml = isMarketOpen
         ? `<span style="font-size:10px;background:#ecfdf5;color:#166534;padding:2px 6px;border-radius:4px;font-weight:600">🟢 Mercado abierto</span>`
@@ -1701,9 +1675,44 @@ function renderPortfolio() {
         </div>
       </div>`;
     }).join('');
-  }
+}
 
-  // Historial — agrupado por día, desplegable, borrado individual
+function renderPortfolio() {
+  const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
+  const unrealPnl = (S.positions || []).reduce((a, p) => {
+    const m = S.markets[p.market];
+    if (!m || !m.price) return a;
+    const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
+    return a + p.value * (pct / 100);
+  }, 0);
+
+  const total = S.bankBalance + S.investCash + inv + unrealPnl;
+  const gain = total - S.startTotal;
+  const pct = S.startTotal > 0 ? gain / S.startTotal * 100 : 0;
+
+  el('hdr-bank').textContent = '$' + S.bankBalance.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('hdr-inv').textContent  = '$' + (S.investCash + inv).toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('bank-total').textContent = fmtM(S.bankBalance);
+  el('inv-cash').textContent   = fmtM(S.investCash);
+  el('in-pos-val').textContent = fmtM(inv);
+  el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
+  el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
+  el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
+  el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
+  el('pf-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+  el('pf-pct').className = 'val ' + (pct >= 0 ? 'green' : 'red');
+  el('pf-ops').textContent = (S.trades || 0) + ' ops';
+  el('pf-pnl').textContent = (unrealPnl >= 0 ? '+' : '') + ' $' + Math.abs(unrealPnl).toFixed(2);
+  el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
+  el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
+
+  const usaPositions = (S.positions || []).filter(p => MARKET_CATEGORIES.usa.includes(p.market));
+  const euPositions = (S.positions || []).filter(p => !MARKET_CATEGORIES.usa.includes(p.market));
+  if (el('pos-cnt-usa')) el('pos-cnt-usa').textContent = usaPositions.length + ' posiciones';
+  if (el('pos-cnt-eu')) el('pos-cnt-eu').textContent = euPositions.length + ' posiciones';
+  renderPositionSection(usaPositions, 'pos-body-usa', 'Sin posiciones USA.');
+  renderPositionSection(euPositions, 'pos-body-eu', 'Sin posiciones Europa.');
+
   const hb = el('hist-body');
   if (!(S.history || []).length) {
     hb.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Sin operaciones.</div>';
@@ -1711,8 +1720,6 @@ function renderPortfolio() {
     const byDay = {};
     [...(S.history || [])].reverse().forEach((h, revIdx) => {
       const realIdx = (S.history.length - 1) - revIdx;
-      // closedAt puede ser "01/04/2026 11:30" (nuevo) o "11:30" (antiguo sin fecha)
-      // Si tiene / es formato nuevo con fecha, si no usamos la fecha de hoy como fallback
       const rawDate = h.closedAt || h.openedAt || '';
       const hasDate = rawDate.includes('/');
       const day = hasDate ? rawDate.split(' ')[0] : ('Hoy · ' + rawDate);
@@ -1775,6 +1782,7 @@ function renderPortfolio() {
     }).join('');
   }
 }
+
 
 // ═══════════════════════════════════════════════
 // HISTORIAL — helpers
