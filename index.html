@@ -872,6 +872,7 @@ let S = {
   analysis: {},
   fearGreed: null,
   alpacaAccount: null,
+  alpacaPositions: [],
   alpacaError: '',
   macro: null,
   currentHour: 12,
@@ -1233,6 +1234,7 @@ async function loadDashboard() {
     S.fearGreed = d.fearGreed || null;
     S.macro = d.macro || null;
     S.alpacaAccount = d.alpacaAccount || null;
+    S.alpacaPositions = d.alpacaPositions || [];
     S.alpacaError = d.alpacaError || '';
     S.currentHour = d.currentHour || 12;
     S.openMarkets = d.openMarkets || [];
@@ -1391,7 +1393,8 @@ function renderAlpacaPanel() {
     el('alpaca-buying').textContent = acc.buyingPower != null ? '$' + Number(acc.buyingPower).toFixed(2) : '—';
     el('alpaca-equity').textContent = acc.equity != null ? '$' + Number(acc.equity).toFixed(2) : '—';
     el('alpaca-status').textContent = acc.status || 'OK';
-    el('alpaca-note').textContent = acc.tradingBlocked ? '⚠️ Alpaca conectado pero el trading sale bloqueado en la cuenta.' : 'USA usa Alpaca para ejecución cuando el activo es compatible. Europa sigue interna.';
+    const usaCount = Array.isArray(S.alpacaPositions) ? S.alpacaPositions.length : 0;
+    el('alpaca-note').textContent = acc.tradingBlocked ? '⚠️ Alpaca conectado pero el trading sale bloqueado en la cuenta.' : `USA usa saldo y posiciones reales de Alpaca. Posiciones USA activas: ${usaCount}. Europa sigue interna.`;
   } else {
     chip.textContent = 'SIN ALPACA';
     chip.className = 'venue-chip internal';
@@ -1545,7 +1548,11 @@ async function openManualTrade() {
   if (!stop || stop <= 0)     { showManualErr('Stop Loss inválido'); return; }
   if (!take || take <= 0)     { showManualErr('Take Profit inválido'); return; }
   if (take < stop * 1.5)      { showManualErr('Take Profit debe ser al menos 1.5x el Stop Loss'); return; }
-  if (amount > S.investCash)  { showManualErr('Capital insuficiente en la cartera'); return; }
+  const isUsaTrade = (MARKET_CATEGORIES.usa || []).includes(market);
+  const availableForTrade = isUsaTrade
+    ? Number(S.alpacaAccount?.buyingPower ?? S.alpacaAccount?.cash ?? 0)
+    : Number(S.investCash || 0);
+  if (amount > availableForTrade)  { showManualErr(isUsaTrade ? 'Capital insuficiente en Alpaca' : 'Capital insuficiente en la cartera'); return; }
 
   try {
     const r = await fetch(`${WORKER}/action`, {
@@ -1572,28 +1579,30 @@ function showManualErr(msg) {
   errEl.style.display = 'block';
 }
 
-async function closePosition(positionId, currentPnl, currentPct) {
+async function closePosition(positionId, currentPnl, currentPct, market = null, externalVenue = '') {
   // Alert de confirmación con P&L actual
   const pnlStr = currentPnl >= 0
     ? `+$${currentPnl.toFixed(2)} (+${currentPct.toFixed(2)}%)`
     : `-$${Math.abs(currentPnl).toFixed(2)} (${currentPct.toFixed(2)}%)`;
-  const msg = `¿Cerrar esta posición ahora?\n\nResultado actual: ${pnlStr}\n\n${currentPnl >= 0 ? '✅ Cerrarás con GANANCIA' : '🛑 Cerrarás con PÉRDIDA'}`;
+  const venueMsg = externalVenue === 'alpaca' ? '\n\n💵 Esta operación cerrará la posición REAL en Alpaca.' : '';
+  const msg = `¿Cerrar esta posición ahora?\n\nResultado actual: ${pnlStr}${venueMsg}\n\n${currentPnl >= 0 ? '✅ Cerrarás con GANANCIA' : '🛑 Cerrarás con PÉRDIDA'}`;
   if (!confirm(msg)) return;
 
   try {
     const r = await fetch(`${WORKER}/action`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${S.token}` },
-      body: JSON.stringify({ type: 'close', positionId }),
+      body: JSON.stringify({ type: 'close', positionId, market }),
     });
     const d = await r.json();
     if (d.ok) {
-      // Aplicar state del worker — fuente de verdad
       if (d.state) applyState(d.state);
-      // Eliminar también del estado local inmediatamente para evitar que
-      // pollNotifications la restaure antes del próximo sync completo
-      S.positions = S.positions.filter(p => p.id !== positionId);
+      S.positions = (S.positions || []).filter(p => p.id !== positionId && (!market || p.market !== market));
+      if (externalVenue === 'alpaca' && market) {
+        S.alpacaPositions = (S.alpacaPositions || []).filter(p => p.market !== market);
+      }
       renderPortfolio();
+      await loadDashboard();
       const pnl = d.pnl || 0;
       toast(`Posición cerrada: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
     } else {
@@ -1705,11 +1714,19 @@ function renderPositionSection(list, bodyId, emptyText) {
   }
   pb.innerHTML = list.map(p => {
       const m = S.markets[p.market];
-      const cur = (m?.price && isFinite(m.price)) ? m.price : (p.lastPrice || p.entryPrice);
+      const cur = (m?.price && isFinite(m.price)) ? m.price : (p.lastPrice || p.entryPrice || 0);
       if (m?.price && isFinite(m.price)) p.lastPrice = m.price;
-      const pct2 = p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100;
-      const pnl  = p.value * (pct2 / 100);
-      const pw   = Math.max(0, Math.min(100, ((pct2 + p.stopLoss) / (p.takeProfit + p.stopLoss)) * 100));
+      const pct2 = p.unrealizedPct != null
+        ? Number(p.unrealizedPct)
+        : ((p.entryPrice && cur)
+          ? (p.side === 'buy' ? (cur - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - cur) / p.entryPrice * 100)
+          : 0);
+      const pnl  = p.unrealizedPnl != null ? Number(p.unrealizedPnl) : (p.value * (pct2 / 100));
+      const stopLossVal = Number.isFinite(Number(p.stopLoss)) ? Number(p.stopLoss) : null;
+      const takeProfitVal = Number.isFinite(Number(p.takeProfit)) ? Number(p.takeProfit) : null;
+      const pw   = (stopLossVal != null && takeProfitVal != null && (takeProfitVal + stopLossVal) > 0)
+        ? Math.max(0, Math.min(100, ((pct2 + stopLossVal) / (takeProfitVal + stopLossVal)) * 100))
+        : 50;
       const info = MKTINFO[p.market] || { n: p.market, f: '📊' };
       const entryFee = p.entryCosts?.total || 0;
       const exitFee  = p.estimatedExitCosts?.total || 0;
@@ -1736,29 +1753,31 @@ function renderPositionSection(list, bodyId, emptyText) {
             ${venueBadge}
             ${mktDailyHtml}
           </div>
-          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt}${m?.priceSource ? ` · datos: ${m.priceSource}` : ''}${p.executionVenue ? ` · ejecución: ${p.executionVenue}` : ''}</div>
+          <div class="pos-sub" style="font-size:11px">Entrada: ${fmtP(p.entryPrice)} → ${fmtP(cur)} · $${p.value.toFixed(2)} · ${p.openedAt || 'Alpaca en vivo'}${m?.priceSource ? ` · datos: ${m.priceSource}` : ''}${p.executionVenue ? ` · ejecución: ${p.executionVenue}` : ''}</div>
           <div class="pos-sub" style="font-size:11px;color:var(--muted)">Com. entrada: <strong class="red">$${entryFee.toFixed(2)}</strong> · Com. salida est.: <strong class="red">$${exitFee.toFixed(2)}</strong></div>
           <div class="pos-lims">
-            <span class="plim stop-l">🛑 -${p.stopLoss}%</span>
-            <span class="plim take-l">✅ +${p.takeProfit}%</span>
+            <span class="plim stop-l">🛑 ${stopLossVal != null ? '-' + stopLossVal + '%' : 'Alpaca'}</span>
+            <span class="plim take-l">✅ ${takeProfitVal != null ? '+' + takeProfitVal + '%' : 'Objetivo externo'}</span>
           </div>
           <div class="prog"><div class="prog-f" style="width:${pw}%;background:${pnl >= 0 ? 'var(--green)' : 'var(--red)'}"></div></div>
-          <div class="prog-lbls"><span>-${p.stopLoss}%</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}% mío</span><span>+${p.takeProfit}%</span></div>
+          <div class="prog-lbls"><span>${stopLossVal != null ? '-' + stopLossVal + '%' : '—'}</span><span style="color:${pnl >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}% mío</span><span>${takeProfitVal != null ? '+' + takeProfitVal + '%' : '—'}</span></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <div class="pos-pnl">
             <div class="pv ${pnl >= 0 ? 'green' : 'red'}" style="font-size:15px;font-weight:800">${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)}</div>
             <div class="pp ${pnl >= 0 ? 'green' : 'red'}" style="font-size:11px">${pct2 >= 0 ? '+' : ''}${pct2.toFixed(2)}%</div>
           </div>
-          <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)})">Cerrar</button>
+          <button class="close-btn" onclick="closePosition('${p.id}', ${pnl.toFixed(4)}, ${pct2.toFixed(4)}, '${p.market}', '${p.executionVenue === 'alpaca' || p.source === 'alpaca' ? 'alpaca' : 'internal'}')">Cerrar</button>
         </div>
       </div>`;
     }).join('');
 }
 
 function renderPortfolio() {
-  const inv = (S.positions || []).reduce((a, p) => a + p.value, 0);
-  const unrealPnl = (S.positions || []).reduce((a, p) => {
+  const internalPositions = (S.positions || []).filter(p => !MARKET_CATEGORIES.usa.includes(p.market));
+  const alpacaPositions = Array.isArray(S.alpacaPositions) ? S.alpacaPositions : [];
+  const inv = internalPositions.reduce((a, p) => a + p.value, 0);
+  const unrealPnl = internalPositions.reduce((a, p) => {
     const m = S.markets[p.market];
     if (!m || !m.price) return a;
     const pct = p.side === 'buy' ? (m.price - p.entryPrice) / p.entryPrice * 100 : (p.entryPrice - m.price) / p.entryPrice * 100;
@@ -1774,7 +1793,7 @@ function renderPortfolio() {
   el('bank-total').textContent = fmtM(S.bankBalance);
   el('inv-cash').textContent   = fmtM(S.investCash);
   el('in-pos-val').textContent = fmtM(inv);
-  el('pos-count-s').textContent = (S.positions || []).length + ' abiertas';
+  el('pos-count-s').textContent = internalPositions.length + ' internas';
   el('pf-total').textContent = '$' + total.toLocaleString('es-ES', { maximumFractionDigits: 0 });
   el('pf-gain').textContent = (gain >= 0 ? '+' : '') + ' $' + Math.abs(gain).toFixed(2);
   el('pf-gain').className = 'sub ' + (gain >= 0 ? 'green' : 'red');
@@ -1785,8 +1804,8 @@ function renderPortfolio() {
   el('pf-pnl').className = 'val ' + (unrealPnl >= 0 ? 'green' : 'red');
   el('pf-withdrawn').textContent = '$' + (S.withdrawn || 0).toFixed(2);
 
-  const usaPositions = (S.positions || []).filter(p => MARKET_CATEGORIES.usa.includes(p.market));
-  const euPositions = (S.positions || []).filter(p => !MARKET_CATEGORIES.usa.includes(p.market));
+  const usaPositions = alpacaPositions;
+  const euPositions = internalPositions;
   if (el('pos-cnt-usa')) el('pos-cnt-usa').textContent = usaPositions.length + ' posiciones';
   if (el('pos-cnt-eu')) el('pos-cnt-eu').textContent = euPositions.length + ' posiciones';
   renderPositionSection(usaPositions, 'pos-body-usa', 'Sin posiciones USA.');
