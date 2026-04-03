@@ -451,7 +451,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
       <!-- POSICIONES USA -->
       <div class="card">
-        <div class="ch"><span class="ct">🇺🇸 Posiciones USA</span><span id="pos-cnt-usa" style="font-size:10px;color:var(--muted)">0</span></div>
+        <div class="ch"><span class="ct">🇺🇸 Posiciones USA</span><div style="display:flex;align-items:center;gap:8px"><span id="pos-cnt-usa" style="font-size:10px;color:var(--muted)">0</span><button class="close-btn" style="margin-top:0;padding:4px 8px;font-size:10px" onclick="cleanupUsaGhostPositions()">Limpiar USA</button></div></div>
         <div class="cb" id="pos-body-usa"><div class="pos-empty">Sin posiciones USA.</div></div>
       </div>
 
@@ -1572,6 +1572,25 @@ function showManualErr(msg) {
   const errEl = el('manual-err');
   errEl.textContent = msg;
   errEl.style.display = 'block';
+}
+
+async function cleanupUsaGhostPositions() {
+  if (!confirm('Esto borrará del estado local del worker las posiciones USA/Alpaca fantasma y las órdenes USA pendientes.')) return;
+  try {
+    const r = await fetch(`${WORKER}/cleanup-usa-positions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authH() },
+      body: JSON.stringify({})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'No se pudo limpiar');
+    if (d.state) S = { ...S, ...d.state };
+    S.alpacaPositions = [];
+    renderAll();
+    toast(`Limpieza USA completada: ${d.removed || 0} posiciones y ${d.removedOrders || 0} órdenes.`, 'success');
+  } catch (e) {
+    toast(e.message || 'Error limpiando posiciones USA', 'error');
+  }
 }
 
 async function closePosition(positionId, currentPnl, currentPct, market = null, externalVenue = '') {
