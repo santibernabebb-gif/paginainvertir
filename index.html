@@ -957,6 +957,7 @@ function applyState(state) {
   syncBotPanel();
   syncCostPanel();
   renderCosts();
+  renderBotStatus();
 }
 
 async function syncFromWorker() {
@@ -1523,7 +1524,7 @@ function renderBotStatus() {
                        S.botStatus === 'waiting'  ? 'var(--orange)': 'var(--muted)';
   }
 
-  const isBlocked = S.dailyLossHit || (S.consecutiveLosses || 0) >= 3;
+  const isBlocked = S.botStatus === 'blocked' || S.dailyLossHit || (S.consecutiveLosses || 0) >= 3;
   if (el('unlock-row')) el('unlock-row').style.display = isBlocked ? 'block' : 'none';
 }
 
